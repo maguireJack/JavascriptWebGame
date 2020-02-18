@@ -1,0 +1,71 @@
+
+//used to draw color to the screen e.g. ClearScreen(Color.Black)
+const Color = Object.freeze({
+    Black: '#000000',
+    White: '#FFFFFF'
+});
+
+//used by any entity which listens for key input
+const Keys = Object.freeze({
+    Space: 32,      Enter: 13,
+    ArrowLeft: 37,  ArrowUp: 38,    ArrowRight: 39,    ArrowDown: 40,
+    A: 65,      B: 65,    C: 67,    D: 68,    E: 69,
+    F: 70,      G: 71,    H: 72,    I: 73,    J: 74,
+    K: 75,      L: 76,    M: 77,    N: 78,    O: 79,
+    P: 80,      Q: 81,    R: 82,    S: 83,    T: 84,
+    U: 85,      V: 86,    W: 87,    X: 88,    Y: 89,  
+    Z: 90,
+    F1: 112,     F2: 113,    F3: 114,    F4: 115,
+    F5: 116,     F6: 117,    F7: 118,    F8: 119,
+    F9: 120,     F10: 121,    F11: 122,    F12: 123,
+});
+
+//used by Actor2D
+const StatusType = Object.freeze({
+    Off: 1,
+    IsDrawn: 2,
+    IsUpdated: 4
+    //add more here as required but ENSURE they are 2^N values
+    //its important that the values are powers of two because we combine them using a bitwise-OR
+    //e.g. StatusType.IsUpdated | StatusType.IsDrawn
+    //if we dont need to ever combine the values then we just use a number of Symbol() as in the types below.
+});
+
+const AudioType = Object.freeze({ //replaced user-defined values with Symbol 
+	Background :    Symbol('Background'),
+	Menu:           Symbol('Menu'),
+    Explosion:      Symbol('Explosion'),
+    Move:           Symbol('Move'),
+    Pickup:         Symbol('Pickup'),
+    Damage:         Symbol('Damage'),
+	WinLose:        Symbol('WinLose'),
+	Weapon:         Symbol('Weapon'),
+    All:            Symbol('All')
+    //add as many audio types as your game needs here...
+  });
+
+
+  const ActorType = Object.freeze({ //replaced user-defined values with Symbol 
+    Player:                 Symbol('Player'),
+    Enemy:                  Symbol('Enemy'),
+    NPC:                    Symbol('NPC'),
+    Interactable:           Symbol('Interactable'),
+    Inventory:              Symbol('Inventory'),
+    Health:                 Symbol('Health'),
+    Ammo:                   Symbol('Ammo'),
+    Decorator:              Symbol('Decorator'),
+    Platform:               Symbol('Platform'),
+    NonDesctructibleObstacle: Symbol('NonDesctructibleObstacle'),
+    DestructibleObstacle:   Symbol('DestructibleObstacle'),
+    Bullet:                 Symbol('Bullet'),
+    Menu:                   Symbol('Menu'),
+    HUD:                    Symbol('HUD'),
+    Background:             Symbol('Background')
+    //add as many actor types as your game needs here...
+});
+
+const EasingStrengthType = Object.freeze({
+        Slow: 1.1,
+        Medium: 1.5,
+        Fast: 2
+});

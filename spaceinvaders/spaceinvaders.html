@@ -1,0 +1,60 @@
+<html>
+<head>
+    <title>Space Invaders</title>
+</head>
+<body>
+    <div style="text-align:center">
+        <!-- <div id="fps" style="font-size:2rem">FPS:</div> -->
+        <canvas id="game-canvas" width="600" height="800" style="border:2px dotted #000000;">    </canvas>  
+    </div>
+
+    <!--------------------------------------------CORE ENGINE CODE----------------------------------------------------->
+
+    <!-- dependent code is added first -->
+    <script src="../engine/constants/constant.js"></script>  
+
+    <script src="../engine/time/StopWatch.js"></script>  
+    <script src="../engine/time/GameTime.js"></script>  
+
+    <script src="../engine/utilities/GDArray.js"></script> 
+    <script src="../engine/utilities/GDMath.js"></script> 
+    <script src="../engine/types/Vector2.js"></script>  
+    <script src="../engine/types/Transform2D.js"></script> 
+    <script src="../engine/types/Rect.js"></script>  
+
+    <script src="../engine/notification/NotificationCenter.js"></script>
+
+    <script src="../engine/artists/SpriteArtist.js"></script>  
+    <script src="../engine/artists/AnimatedSpriteArtist.js"></script>  
+
+    <script src="../engine/actors/Actor2D.js"></script>    
+    <script src="../engine/actors/Sprite.js"></script>  
+
+    <script src="../engine/managers/ObjectManager.js"></script>  
+    <script src="../engine/managers/KeyboardManager.js"></script>  
+    <script src="../engine/managers/SoundManager.js"></script>  
+
+
+    <!--------------------------------------------GAME SPECIFIC ASSETS----------------------------------------------------->
+    <img id="invaders_background" src="assets/images/invaders_background.png" style="display:none;"/>
+    <img id="invaders_sprite_sheet" src="assets/images/invaders.png" style="display:none;"/>
+
+    <audio preload="auto" id="sound_background" src="assets/sound/background/spaceinvaders.mpeg"></audio>
+    <audio preload="auto" id="sound_shoot" src="assets/sound/effects/shoot.wav"></audio>  
+    <audio preload="auto" id="sound_bading" src="assets/sound/effects/bading.wav"></audio>
+
+    <!--------------------------------------------GAME SPECIFIC CODE----------------------------------------------------->
+
+    <script src="gdgame/gdconstants/MyConstants.js"></script>  
+
+    <script src="gdgame/gdbehaviors/PlayerFireBehavior.js"></script>
+    <script src="gdgame/gdbehaviors/MoveBehavior.js"></script>  
+    <script src="gdgame/gdbehaviors/CycleMoveDescendBehavior.js"></script>
+    <script src="gdgame/gdbehaviors/PlayerMoveBehavior.js"></script>
+    
+    <script src="gdgame/gdmanagers/MyCollisionManager.js"></script>  
+    <script src="gdgame/gdmanagers/MyObjectManager.js"></script>  
+    <script src="gdgame/game.js"></script>  
+
+</body>
+</html>

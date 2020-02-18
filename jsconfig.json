@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+        "target": "ES6"
+    },
+    "include": ["engine/**/*", 
+        "spaceinvaders/gdgame/**/*", 
+        "snailbait/gdgame/**/*", "snailbait/temp_dev_support"] /*added to support Intellisense for JS files outside current file*/
+}
