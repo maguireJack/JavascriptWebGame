@@ -6,6 +6,7 @@ Notes:
 - None
 
 To Do:
+
 - Continue adding documentation to all classes and methods.
 - Complete TextSpriteArtist.
 - Improve AnimatedSpriteArtist to store all animations for a sprite inside an object and not in a single array of cells.
