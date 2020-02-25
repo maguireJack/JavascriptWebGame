@@ -13,13 +13,13 @@ class TextSpriteArtist extends Artist{
     //#region  Properties
     //#endregion
 
-    constructor(context, text, fontType, fillStyle, textAlign, maxWidth) {
-        super(context);
+    constructor(context, text, fontType, fillStyle, textAlign, alpha=1, maxWidth) {
+        super(context, alpha);
 
         this.text = text;
-        this.fontType = fontType;       //enum?
+        this.fontType = fontType;      
         this.fillStyle = fillStyle;
-        this.textAlign = textAlign;     //enum?
+        this.textAlign = textAlign;    
         this.maxWidth = maxWidth;
     }
 
@@ -30,13 +30,16 @@ class TextSpriteArtist extends Artist{
 
     Draw(gameTime, parent, activeCamera) {
         this.Context.save();
-        this.ApplyCamera(activeCamera);
-        
+
+        super.ApplyCamera(activeCamera);
         let transform = parent.Transform2D;
+
         this.Context.font = this.fontType;
         this.Context.fillStyle = this.fillStyle;
         this.Context.textAlign = this.textAlign;
-        this.Context.fillText(this.text, transform.Translation.X, transform.Translation.Y, this.maxWidth);
+        this.Context.globalAlpha = this.Alpha;
+        this.Context.fillText(this.text, transform.Translation.X, transform.Translation.Y, 
+            this.maxWidth);
         this.Context.restore();
     }
 

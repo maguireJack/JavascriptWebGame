@@ -42,17 +42,16 @@
 
     <script src="../engine/notification/NotificationCenter.js"></script>
 
-    <script src="../engine/artists/Artist.js"></script>
-    <script src="../engine/artists/SpriteArtist.js"></script>
-    <script src="../engine/artists/AnimatedSpriteArtist.js"></script>
-    <script src="../engine/artists/RectangleSpriteArtist.js"></script>
-    <script src="../engine/artists/ScrollingSpriteArtist.js"></script>
-    <script src="../engine/artists/TextSpriteArtist.js"></script>
+    <script src="../engine/artists/base/Artist.js"></script>
+    <script src="../engine/artists/imagebased/SpriteArtist.js"></script>
+    <script src="../engine/artists/imagebased/AnimatedSpriteArtist.js"></script>
+    <script src="../engine/artists/imagebased/ScrollingSpriteArtist.js"></script>
+    <script src="../engine/artists/primitive/RectangleSpriteArtist.js"></script>
+    <script src="../engine/artists/primitive/TextSpriteArtist.js"></script>
 
     <script src="../engine/actors/Actor2D.js"></script>
     <script src="../engine/actors/Sprite.js"></script>
     <script src="../engine/actors/MoveableSprite.js"></script>
-
     <script src="../engine/actors/Camera2D.js"></script>
 
     <script src="../engine/managers/ObjectManager.js"></script>
@@ -80,8 +79,9 @@
     <!--------------------------------------------GAME SPECIFIC CODE----------------------------------------------------->
 
     <script src="gdgame/gdconstants/MyConstants.js"></script>
-    <script src="gdgame/gdbehaviors/PlayerBehavior.js"></script>
-    <script src="gdgame/gdbehaviors/FlightCameraBehavior.js"></script>
+    
+    <script src="gdgame/gdbehaviors/player/PlayerBehavior.js"></script>
+    <script src="gdgame/gdbehaviors/camera/FlightCameraBehavior.js"></script>
 
     <script src="gdgame/gdmanagers/MyGameStateManager.js"></script>
     <script src="gdgame/gdmanagers/MyObjectManager.js"></script>

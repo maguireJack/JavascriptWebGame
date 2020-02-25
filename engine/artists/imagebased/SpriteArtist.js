@@ -32,9 +32,9 @@ class SpriteArtist extends Artist
     //#endregion
 
     constructor(context, spritesheet, 
-        sourcePosition, sourceDimensions)
+        sourcePosition, sourceDimensions, alpha=1)
     {
-        super(context);
+        super(context, alpha);
 
         this.spritesheet = spritesheet;
         this.sourcePosition = sourcePosition;
@@ -58,18 +58,21 @@ class SpriteArtist extends Artist
      *
      * @param {GameTime} gameTime (unused)
      * @param {Sprite} parent 
+     * @param {Camera2D} activeCamera 
      * @memberof SpriteArtist
      */
     Draw(gameTime, parent, activeCamera) {
         this.Context.save();
-        this.ApplyCamera(activeCamera);
 
+        super.ApplyCamera(activeCamera);
         let transform = parent.Transform2D;
+
         this.Context.drawImage(this.spritesheet, 
             this.sourcePosition.X, this.sourcePosition.Y, 
             this.sourceDimensions.X, this.sourceDimensions.Y, 
-            transform.Translation.X, transform.Translation.Y, //0, 0
-            transform.Dimensions.X, transform.Dimensions.Y);
+            transform.Translation.X, transform.Translation.Y,
+            transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
+
         this.Context.restore();
     }
 
@@ -84,7 +87,7 @@ class SpriteArtist extends Artist
 
     Clone()
     {
-        return new SpriteArtist(this.context, this.spritesheet, this.sourcePosition.Clone(), this.sourceDimensions.Clone());
+        return new SpriteArtist(this.context, this.spritesheet, this.sourcePosition.Clone(), this.sourceDimensions.Clone(), this.Alpha);
     }
 
     ToString()

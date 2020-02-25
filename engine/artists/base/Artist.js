@@ -16,11 +16,18 @@ class Artist
     set Context(context) {
         this.context = context;
     }
+    get Alpha() {
+        return this.alpha;
+    }
+    set Alpha(alpha) {
+        this.alpha = alpha > 1 || alpha < 0 ? 1 : alpha;
+    }
     //#endregion
 
-    constructor(context)
+    constructor(context, alpha)
     {
         this.context = context;
+        this.Alpha = alpha;
     }
 
     ApplyCamera(activeCamera)
@@ -30,7 +37,10 @@ class Artist
         this.context.scale(cameraTransform.Scale.X, cameraTransform.Scale.Y);
         this.context.rotate(cameraTransform.RotationInRadians);
         this.context.translate(-cameraTransform.Origin.X, -cameraTransform.Origin.Y);
-        this.context.translate(-cameraTransform.X, -cameraTransform.Translation.Y);
+        this.context.translate(-cameraTransform.Translation.X, -cameraTransform.Translation.Y);
+
+        //add support for transparency
+        this.context.globalAlpha = this.alpha;
     }
 
     /**
@@ -49,7 +59,8 @@ class Artist
      * Currently unused.
      *
      * @param {GameTime} gameTime (unused)
-     * @param {Sprite} parent 
+     * @param {Sprite} parent
+     * @param {Camera2D} activeCamera 
      * @memberof Artist
      */
     Draw(gameTime, parent, camera)
@@ -67,7 +78,7 @@ class Artist
 
     Clone()
     {
-        return new Artist(this.context);
+        return new Artist(this.context, this.alpha);
     }
 
     ToString()

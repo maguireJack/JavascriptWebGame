@@ -18,44 +18,60 @@ class CameraManager {
     return this.activeCameraIndex;
   }
   get ActiveCamera() {
-    return this.array[this.activeCameraIndex];
+    return this.cameras[this.activeCameraIndex];
+  }
+  get Cameras(){
+    return this.cameras;
   }
   //#endregion
 
   constructor(id) {
     this.id = id;
-    this.array = [];
+    this.cameras = [];
     this.activeCameraIndex = -1;
   }
 
   Add(camera) {
     if (camera instanceof Camera2D) {
+
       //store the camera
-      this.array.push(camera);
+      this.cameras.push(camera);
 
       //if for some reason we didnt set the index then set it to be the last camera added.
       if (this.activeCameraIndex == -1)
-        this.activeCameraIndex = this.array.length - 1;
+        this.activeCameraIndex = this.cameras.length - 1;
     } 
     else throw camera + " is not a Camera2D instance!";
   }
 
-  Remove(camera) {
-    this.array.splice(this.FindIndex(camera), 1);
-  }
-
-  FindIndex(camera) {
-    for(let i = 0; i < this.array.length; i++)
-    {
-        if(this.array[i] === camera)
-            return i;
-    }
-    return -1;
+  Remove(predicate) {
+    this.cameras.splice(this.FindIndex(predicate), 1);
   }
 
   RemoveAll() {
-    this.array.splice(0, this.array.length);
+    this.cameras.splice(0, this.cameras.length);
     this.activeCameraIndex = -1;
+  }
+
+  FindIndex(predicate){
+    return this.cameras.findIndex(predicate);
+  }
+
+  FindAllIndices(predicate){
+    let j = 0;
+    let foundIndices = [];
+    for(let i = 0; i < this.cameras.length; i++)
+    {
+      if(predicate(this.cameras[i]))
+        foundIndices[j] = i;
+        j++;
+    }
+    //return null if we found no matching cameras, otherwise return the array
+    return foundIndices.length != 0 ? foundIndices : null;
+  }
+
+  Sort(compareFunction){
+    this.cameras.sort(compareFunction);
   }
 
   Update(gameTime) {

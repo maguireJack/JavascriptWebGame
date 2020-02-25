@@ -447,7 +447,8 @@ function LoadPlayer() {
     ctx,
     this.spriteSheet,
     BULLET_TYPE_A_SPRITESHEET_ORIGIN,
-    BULLET_TYPE_A_SPRITESHEET_DIMENSIONS
+    BULLET_TYPE_A_SPRITESHEET_DIMENSIONS,
+    1
   );
 
   //initial translation doesnt matter since it will be instanciated at player

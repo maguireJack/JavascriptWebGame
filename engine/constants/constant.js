@@ -2,7 +2,8 @@
 //used to draw color to the screen e.g. ClearScreen(Color.Black)
 const Color = Object.freeze({
     Black: '#000000',
-    White: '#FFFFFF'
+    White: '#FFFFFF',
+    Grey: '#8b8680'
 });
 
 //used by any entity which listens for key input
@@ -63,7 +64,8 @@ const AudioType = Object.freeze({ //replaced user-defined values with Symbol
     Menu:                   Symbol('Menu'),
     HUD:                    Symbol('HUD'),
     Background:             Symbol('Background'),
-    UIText:                 Symbol('UIText')
+    UIText:                 Symbol('UIText'),
+    Camera2D:               Symbol('Camera2D')
     //add as many actor types as your game needs here...
 });
 

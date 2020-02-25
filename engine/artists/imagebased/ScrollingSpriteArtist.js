@@ -32,9 +32,9 @@ class ScrollingSpriteArtist extends Artist{
     //#endregion
 
     constructor(context, spritesheet,
-        sourcePosition, sourceDimensions,
+        sourcePosition, sourceDimensions, alpha=1,
         screenWidth, screenHeight) {
-        super(context);
+        super(context, alpha);
 
         this.spritesheet = spritesheet;
         this.sourcePosition = sourcePosition;
@@ -93,38 +93,40 @@ class ScrollingSpriteArtist extends Artist{
      *
      * @param {GameTime} gameTime (unused)
      * @param {Sprite} parent 
+     * @param {Camera2D} activeCamera 
      * @memberof ScrollingSpriteArtist
      */
     Draw(gameTime, parent, activeCamera) {
         this.Context.save();
-        this.ApplyCamera(activeCamera);
+
+        super.ApplyCamera(activeCamera);
+        let transform = parent.Transform2D;
+
+        //add additional translation to create parallax effect across background layers (hint: use scroll speed multiplier from 0.01 - 0.2 - see MyConstants::BACKGROUND_DATA)
         this.Context.translate(-activeCamera.Transform2D.Translation.X * parent.ScrollSpeedMultiplier, 
             -activeCamera.Transform2D.Translation.Y * parent.ScrollSpeedMultiplier);
 
-        let transform = parent.Transform2D;   
         //allows us to run left
         this.Context.drawImage(this.spritesheet,
             this.sourcePosition.X, this.sourcePosition.Y,
             this.sourceDimensions.X, this.sourceDimensions.Y,
             transform.Translation.X - transform.Dimensions.X,
-            transform.Translation.Y, //0, 0
-            transform.Dimensions.X,
-            transform.Dimensions.Y);
+            transform.Translation.Y, 
+            transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
 
         this.Context.drawImage(this.spritesheet,
             this.sourcePosition.X, this.sourcePosition.Y,
             this.sourceDimensions.X, this.sourceDimensions.Y,
-            transform.Translation.X, transform.Translation.Y, //0, 0
-            transform.Dimensions.X, transform.Dimensions.Y);
+            transform.Translation.X, transform.Translation.Y, 
+            transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
 
         //allows us to run right
         this.Context.drawImage(this.spritesheet,
             this.sourcePosition.X, this.sourcePosition.Y,
             this.sourceDimensions.X, this.sourceDimensions.Y,
             transform.Translation.X + transform.Dimensions.X,
-            transform.Translation.Y, //0, 0
-            transform.Dimensions.X,
-            transform.Dimensions.Y);
+            transform.Translation.Y,
+            transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
 
         this.Context.restore();
     }
@@ -139,7 +141,7 @@ class ScrollingSpriteArtist extends Artist{
     }
 
     Clone() {
-        return new ScrollingSpriteArtist(this.context, this.spritesheet, this.sourcePosition.Clone(), this.sourceDimensions.Clone(), this.screenWidth, this.screenHeight);
+        return new ScrollingSpriteArtist(this.context, this.spritesheet, this.sourcePosition.Clone(), this.sourceDimensions.Clone(), this.Alpha, this.screenWidth, this.screenHeight);
     }
 
     ToString() {

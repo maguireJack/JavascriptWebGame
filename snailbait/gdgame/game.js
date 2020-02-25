@@ -2,33 +2,37 @@
 /*
 Week 6 
 ------
+Exercises:
+- Add a
+
 Notes:
 - None
 
 To Do:
-- Fix no translate on numpad keys left, right.
-- Re-factor MyObjectManager
+- Re-factor MyObjectManager.
+- Re-introduce culling in MyObjectManager::Draw() based on Camera2D bounding box.
+- Fix bounding box on TextSpriteArtist.
 - Fix UpdateHorizontalScrolling().
-
-
 - Add countdown toast when we gain window focus.
 - Add pause/unpause to SoundManager when we lose/gain window focus.
 - Add check for "P" key in MyMenuManager::Update() to show/hide menu
-- Continue adding documentation to all classes and methods.
 - Improve SoundManager to block load until all sound resources have loaded.
 - Improve KeyboardManager to add IsFirstKeyPress() method.
-- Add Camera2D and re-factor use of translationOffset in Transform2D and artist Draw().
-- Add CameraManager to update all cameras.
 - Complete menu demo.
+- Continue adding documentation to all classes and methods.
 
 Done:
+- Added predicate based remove, find, and sort functions to CameraManager.
+- Fix no translate on numpad keys left, right.
+- Add Camera2D and re-factor use of translationOffset in Transform2D and artist Draw().
+- Add CameraManager to update all cameras.
 - Complete TextSpriteArtist.
 - Improve AnimatedSpriteArtist to store all animations for a sprite inside an object and not in a single array of cells.
 
 Bugs:
 - When we scroll too far L/R then scrolling stops - see ScrollingSpriteArtist.
 - When we use background scroll <- and -> then collisions are not tested and responded to
-- When platform and platform above are separated by only player height?
+- When player and platform above are separated by only player height?
 
 
 Week 5 
@@ -50,7 +54,7 @@ Done:
 Bugs:
 - When we scroll too far L/R then scrolling stops - see ScrollingSpriteArtist.
 - When we use background scroll <- and -> then collisions are not tested and responded to
-- When platform and platform above are separated by only player height?
+- When player and platform above are separated by only player height?
 
 Week 4 
 ------
@@ -70,7 +74,7 @@ Done:
 Bugs:
 - When we use background scroll <- and -> then collisions are not tested and responded to
 - When jumping and touch platform to L or R - allows double jump?
-- When platform and platform above are separated by only player height?
+- When player and platform above are separated by only player height?
 
 Week 3 
 ------
@@ -97,7 +101,7 @@ Done:
 
 Bugs:
 - When jumping and touch platform to L or R - allows double jump?
-- When platform and platform above are separated by only player height?
+- When player and platform above are separated by only player height?
 
 Week 2 
 ------
@@ -145,10 +149,6 @@ var objectManager;
 var soundManager;
 var gameStateManager;
 var cameraManager;
-//...
-
-//stores screen bounds in a rectangle
-var screenRectangle;
 //#endregion
 
 /************************************************************ CORE GAME LOOP CODE UNDER THIS POINT ************************************************************/
@@ -183,11 +183,9 @@ function Animate(now) {
   Draw(this.gameTime);
   window.requestAnimationFrame(Animate);
 }
-
 // #endregion
 
 // #region  Update, Draw
-
 function Update(gameTime) {
   //update all the game sprites
   this.objectManager.Update(gameTime);
@@ -204,7 +202,7 @@ function Update(gameTime) {
 
 function Draw(gameTime) {
   //clear screen on each draw of ALL sprites (i.e. menu and game sprites)
-  ClearScreen(Color.Black);
+  ClearScreen(Color.Grey);
 
   //draw all the game sprites
   this.objectManager.Draw(gameTime);
@@ -216,21 +214,18 @@ function ClearScreen(color) {
   ctx.fillRect(0, 0, cvs.clientWidth, cvs.clientHeight);
   ctx.restore();
 }
-
 // #endregion
 
 /************************************************************ YOUR GAME SPECIFIC UNDER THIS POINT ************************************************************/
 
 // #region  Initialize, Load
 function Initialize() {
-  InitializeScreenRectangle();
   LoadAssets();
   LoadNotificationCenter();
   LoadInputAndCameraManagers();
   LoadCameras(); //make at the end as 1+ behaviors in camera may depend on sprite
   LoadAllOtherManagers();
   LoadSprites();
-  LoadOnScreenText();
   this.isPlaying = false;
 }
 
@@ -246,7 +241,7 @@ function LoadCameras() {
 
   let camera = new Camera2D(
     "intro camera",
-    ActorType.Camera,
+    ActorType.Camera2D,
     transform,
     StatusType.IsUpdated
   );
@@ -272,51 +267,9 @@ function LoadCameras() {
   this.cameraManager.Add(camera);
 }
 
-function LoadOnScreenText() {
-  let transform = new Transform2D(
-    new Vector2(400, 200),
-    0,
-    Vector2.One,
-    Vector2.Zero,
-    new Vector2(10, 10),
-    0
-  );
-
-  let spriteArtist = new TextSpriteArtist(
-    this.ctx,
-    "Hello World",
-    FontType.UnitInformationMedium,
-    "rgb(0, 255, 0)",
-    TextAlignType.Center,
-    200
-  );
-
-  let sprite = new Sprite(
-    "txt_ui_hello",
-    ActorType.UIText,
-    transform,
-    spriteArtist,
-    StatusType.IsUpdated | StatusType.IsDrawn,
-    1,
-    1
-  );
-
-  this.objectManager.Add(sprite);
-}
-
-function InitializeScreenRectangle() {
-  this.screenRectangle = new Rect(
-    cvs.clientLeft,
-    cvs.clientTop,
-    cvs.clientWidth,
-    cvs.clientHeight
-  );
-}
-
 function LoadNotificationCenter() {
   this.notificationCenter = new NotificationCenter();
 }
-
 
 function LoadInputAndCameraManagers() {
   //checks for keyboard input
@@ -369,6 +322,7 @@ function LoadSprites() {
   LoadPickups();
   LoadEnemies();
   LoadPlayer();
+  LoadOnScreenText();
 }
 
 function LoadBackground() {
@@ -378,6 +332,7 @@ function LoadBackground() {
       BACKGROUND_DATA[i].spriteSheet,
       BACKGROUND_DATA[i].sourcePosition,
       BACKGROUND_DATA[i].sourceDimensions,
+      1,
       cvs.width,
       cvs.height
     );
@@ -415,7 +370,8 @@ function LoadPlatforms() {
     ctx,
     PLATFORM_DATA.spriteSheet,
     PLATFORM_DATA.sourcePosition,
-    PLATFORM_DATA.sourceDimensions
+    PLATFORM_DATA.sourceDimensions,
+    1
   );
 
   let transform = new Transform2D(
@@ -449,7 +405,7 @@ function LoadPlatforms() {
 }
 
 function LoadPickups() {
-  let spriteArtist = new AnimatedSpriteArtist(ctx, COLLECTIBLES_ANIMATION_DATA);
+  let spriteArtist = new AnimatedSpriteArtist(ctx, 1, COLLECTIBLES_ANIMATION_DATA);
   spriteArtist.SetTake("gold_glint");
 
   let transform = new Transform2D(
@@ -477,13 +433,13 @@ function LoadPickups() {
 }
 
 function LoadEnemies() {
-  let spriteArtist = new AnimatedSpriteArtist(ctx, ENEMY_ANIMATION_DATA);
+  let spriteArtist = new AnimatedSpriteArtist(ctx, 1, ENEMY_ANIMATION_DATA);
   spriteArtist.SetTake("wasp_fly");
 
   let transform = new Transform2D(
     new Vector2(200, 200),
     0,
-    Vector2.One,
+    new Vector2(2, 2),
     Vector2.Zero,
     spriteArtist.GetBoundingBoxByTakeName("wasp_fly"),
     0
@@ -510,7 +466,7 @@ function LoadEnemies() {
 }
 
 function LoadPlayer() {
-  let spriteArtist = new AnimatedSpriteArtist(ctx, RUNNER_ANIMATION_DATA);
+  let spriteArtist = new AnimatedSpriteArtist(ctx, 1, RUNNER_ANIMATION_DATA);
   spriteArtist.SetTake("run_right");
 
   let transform = new Transform2D(
@@ -549,3 +505,37 @@ function LoadPlayer() {
 
   this.objectManager.Add(playerSprite); //add player sprite
 }
+
+function LoadOnScreenText() {
+  let transform = new Transform2D(
+    new Vector2(400, 200),
+    0,
+    Vector2.One,
+    Vector2.Zero,
+    new Vector2(10, 10),
+    0
+  );
+
+  let spriteArtist = new TextSpriteArtist(
+    this.ctx,
+    "Hello World",
+    FontType.UnitInformationMedium,
+    "rgb(0, 255, 0)",
+    TextAlignType.Center,
+    1,
+    200
+  );
+
+  let sprite = new Sprite(
+    "txt_ui_hello",
+    ActorType.UIText,
+    transform,
+    spriteArtist,
+    StatusType.IsUpdated | StatusType.IsDrawn,
+    1,
+    1
+  );
+
+  this.objectManager.Add(sprite);
+}
+

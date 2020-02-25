@@ -47,7 +47,7 @@ class ObjectManager {
         this.context.scale(cameraTransform.Scale.X, cameraTransform.Scale.Y);
         this.context.rotate(cameraTransform.RotationInRadians);
         this.context.translate(-cameraTransform.Origin.X, -cameraTransform.Origin.Y);
-        this.context.translate(-cameraTransform.X, -cameraTransform.Translation.Y);
+        this.context.translate(-cameraTransform.Translation.X, -cameraTransform.Translation.Y);
     }
 
     DrawDebugBoundingBox(color, parent) {

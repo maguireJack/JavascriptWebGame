@@ -20,14 +20,15 @@ class AnimatedSpriteArtist extends Artist{
     }
     //#endregion
 
-    constructor(context, animationData) {
-        super(context);
+    constructor(context, alpha=1, animationData) {
+        super(context, alpha);
 
         this.animationData = animationData;
         this.frameRatePerSec = 0;
         this.frameIntervalInMs = 0;
         this.cells = [];
         this.startCellIndex = 0;
+        this.endCellIndex = 0;
         this.currentCellIndex = 0;
         this.currentTakeName = "";
     }
@@ -41,7 +42,9 @@ class AnimatedSpriteArtist extends Artist{
                 this.frameRatePerSec = take.fps;
                 this.frameIntervalInMs = 1000.0 / this.frameRatePerSec;
                 this.cells = take.cellData;
-                this.startCellIndex = take.startCell;
+                this.startCellIndex = take.startCellIndex;
+                this.endCellIndex = take.endCellIndex;
+                this.maxLoopCount = take.maxLoopCount;
                 this.currentCellIndex = this.startCellIndex;
             }
         } else
@@ -81,9 +84,8 @@ class AnimatedSpriteArtist extends Artist{
     Reset() {
         this.paused = false;
         this.currentTakeIndex = -1;
-        this.currentCellIndex = this.startCellIndex; //???
+        this.currentCellIndex = this.startCellIndex;
         this.timeSinceLastFrameInMs = 0;
-        // throw "Finish me!!!";
     }
 
     /**
@@ -108,18 +110,21 @@ class AnimatedSpriteArtist extends Artist{
      *
      * @param {GameTime} gameTime (unused)
      * @param {Sprite} parent 
+     * @param {Camera2D} activeCamera 
      * @memberof AnimatedSpriteArtist
      */
     Draw(gameTime, parent, activeCamera) {
         this.Context.save();
-        this.ApplyCamera(activeCamera);
-        let cell = this.cells[this.currentCellIndex];
+
+        super.ApplyCamera(activeCamera);
         let transform = parent.Transform2D;
+
+        let cell = this.cells[this.currentCellIndex];
         this.Context.drawImage(this.animationData.spriteSheet,
             cell.X, cell.Y,
             cell.Width, cell.Height,
             transform.Translation.X, transform.Translation.Y, //0, 0
-            cell.Width, cell.Height);
+            cell.Width * transform.Scale.X, cell.Height * transform.Scale.Y);
         this.Context.restore();
 
     }
@@ -130,12 +135,14 @@ class AnimatedSpriteArtist extends Artist{
      * @memberof AnimatedSpriteArtist
      */
     Advance() {
-
-        if (this.currentCellIndex === this.cells.length - 1)
-            this.currentCellIndex = 0;
-        else
+        if (this.currentCellIndex < this.endCellIndex)
             this.currentCellIndex++;
-        //to do...
+        else
+        {
+            this.currentCellIndex = this.startCellIndex;
+            
+            //add code to handle 0 or N loops here...
+        }
     }
 
     //#region Equals, Clone, ToString 
@@ -151,7 +158,7 @@ class AnimatedSpriteArtist extends Artist{
     }
 
     Clone() {
-        return new AnimatedSpriteArtist(this.context,
+        return new AnimatedSpriteArtist(this.context, this.Alpha,
             this.animationData); //a shallow copy is fine, since obj contains no sprite specific data (e.g. velocity, keys)
     }
 

@@ -1,8 +1,6 @@
 //#region Audio data
 //audio - step 2 - create array of cues with same unique IDs as were loaded in HTML file
 const audioCueArray = [
-  //add game specific audio cues here...
-
   new AudioCue("background", AudioType.Background, 1, 1, true, 0),
   new AudioCue("jump", AudioType.Move, 1, 1, false, 0),
   new AudioCue("gameOver", AudioType.WinLose, 1, 1, false, 0)
@@ -10,8 +8,6 @@ const audioCueArray = [
 //#endregion
 
 //#region Sprite Data
-
-
 const RUNNER_START_POSITION = new Vector2(80, 250);
 const RUNNER_MOVE_KEYS = [Keys.A, Keys.D, Keys.Space];
 const RUNNER_RUN_VELOCITY = 0.1;
@@ -25,10 +21,9 @@ const RUNNER_ANIMATION_DATA = Object.freeze({
       fps: 12,
       leadInDelayMs: 0,
       leadOutDelayMs: 0,
-      loop: true,  //???
-      loopCount: -1, //???
-      startCell: 0,
-      endCell: 8,
+      maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
+      startCellIndex: 0,
+      endCellIndex: 8,
       boundingBoxDimensions: new Vector2(49, 54), //notice I choose the largest of all the widths taken from the cellData array below
       cellData: [
         new Rect(414, 385, 47, 54),
@@ -46,10 +41,9 @@ const RUNNER_ANIMATION_DATA = Object.freeze({
       fps: 12,
       leadInDelayMs: 0,
       leadOutDelayMs: 0,
-      loop: true,  //???
-      loopCount: -1, //???
-      startCell: 0,
-      endCell: 8,
+      maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
+      startCellIndex: 0,
+      endCellIndex: 8,
       boundingBoxDimensions: new Vector2(49, 54), //notice I choose the largest of all the widths taken from the cellData array below
       cellData: [
         new Rect(0, 305, 47, 54),
@@ -74,10 +68,9 @@ const ENEMY_ANIMATION_DATA = Object.freeze({
       fps: 16,
       leadInDelayMs: 0,
       leadOutDelayMs: 0,
-      loop: true,  //???
-      loopCount: -1, //???
-      startCell: 0,
-      endCell: 2,
+      maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
+      startCellIndex: 0,
+      endCellIndex: 2,
       boundingBoxDimensions: new Vector2(34, 50), 
       cellData: [
         new Rect(5, 234, 34, 50),
@@ -96,10 +89,9 @@ const COLLECTIBLES_ANIMATION_DATA = Object.freeze({
       fps: 6,
       leadInDelayMs: 0,
       leadOutDelayMs: 0,
-      loop: true,  //???
-      loopCount: -1, //???
-      startCell: 0,
-      endCell: 4,
+      maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
+      startCellIndex: 0,
+      endCellIndex: 4,
       boundingBoxDimensions: new Vector2(46, 50), 
       cellData: [
         new Rect(185, 138, 30, 35),
@@ -113,10 +105,9 @@ const COLLECTIBLES_ANIMATION_DATA = Object.freeze({
       fps: 6,
       leadInDelayMs: 0,
       leadOutDelayMs: 0,
-      loop: true,  //???
-      loopCount: -1, //???
-      startCell: 0,
-      endCell: 4,
+      maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
+      startCellIndex: 0,
+      endCellIndex: 4,
       boundingBoxDimensions: new Vector2(30, 35), 
       cellData: [
         new Rect(3, 138, 30, 35),
@@ -130,10 +121,9 @@ const COLLECTIBLES_ANIMATION_DATA = Object.freeze({
       fps: 6,
       leadInDelayMs: 0,
       leadOutDelayMs: 0,
-      loop: true,  //???
-      loopCount: -1, //???
-      startCell: 0,
-      endCell: 2,
+      maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
+      startCellIndex: 0,
+      endCellIndex: 2,
       boundingBoxDimensions: new Vector2(30, 30), 
       cellData: [
         new Rect(65, 540, 30, 30),
@@ -154,7 +144,6 @@ const PLATFORM_DATA = Object.freeze({
   origin: new Vector2(0, 0),
   actorType: ActorType.Platform,
   layerDepth: 0,
-  scrollSpeedMultiplier: 1,
   explodeBoundingBoxInPixels: -6,
   translationArray: [
     new Vector2(30, 420),
@@ -196,7 +185,7 @@ const BACKGROUND_DATA = [
     origin: new Vector2(0, 0),
     actorType: ActorType.Background,
     layerDepth: 0.1,
-    scrollSpeedMultiplier: 0.3
+    scrollSpeedMultiplier: 0.15
   },
   {
     id: "background_3",
@@ -209,7 +198,7 @@ const BACKGROUND_DATA = [
     origin: new Vector2(0, 0),
     actorType: ActorType.Background,
     layerDepth: 0.15,
-    scrollSpeedMultiplier: 0.5
+    scrollSpeedMultiplier: 0.1
   },
   {
     id: "background_4",
@@ -222,7 +211,7 @@ const BACKGROUND_DATA = [
     origin: new Vector2(0, 0),
     actorType: ActorType.Background,
     layerDepth: 0.2,
-    scrollSpeedMultiplier: 0.7
+    scrollSpeedMultiplier: 0.05
   },
   {
     id: "background_5",
@@ -235,13 +224,12 @@ const BACKGROUND_DATA = [
     origin: new Vector2(0, 0),
     actorType: ActorType.Background,
     layerDepth: 0.25,
-    scrollSpeedMultiplier: 0.8
+    scrollSpeedMultiplier: 0.01
   }
 ];
-
 //#endregion
 
-//#region UI
+//#region UI Data
 const FontType = Object.freeze({
   //Command & Conquer - battle unit - info overlay
   UnitInformationMedium: "18px Comic Sans MS",
@@ -254,5 +242,4 @@ const TextAlignType = Object.freeze({
   Center: "center",
   Right: "right"
 });
-
 //#endregion

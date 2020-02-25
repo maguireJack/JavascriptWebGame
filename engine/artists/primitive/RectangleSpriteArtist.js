@@ -35,12 +35,11 @@ class RectangleSpriteArtist extends Artist{
     }
     //#endregion
 
-    constructor(context, lineWidth, strokeStyle, fillStyle, alpha) {
-        super(context);
+    constructor(context, lineWidth, strokeStyle, fillStyle, alpha=1) {
+        super(context, alpha);
         this.lineWidth = lineWidth;
         this.strokeStyle = strokeStyle;
         this.fillStyle = fillStyle;
-        this.Alpha = alpha;
     }
 
     /**
@@ -48,6 +47,7 @@ class RectangleSpriteArtist extends Artist{
      *
      * @param {GameTime} gameTime (unused)
      * @param {Sprite} parent (unused)
+     * @param {Camera2D} activeCamera 
      * @memberof RectangleSpriteArtist
      */
     Update(gameTime, parent, camera) {
@@ -59,20 +59,22 @@ class RectangleSpriteArtist extends Artist{
      *
      * @param {GameTime} gameTime (unused)
      * @param {Sprite} parent 
+     * @param {Camera2D} activeCamera 
      * @memberof RectangleSpriteArtist
      */
     Draw(gameTime, parent, activeCamera) {
         this.Context.save();
-        this.ApplyCamera(activeCamera);
 
+        super.ApplyCamera(activeCamera);
         let transform = parent.Transform2D;
+
         this.Context.lineWidth = this.lineWidth;
         this.Context.strokeStyle = this.strokeStyle;
         this.Context.fillStyle = this.fillStyle;
-        this.Context.globalAlpha = this.alpha;
-        this.Context.strokeRect(transform.Translation.X, transform.Translation.Y, transform.Dimensions.X, transform.Dimensions.Y);
-        this.Context.fillRect(this.rect.X, this.rect.Y, this.rect.Width, this.rect.Height);
-
+        this.Context.strokeRect(transform.Translation.X, transform.Translation.Y, 
+            transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
+        this.Context.fillRect(transform.Translation.X, transform.Translation.Y, 
+            transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
         this.Context.restore();
     }
 
@@ -88,7 +90,7 @@ class RectangleSpriteArtist extends Artist{
     }
 
     Clone() {
-        return new RectangleSpriteArtist(this.context, this.rect.Clone(), this.lineWidth, this.strokeStyle, this.fillStyle, this.alpha);
+        return new RectangleSpriteArtist(this.context, this.rect.Clone(), this.lineWidth, this.strokeStyle, this.fillStyle, this.Alpha);
     }
 
     ToString() {
