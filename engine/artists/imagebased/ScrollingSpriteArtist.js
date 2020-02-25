@@ -99,7 +99,7 @@ class ScrollingSpriteArtist extends Artist{
     Draw(gameTime, parent, activeCamera) {
         this.Context.save();
 
-        super.ApplyCamera(activeCamera);
+        super.SetContext(activeCamera);
         let transform = parent.Transform2D;
 
         //add additional translation to create parallax effect across background layers (hint: use scroll speed multiplier from 0.01 - 0.2 - see MyConstants::BACKGROUND_DATA)

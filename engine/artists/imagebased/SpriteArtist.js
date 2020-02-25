@@ -64,7 +64,7 @@ class SpriteArtist extends Artist
     Draw(gameTime, parent, activeCamera) {
         this.Context.save();
 
-        super.ApplyCamera(activeCamera);
+        super.SetContext(activeCamera);
         let transform = parent.Transform2D;
 
         this.Context.drawImage(this.spritesheet, 

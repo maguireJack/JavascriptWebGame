@@ -40,7 +40,7 @@ class ObjectManager {
 
     }
 
-    ApplyCamera(activeCamera)
+    SetContext(activeCamera)
     {
         let cameraTransform = activeCamera.Transform2D;
         this.context.translate(cameraTransform.Origin.X, cameraTransform.Origin.Y);
@@ -48,15 +48,16 @@ class ObjectManager {
         this.context.rotate(cameraTransform.RotationInRadians);
         this.context.translate(-cameraTransform.Origin.X, -cameraTransform.Origin.Y);
         this.context.translate(-cameraTransform.Translation.X, -cameraTransform.Translation.Y);
+
+        this.context.globalAlpha = 1;
     }
 
     DrawDebugBoundingBox(color, parent) {
         this.context.save();
-        this.ApplyCamera(this.cameraManager.ActiveCamera);
+        this.SetContext(this.cameraManager.ActiveCamera);
         let transform = parent.Transform2D;
         this.context.lineWidth = 2;
         this.context.strokeStyle = color;
-        this.context.globalAlpha = 1;
         this.context.strokeRect(transform.BoundingBox.X, transform.BoundingBox.Y, transform.BoundingBox.Width, transform.BoundingBox.Height);
         this.context.restore();
     }

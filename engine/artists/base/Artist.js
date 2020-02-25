@@ -30,7 +30,7 @@ class Artist
         this.Alpha = alpha;
     }
 
-    ApplyCamera(activeCamera)
+    SetContext(activeCamera)
     {
         let cameraTransform = activeCamera.Transform2D;
         this.context.translate(cameraTransform.Origin.X, cameraTransform.Origin.Y);

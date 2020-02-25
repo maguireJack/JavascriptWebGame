@@ -3,7 +3,8 @@
 const Color = Object.freeze({
     Black: '#000000',
     White: '#FFFFFF',
-    Grey: '#8b8680'
+    Grey: '#8b8680',
+    CornFlowerBlue: '#6495ed'
 });
 
 //used by any entity which listens for key input

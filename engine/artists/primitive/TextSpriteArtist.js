@@ -31,15 +31,14 @@ class TextSpriteArtist extends Artist{
     Draw(gameTime, parent, activeCamera) {
         this.Context.save();
 
-        super.ApplyCamera(activeCamera);
+        super.SetContext(activeCamera);
         let transform = parent.Transform2D;
 
         this.Context.font = this.fontType;
         this.Context.fillStyle = this.fillStyle;
         this.Context.textAlign = this.textAlign;
         this.Context.globalAlpha = this.Alpha;
-        this.Context.fillText(this.text, transform.Translation.X, transform.Translation.Y, 
-            this.maxWidth);
+        this.Context.fillText(this.text, transform.Translation.X, transform.Translation.Y, this.maxWidth);
         this.Context.restore();
     }
 

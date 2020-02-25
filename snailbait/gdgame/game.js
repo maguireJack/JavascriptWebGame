@@ -199,7 +199,7 @@ function Update(gameTime) {
 
 function Draw(gameTime) {
   //clear screen on each draw of ALL sprites (i.e. menu and game sprites)
-  ClearScreen(Color.Grey);
+  ClearScreen(Color.Black);
 
   //draw all the game sprites
   this.objectManager.Draw(gameTime);
