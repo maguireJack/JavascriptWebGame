@@ -2,9 +2,6 @@
 /*
 Week 6 
 ------
-Exercises:
-- Add a
-
 Notes:
 - None
 
