@@ -18,6 +18,8 @@ const Keys = Object.freeze({
     F1: 112,     F2: 113,    F3: 114,    F4: 115,
     F5: 116,     F6: 117,    F7: 118,    F8: 119,
     F9: 120,     F10: 121,    F11: 122,    F12: 123,
+    NumPad0: 96,  NumPad1: 97,  NumPad2: 98,  NumPad3: 99, NumPad4: 100,  
+    NumPad5: 101,  NumPad6: 102,  NumPad7: 103,  NumPad8: 104,  NumPad9: 105,
 });
 
 //used by Actor2D
@@ -60,7 +62,8 @@ const AudioType = Object.freeze({ //replaced user-defined values with Symbol
     Bullet:                 Symbol('Bullet'),
     Menu:                   Symbol('Menu'),
     HUD:                    Symbol('HUD'),
-    Background:             Symbol('Background')
+    Background:             Symbol('Background'),
+    UIText:                 Symbol('UIText')
     //add as many actor types as your game needs here...
 });
 

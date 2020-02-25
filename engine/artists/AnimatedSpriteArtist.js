@@ -6,60 +6,53 @@
  * @class AnimatedSpriteArtist
  */
 
-class AnimatedSpriteArtist {
+class AnimatedSpriteArtist extends Artist{
 
-    //#region  Fields 
+    //#region  Fields
     //#endregion 
 
     //#region  Properties
-    get Spritesheet() {
-        return this.spritesheet;
+    get AnimationData() {
+        return this.animationData;
     }
-    set Spritesheet(spritesheet) {
-        this.spritesheet = spritesheet;
-    }
-    get Cells() {
-        return this.cells;
-    }
-     /**
-     * Sets cells for the animation but only if previous cells were null (startup) or different from current
-     *
-     * @memberof AnimatedSpriteArtist
-     */
-    set Cells(cells) {
-
-        //bug fix - reset animation after each time cells are changed (based on movement)
-        if (this.cells == null || this.cells !== cells)
-            this.Reset();
-
-        this.cells = cells;
-    }
-    get StartCellIndex() {
-        return this.startCellIndex;
-    }
-    set StartCellIndex(startCellIndex) {
-        this.startCellIndex = startCellIndex;
-    }
-    get CurrentCellIndex() {
-        return this.currentCellIndex;
-    }
-    set CurrentCellIndex(currentCellIndex) {
-        this.currentCellIndex = currentCellIndex;
+    set AnimationData(animationData) {
+        this.animationData = animationData;
     }
     //#endregion
 
-    constructor(context, spritesheet, framesPerSec, cells, startCellIndex = 0) {
-        this.context = context;
-        this.spritesheet = spritesheet;
+    constructor(context, animationData) {
+        super(context);
 
-        //to do...
-        this.frameRatePerSec = this.originalFrameRatePerSec = framesPerSec; //10fps => 1/10 => 100ms
-        this.frameIntervalInMs = 1000.0 / framesPerSec; //
-        this.timeSinceLastFrameInMs = 0;
+        this.animationData = animationData;
+        this.frameRatePerSec = 0;
+        this.frameIntervalInMs = 0;
+        this.cells = [];
+        this.startCellIndex = 0;
+        this.currentCellIndex = 0;
+        this.currentTakeName = "";
+    }
 
-        this.cells = cells;
-        this.startCellIndex = startCellIndex % this.cells.length; //prevent too large value
-        this.currentCellIndex = this.startCellIndex;
+    SetTake(takeName) {
+        if (this.animationData.takes[takeName]) {
+            if (takeName != this.currentTakeName) {
+                let take = this.animationData.takes[takeName];
+                this.currentTakeName = takeName;
+                this.timeSinceLastFrameInMs = 0;
+                this.frameRatePerSec = take.fps;
+                this.frameIntervalInMs = 1000.0 / this.frameRatePerSec;
+                this.cells = take.cellData;
+                this.startCellIndex = take.startCell;
+                this.currentCellIndex = this.startCellIndex;
+            }
+        } else
+            throw takeName + " does not exist!";
+    }
+
+    GetBoundingBoxByTakeName(takeName) {
+        if (this.animationData.takes[takeName]) {
+            return this.animationData.takes[takeName].boundingBoxDimensions;
+        } else
+            throw takeName + " does not exist!";
     }
 
     /**
@@ -87,8 +80,10 @@ class AnimatedSpriteArtist {
      */
     Reset() {
         this.paused = false;
-        this.currentCellIndex = this.startCellIndex;
+        this.currentTakeIndex = -1;
+        this.currentCellIndex = this.startCellIndex; //???
         this.timeSinceLastFrameInMs = 0;
+        // throw "Finish me!!!";
     }
 
     /**
@@ -98,7 +93,7 @@ class AnimatedSpriteArtist {
      * @param {Sprite} parent
      * @memberof AnimatedSpriteArtist
      */
-    Update(gameTime, parent) {
+    Update(gameTime, parent, camera) {
         if (!this.paused) {
             this.timeSinceLastFrameInMs += Math.round(gameTime.ElapsedTimeInMs);
             if (this.timeSinceLastFrameInMs > this.frameIntervalInMs) {
@@ -115,22 +110,17 @@ class AnimatedSpriteArtist {
      * @param {Sprite} parent 
      * @memberof AnimatedSpriteArtist
      */
-    Draw(gameTime, parent) {
-        //to do...
-        this.context.save();
-        var cell = this.cells[this.currentCellIndex];
-        var transform = parent.Transform2D;
-        this.context.translate(
-            transform.TranslationOffset.X,
-            transform.TranslationOffset.Y);
-        this.context.scale(transform.Scale.X, transform.Scale.Y);
-
-        this.context.drawImage(this.spritesheet,
-            cell.left, cell.top,
-            cell.width, cell.height,
+    Draw(gameTime, parent, activeCamera) {
+        this.Context.save();
+        this.ApplyCamera(activeCamera);
+        let cell = this.cells[this.currentCellIndex];
+        let transform = parent.Transform2D;
+        this.Context.drawImage(this.animationData.spriteSheet,
+            cell.X, cell.Y,
+            cell.Width, cell.Height,
             transform.Translation.X, transform.Translation.Y, //0, 0
-            cell.width, cell.height);
-        this.context.restore();
+            cell.Width, cell.Height);
+        this.Context.restore();
 
     }
 
@@ -154,15 +144,19 @@ class AnimatedSpriteArtist {
         if (other == null || other == undefined || !other instanceof AnimatedSpriteArtist)
             throw 'Error: One or more objects is null, undefined, or not type ' + this.constructor.name;
 
-        return this.spritesheet === other.Spritesheet && this.cells === other.Cells && this.startCellIndex === other.StartCellIndex;
+        //if('12' == 12) //true
+        //if('12' === 12) //false
+        return this.animationData.id === other.AnimationData.id &&
+            this.animationData.spriteSheet === other.AnimationData.spriteSheet;
     }
 
     Clone() {
-        return new AnimatedSpriteArtist(this.context, this.spritesheet, this.frameRatePerSec, this.cells, this.startCellIndex);
+        return new AnimatedSpriteArtist(this.context,
+            this.animationData); //a shallow copy is fine, since obj contains no sprite specific data (e.g. velocity, keys)
     }
 
     ToString() {
-        return "[" + this.spritesheet + "," + this.frameRatePerSec + "," + this.cells + "," + this.startCellIndex + "]";
+        return "[" + this.animationData.id + "]";
     }
 
     //#endregion

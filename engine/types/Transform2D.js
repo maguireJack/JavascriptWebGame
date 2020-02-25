@@ -8,8 +8,13 @@
 class Transform2D {
 
     //#region  Fields 
-    translationOffset = new Vector2(0, 0);
     //#endregion 
+
+    //#region Statics
+    static get Zero() {
+        return new Transform2D(Vector2.Zero, 0, Vector2.Zero, Vector2.Zero, Vector2.Zero, 0);
+    }
+    //#endregion
 
     //#region Properties
     get BoundingBox() {
@@ -17,7 +22,6 @@ class Transform2D {
             //make a new Rect at (0,0,1,1) and apply this transform to it
             this.boundingBox = Rect.Zero;
             this.boundingBox.Transform(this);
-            this.boundingBox.Move(this.translationOffset);
             //this allows us to make bounding box smaller than the sprite drawn on screen
             if (this.explodeBoundingBoxInPixels != 0)
                 this.boundingBox.Explode(this.explodeBoundingBoxInPixels);
@@ -30,15 +34,11 @@ class Transform2D {
     get BoundingBoxCenter() {
         return this.boundingBox.Center;
     }
-
-    static get Zero() {
-        return new Transform2D(Vector2.Zero, 0, Vector2.One);
-    }
     get Translation() {
         return this.translation;
     }
-    get RotationInDegrees() {
-        return this.rotationInDegrees;
+    get RotationInRadians() {
+        return this.rotationInRadians;
     }
     get Scale() {
         return this.scale;
@@ -48,9 +48,6 @@ class Transform2D {
     }
     get Dimensions() {
         return this.dimensions;
-    }
-    get TranslationOffset() {
-        return this.translationOffset;
     }
     get TranslationIncrement() {
         return this.translationIncrement;
@@ -65,8 +62,8 @@ class Transform2D {
         this.translation = translation;
         this.isDirty = true;
     }
-    set RotationInDegrees(rotationInDegrees) {
-        this.rotationInDegrees = rotationInDegrees;
+    set RotationInRadians(rotationInRadians) {
+        this.rotationInRadians = rotationInRadians;
         this.isDirty = true;
     }
     set Scale(scale) {
@@ -86,37 +83,34 @@ class Transform2D {
 
 
     /************************************************************ MEMBER METHODS ************************************************************/
-    constructor(translation, rotationInDegrees, scale, origin, dimensions, explodeBoundingBoxInPixels = 0) {
-        this.translation = this.originalTranslation = translation;
-        this.rotationInDegrees = this.originalRotationInDegrees = rotationInDegrees;
-        this.scale = this.originalScale = scale;
-        this.origin = this.originalOrigin = origin;
-        this.dimensions = this.originalDimensions = dimensions;
+    constructor(translation, rotationInRadians, scale, origin, dimensions, explodeBoundingBoxInPixels = 0) {
+        this.translation = translation;
+        this.rotationInRadians = rotationInRadians;
+        this.scale = scale;
+        this.origin = origin;
+        this.dimensions = dimensions;
         this.explodeBoundingBoxInPixels = explodeBoundingBoxInPixels;
         //indicates that the values of this Transform2D object have been updated
         this.isDirty = true;
+
+        //store original values for Reset()
+        this.originalTranslation = translation.Clone();         //Why do we need to call Clone() on the Vector2 types? Hint: Shallow vs Deep.
+        this.originalRotationInRadians = rotationInRadians;
+        this.originalScale = scale.Clone();
+        this.originalOrigin = origin.Clone();
+        this.originalDimensions = dimensions.Clone();
+        this.explodeBoundingBoxInPixels = explodeBoundingBoxInPixels;
     }
 
-    /**
-     * Called when we want to add/subtract a Vector2 from a sprites translation offset.
-     * Remember a translation offset allows us to move a sprite on-screen without polluting the Transform2D.Translation value.
-     * @param {Vector2} translation
-     * @memberof Transform2D
-     */
-    AddToTranslationOffset(translation) {
-        this.translationOffset.Add(translation);
-        this.isDirty = true; //flag as dirty to upload the bounding box
-    }
-
-    /**
-     * Called when we want to set the translation offset to a specific Vector2 value.
-     * @param {Vector2} translation
-     * @memberof Transform2D
-     */
-    SetTranslationOffset(translationOffset) {
-        this.translationOffset = translationOffset;
+    Reset(){
+        this.translation = this.originalTranslation.Clone();
+        this.rotationInRadians = this.originalRotationInRadians;
+        this.scale = this.originalScale.Clone();
+        this.origin = this.originalOrigin.Clone();
+        this.dimensions = this.originalDimensions.Clone();
         this.isDirty = true;
     }
+
     SetTranslation(translation) {
         this.translation = translation;
         this.isDirty = true;
@@ -137,13 +131,13 @@ class Transform2D {
         this.isDirty = true;
     }
 
-    SetRotationInDegrees(rotationInDegrees) {
-        this.rotationInDegrees = rotationInDegrees;
+    SetRotationInRadians(rotationInRadians) {
+        this.rotationInRadians = rotationInRadians;
         this.isDirty = true;
     }
 
-    RotateBy(rotationInDegreesBy) {
-        this.rotationInDegrees += rotationInDegreesBy;
+    RotateBy(rotationInRadiansBy) {
+        this.rotationInRadians += rotationInRadiansBy;
         this.isDirty = true;
     }
 
@@ -153,7 +147,12 @@ class Transform2D {
     }
 
     ScaleBy(scaleBy) {
-        this.scale.Multiply(scaleBy);
+        this.scale.Add(scaleBy);
+
+        //comment these statements in if you want to stop the scale becoming negative
+        // if(this.scale.X <= 0 || this.scale.Y <= 0)
+        //     this.scale = this.originalScale.Clone();
+
         this.isDirty = true;
     }
 
@@ -162,18 +161,18 @@ class Transform2D {
         if (other == null || other == undefined || !other instanceof Transform2D)
             throw 'Error: One or more objects is null, undefined, or not type ' + this.constructor.name;
 
-        return this.translation.Equals(other.Translation) && this.rotationInDegrees == other.RotationInDegrees &&
+        return this.translation.Equals(other.Translation) && this.rotationInRadians === other.RotationInRadians &&
             this.scale.Equals(other.Scale) && this.origin.Equals(other.Origin) && this.dimensions.Equals(other.Dimensions);
 
     }
 
     Clone() {
-        return new Transform2D(this.translation.Clone(), this.rotationInDegrees, this.scale.Clone(), this.origin.Clone(),
+        return new Transform2D(this.translation.Clone(), this.rotationInRadians, this.scale.Clone(), this.origin.Clone(),
             this.dimensions.Clone(), this.explodeBoundingBoxInPixels);
     }
 
     ToString() {
-        return "[" + this.translation.ToString() + "," + this.rotationInDegrees + "," + this.scale.ToString() + "]";
+        return "[" + this.translation.ToString() + "," + this.rotationInRadians + "," + this.scale.ToString() + "]";
     }
     //#endregion
 

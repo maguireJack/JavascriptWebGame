@@ -15,7 +15,8 @@ class PlayerBehavior {
     //#region Properties
     //#endregion
 
-    constructor(keyboardManager, objectManager, moveKeys, runVelocity = 2, jumpVelocity = 10, runLeftCells, runRightCells) {
+    constructor(keyboardManager, objectManager, moveKeys, 
+        runVelocity = 2, jumpVelocity = 10) {
 
         this.keyboardManager = keyboardManager;
         this.objectManager = objectManager;
@@ -23,9 +24,6 @@ class PlayerBehavior {
         this.moveKeys = moveKeys;
         this.runVelocity = runVelocity;
         this.jumpVelocity = jumpVelocity;
-        this.runLeftCells = runLeftCells;
-        this.runRightCells = runRightCells;
-
     }
 
     //#region Your Game Specific Methods - add code for more CD/CR or input handling 
@@ -41,12 +39,13 @@ class PlayerBehavior {
         //if left or right key pressed and player is on the ground then add/remove move velocity
         if (this.keyboardManager.IsKeyDown(this.moveKeys[0])) {
             parent.Body.AddVelocityX(-this.runVelocity * gameTime.ElapsedTimeInMs);
-            parent.Artist.Cells = this.runLeftCells;
-            //your game - pause animation here...
+            parent.Artist.SetTake("run_left");
+          //  parent.Artist.Cells = this.runLeftCells;
+        
         } else if (this.keyboardManager.IsKeyDown(this.moveKeys[1])) {
             parent.Body.AddVelocityX(this.runVelocity * gameTime.ElapsedTimeInMs);
-            parent.Artist.Cells = this.runRightCells;
-            //your game - pause animation here...
+            parent.Artist.SetTake("run_right");
+            //parent.Artist.Cells = this.runRightCells;
         }
     }
 

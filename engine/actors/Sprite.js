@@ -53,13 +53,13 @@ class Sprite extends Actor2D {
      * @see ObjectManager::Update()
      * @memberof Sprite
      */
-    Update(gameTime) {
+    Update(gameTime, camera) {
         //if we have an attached artist and we are supposed to update the sprite then update the artist 
         if (this.artist != null &&
             (this.StatusType & StatusType.IsUpdated) != 0) {
-            this.artist.Update(gameTime, this);
+            this.artist.Update(gameTime, this, camera);
             //call Actor2D::Update() to update any attached behaviors
-            super.Update(gameTime);
+            super.Update(gameTime, camera);
         }
     }
 
@@ -68,14 +68,15 @@ class Sprite extends Actor2D {
      * Calls Draw() method of the attached artist which renders the sprite to screen.
      *
      * @param {GameTime} gameTime
+     * @param {Camera2D} activeCamera
      * @see ObjectManager::Draw()
      * @memberof Sprite
      */
-    Draw(gameTime) {
+    Draw(gameTime, activeCamera) {
 
         //if we have an attached artist and we are supposed to draw the sprite then draw 
         if (this.artist != null && (this.StatusType & StatusType.IsDrawn) != 0)
-            this.artist.Draw(gameTime, this);
+            this.artist.Draw(gameTime, this, activeCamera);
     }
 
     //#region Equals, Clone, ToString 

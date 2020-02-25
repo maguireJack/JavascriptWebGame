@@ -4,7 +4,7 @@
  * @version 1.0
  * @class ScrollingSpriteArtist
  */
-class ScrollingSpriteArtist {
+class ScrollingSpriteArtist extends Artist{
 
     //#region  Fields 
     //#endregion 
@@ -34,7 +34,8 @@ class ScrollingSpriteArtist {
     constructor(context, spritesheet,
         sourcePosition, sourceDimensions,
         screenWidth, screenHeight) {
-        this.context = context;
+        super(context);
+
         this.spritesheet = spritesheet;
         this.sourcePosition = sourcePosition;
         this.sourceDimensions = sourceDimensions;
@@ -53,8 +54,8 @@ class ScrollingSpriteArtist {
      * @param {Sprite} parent 
      * @memberof ScrollingSpriteArtist
      */
-    Update(gameTime, parent) {
-        this.UpdateHorizontalScrolling(parent);
+    Update(gameTime, parent, activeCamera) {
+        this.UpdateHorizontalScrolling(parent, activeCamera);
 
         //if we have also include vertical scrolling then we need to complete the method below
         //this.UpdateVerticalScrolling(parent);
@@ -67,13 +68,13 @@ class ScrollingSpriteArtist {
      * @param {Sprite} parent
      * @memberof ScrollingSpriteArtist
      */
-    UpdateHorizontalScrolling(parent) {
-        let parentTranslationOffsetX = Math.abs(parent.Transform2D.TranslationOffset.X);
+    UpdateHorizontalScrolling(parent, activeCamera) {
+        let parentTranslationOffsetX = Math.abs(-activeCamera.Transform2D.Translation.X);
         let resetScreenWidth = Math.ceil(this.screenWidth * parent.Transform2D.Scale.X / parent.ScrollSpeedMultiplier);
 
         //if we have moved across one complete canvas width, either left or right, then reset the offset to initial position
         if (parentTranslationOffsetX >= resetScreenWidth)
-            parent.Transform2D.SetTranslationOffset(new Vector2(0, parent.Transform2D.TranslationOffset.Y));
+            parent.Transform2D.SetTranslationOffset(new Vector2(0, -activeCamera.Transform2D.Translation.Y));
     }
 
     /**
@@ -94,16 +95,15 @@ class ScrollingSpriteArtist {
      * @param {Sprite} parent 
      * @memberof ScrollingSpriteArtist
      */
-    Draw(gameTime, parent) {
-        this.context.save();
-        var transform = parent.Transform2D;
-        this.context.translate(
-            transform.TranslationOffset.X * parent.ScrollSpeedMultiplier,
-            transform.TranslationOffset.Y * parent.ScrollSpeedMultiplier);
-        this.context.scale(transform.Scale.X, transform.Scale.Y);
+    Draw(gameTime, parent, activeCamera) {
+        this.Context.save();
+        this.ApplyCamera(activeCamera);
+        this.Context.translate(-activeCamera.Transform2D.Translation.X * parent.ScrollSpeedMultiplier, 
+            -activeCamera.Transform2D.Translation.Y * parent.ScrollSpeedMultiplier);
 
+        let transform = parent.Transform2D;   
         //allows us to run left
-        this.context.drawImage(this.spritesheet,
+        this.Context.drawImage(this.spritesheet,
             this.sourcePosition.X, this.sourcePosition.Y,
             this.sourceDimensions.X, this.sourceDimensions.Y,
             transform.Translation.X - transform.Dimensions.X,
@@ -111,14 +111,14 @@ class ScrollingSpriteArtist {
             transform.Dimensions.X,
             transform.Dimensions.Y);
 
-        this.context.drawImage(this.spritesheet,
+        this.Context.drawImage(this.spritesheet,
             this.sourcePosition.X, this.sourcePosition.Y,
             this.sourceDimensions.X, this.sourceDimensions.Y,
             transform.Translation.X, transform.Translation.Y, //0, 0
             transform.Dimensions.X, transform.Dimensions.Y);
 
         //allows us to run right
-        this.context.drawImage(this.spritesheet,
+        this.Context.drawImage(this.spritesheet,
             this.sourcePosition.X, this.sourcePosition.Y,
             this.sourceDimensions.X, this.sourceDimensions.Y,
             transform.Translation.X + transform.Dimensions.X,
@@ -126,7 +126,7 @@ class ScrollingSpriteArtist {
             transform.Dimensions.X,
             transform.Dimensions.Y);
 
-        this.context.restore();
+        this.Context.restore();
     }
 
     //#region Equals, Clone, ToString 

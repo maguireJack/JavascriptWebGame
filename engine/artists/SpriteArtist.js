@@ -4,9 +4,9 @@
  * @version 1.0
  * @class SpriteArtist
  */
-class SpriteArtist 
+class SpriteArtist extends Artist
 {
-     //#region  Fields 
+    //#region  Fields 
     //#endregion 
 
     //#region  Properties
@@ -34,7 +34,8 @@ class SpriteArtist
     constructor(context, spritesheet, 
         sourcePosition, sourceDimensions)
     {
-        this.context = context;
+        super(context);
+
         this.spritesheet = spritesheet;
         this.sourcePosition = sourcePosition;
         this.sourceDimensions = sourceDimensions;
@@ -47,7 +48,7 @@ class SpriteArtist
      * @param {Sprite} parent (unused)
      * @memberof SpriteArtist
      */
-    Update(gameTime, parent)
+    Update(gameTime, parent, camera)
     {
 
     }
@@ -59,21 +60,17 @@ class SpriteArtist
      * @param {Sprite} parent 
      * @memberof SpriteArtist
      */
-    Draw(gameTime, parent)
-    {
-        this.context.save();
-        var transform = parent.Transform2D;
-        this.context.translate(
-            transform.TranslationOffset.X, 
-            transform.TranslationOffset.Y);
-        this.context.scale(transform.Scale.X, transform.Scale.Y);
+    Draw(gameTime, parent, activeCamera) {
+        this.Context.save();
+        this.ApplyCamera(activeCamera);
 
-        this.context.drawImage(this.spritesheet, 
+        let transform = parent.Transform2D;
+        this.Context.drawImage(this.spritesheet, 
             this.sourcePosition.X, this.sourcePosition.Y, 
             this.sourceDimensions.X, this.sourceDimensions.Y, 
             transform.Translation.X, transform.Translation.Y, //0, 0
             transform.Dimensions.X, transform.Dimensions.Y);
-        this.context.restore();
+        this.Context.restore();
     }
 
     //#region Equals, Clone, ToString 

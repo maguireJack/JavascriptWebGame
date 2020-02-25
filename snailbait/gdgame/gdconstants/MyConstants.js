@@ -1,327 +1,258 @@
-
-
-//#region Audio data 
+//#region Audio data
 //audio - step 2 - create array of cues with same unique IDs as were loaded in HTML file
 const audioCueArray = [
-	//add game specific audio cues here...
-	
-	new AudioCue("background",
-		AudioType.Background, 1, 1, true, 0),
-	new AudioCue("jump",
-		AudioType.Move, 1, 1, false, 0),
-	new AudioCue("gameOver",
-		AudioType.WinLose, 1, 1, false, 0)
-	
+  //add game specific audio cues here...
+
+  new AudioCue("background", AudioType.Background, 1, 1, true, 0),
+  new AudioCue("jump", AudioType.Move, 1, 1, false, 0),
+  new AudioCue("gameOver", AudioType.WinLose, 1, 1, false, 0)
 ];
 //#endregion
 
-//#region Sprite data - initial positions, dimensions
-   const RUNNER_CELLS_WIDTH = 50; // in pixels
-   const RUNNER_CELLS_HEIGHT = 54;
-   const RUNNER_ANIMATION_FPS = 12;
-   const RUNNER_START_X_POSITION = 80;
-   const RUNNER_START_Y_POSITION = 250;
-   const RUNNER_MOVE_KEYS = [Keys.A, Keys.D, Keys.Space];
-   const RUNNER_RUN_VELOCITY = 0.1;
-   const RUNNER_JUMP_VELOCITY = 0.6;
-
-   const BAT_CELLS_HEIGHT = 34; 
-   const BEE_CELLS_HEIGHT = 50;
-   const BEE_CELLS_WIDTH  = 50;
-   const BEE_ANIMATION_FPS = 12;
-
-   const SAPPHIRE_CELLS_HEIGHT = 30;
-   const SAPPHIRE_CELLS_WIDTH  = 35;
-   const SAPPHIRE_CELLS_FPS = 6;
-
-   //other things we can add...
-   const BUTTON_CELLS_HEIGHT  = 20;
-   const BUTTON_CELLS_WIDTH   = 31;
-   const COIN_CELLS_HEIGHT = 30;
-   const COIN_CELLS_WIDTH  = 30; 
-
-   const EXPLOSION_CELLS_HEIGHT = 62;
-
-   const RUBY_CELLS_HEIGHT = 30;
-   const RUBY_CELLS_WIDTH = 35;
+//#region Sprite Data
 
 
-   const SNAIL_BOMB_CELLS_HEIGHT = 20;
-   const SNAIL_BOMB_CELLS_WIDTH  = 20;
-   const SNAIL_CELLS_HEIGHT = 34;
-   const SNAIL_CELLS_WIDTH  = 64;
+const RUNNER_START_POSITION = new Vector2(80, 250);
+const RUNNER_MOVE_KEYS = [Keys.A, Keys.D, Keys.Space];
+const RUNNER_RUN_VELOCITY = 0.1;
+const RUNNER_JUMP_VELOCITY = 0.6;
+
+const RUNNER_ANIMATION_DATA = Object.freeze({
+  id: "runner_animation_data",
+  spriteSheet: document.getElementById("snailbait_sprite_sheet"),
+  takes: {  
+    "run_right" :  {
+      fps: 12,
+      leadInDelayMs: 0,
+      leadOutDelayMs: 0,
+      loop: true,  //???
+      loopCount: -1, //???
+      startCell: 0,
+      endCell: 8,
+      boundingBoxDimensions: new Vector2(49, 54), //notice I choose the largest of all the widths taken from the cellData array below
+      cellData: [
+        new Rect(414, 385, 47, 54),
+        new Rect(362, 385, 44, 54),
+        new Rect(314, 385, 39, 54),
+        new Rect(265, 385, 46, 54),
+        new Rect(205, 385, 49, 54),
+        new Rect(150, 385, 46, 54),
+        new Rect(96, 385, 46, 54),
+        new Rect(45, 385, 35, 54),
+        new Rect(0, 385, 35, 54)
+      ]
+    },
+    "run_left" : {
+      fps: 12,
+      leadInDelayMs: 0,
+      leadOutDelayMs: 0,
+      loop: true,  //???
+      loopCount: -1, //???
+      startCell: 0,
+      endCell: 8,
+      boundingBoxDimensions: new Vector2(49, 54), //notice I choose the largest of all the widths taken from the cellData array below
+      cellData: [
+        new Rect(0, 305, 47, 54),
+        new Rect(55, 305, 44, 54),
+        new Rect(107, 305, 39, 54),
+        new Rect(152, 305, 46, 54),
+        new Rect(208, 305, 49, 54),
+        new Rect(265, 305, 46, 54),
+        new Rect(320, 305, 42, 54),
+        new Rect(380, 305, 35, 54),
+        new Rect(425, 305, 35, 54)
+      ]
+    }
+  }
+});
+
+const ENEMY_ANIMATION_DATA = Object.freeze({
+  id: "enemy_animation_data",
+  spriteSheet: document.getElementById("snailbait_sprite_sheet"),
+  takes: {  
+    "wasp_fly" :  {
+      fps: 16,
+      leadInDelayMs: 0,
+      leadOutDelayMs: 0,
+      loop: true,  //???
+      loopCount: -1, //???
+      startCell: 0,
+      endCell: 2,
+      boundingBoxDimensions: new Vector2(34, 50), 
+      cellData: [
+        new Rect(5, 234, 34, 50),
+        new Rect(75, 234, 34, 50),
+        new Rect(145, 234, 34, 50)
+      ]
+    }
+  }
+});
+
+const COLLECTIBLES_ANIMATION_DATA = Object.freeze({
+  id: "collectibles_animation_data",
+  spriteSheet: document.getElementById("snailbait_sprite_sheet"),
+  takes: {  
+    "sapphire_glint" :  {
+      fps: 6,
+      leadInDelayMs: 0,
+      leadOutDelayMs: 0,
+      loop: true,  //???
+      loopCount: -1, //???
+      startCell: 0,
+      endCell: 4,
+      boundingBoxDimensions: new Vector2(46, 50), 
+      cellData: [
+        new Rect(185, 138, 30, 35),
+        new Rect(220, 138, 30, 35),
+        new Rect(258, 138, 30, 35),
+        new Rect(294, 138, 30, 35),
+        new Rect(331, 138, 30, 35)
+      ]
+    },
+    "ruby_glint" :  {
+      fps: 6,
+      leadInDelayMs: 0,
+      leadOutDelayMs: 0,
+      loop: true,  //???
+      loopCount: -1, //???
+      startCell: 0,
+      endCell: 4,
+      boundingBoxDimensions: new Vector2(30, 35), 
+      cellData: [
+        new Rect(3, 138, 30, 35),
+        new Rect(39, 138, 30, 35),
+        new Rect(76, 138, 30, 35),
+        new Rect(112, 138, 30, 35),
+        new Rect(148, 138, 30, 35)
+      ]
+    },
+    "gold_glint" :  {
+      fps: 6,
+      leadInDelayMs: 0,
+      leadOutDelayMs: 0,
+      loop: true,  //???
+      loopCount: -1, //???
+      startCell: 0,
+      endCell: 2,
+      boundingBoxDimensions: new Vector2(30, 30), 
+      cellData: [
+        new Rect(65, 540, 30, 30),
+        new Rect(96, 540, 30, 30),
+        new Rect(128, 540, 30, 30)
+      ]
+    }
+  }
+});
+
+const PLATFORM_DATA = Object.freeze({
+  id: "platform",
+  spriteSheet: document.getElementById("snailbait_jungle_tileset"),
+  sourcePosition: new Vector2(0, 112),
+  sourceDimensions: new Vector2(48, 48),
+  rotation: 0,
+  scale: new Vector2(1, 1),
+  origin: new Vector2(0, 0),
+  actorType: ActorType.Platform,
+  layerDepth: 0,
+  scrollSpeedMultiplier: 1,
+  explodeBoundingBoxInPixels: -6,
+  translationArray: [
+    new Vector2(30, 420),
+    new Vector2(80, 420),
+    new Vector2(130, 420),
+    new Vector2(230, 370),
+    new Vector2(280, 370),
+    new Vector2(330, 370),
+    new Vector2(380, 370),
+    new Vector2(480, 300),
+    new Vector2(530, 300),
+    new Vector2(280, 240),
+    new Vector2(330, 240)
+  ]
+});
+
+const BACKGROUND_DATA = [
+  {
+    id: "background_1",
+    spriteSheet: document.getElementById("snailbait_background_1"),
+    sourcePosition: new Vector2(0, 0),
+    sourceDimensions: new Vector2(384, 216),
+    translation: new Vector2(0, 0),
+    rotation: 0,
+    scale: new Vector2(1, 1),
+    origin: new Vector2(0, 0),
+    actorType: ActorType.Background,
+    layerDepth: 0,
+    scrollSpeedMultiplier: 0.2
+  },
+  {
+    id: "background_2",
+    spriteSheet: document.getElementById("snailbait_background_2"),
+    sourcePosition: new Vector2(0, 0),
+    sourceDimensions: new Vector2(384, 216),
+    translation: new Vector2(0, 0),
+    rotation: 0,
+    scale: new Vector2(1, 1),
+    origin: new Vector2(0, 0),
+    actorType: ActorType.Background,
+    layerDepth: 0.1,
+    scrollSpeedMultiplier: 0.3
+  },
+  {
+    id: "background_3",
+    spriteSheet: document.getElementById("snailbait_background_3"),
+    sourcePosition: new Vector2(0, 0),
+    sourceDimensions: new Vector2(384, 216),
+    translation: new Vector2(0, 0),
+    rotation: 0,
+    scale: new Vector2(1, 1),
+    origin: new Vector2(0, 0),
+    actorType: ActorType.Background,
+    layerDepth: 0.15,
+    scrollSpeedMultiplier: 0.5
+  },
+  {
+    id: "background_4",
+    spriteSheet: document.getElementById("snailbait_background_4"),
+    sourcePosition: new Vector2(0, 0),
+    sourceDimensions: new Vector2(384, 216),
+    translation: new Vector2(0, 0),
+    rotation: 0,
+    scale: new Vector2(1, 1),
+    origin: new Vector2(0, 0),
+    actorType: ActorType.Background,
+    layerDepth: 0.2,
+    scrollSpeedMultiplier: 0.7
+  },
+  {
+    id: "background_5",
+    spriteSheet: document.getElementById("snailbait_background_5"),
+    sourcePosition: new Vector2(0, 0),
+    sourceDimensions: new Vector2(384, 216),
+    translation: new Vector2(0, 0),
+    rotation: 0,
+    scale: new Vector2(1, 1),
+    origin: new Vector2(0, 0),
+    actorType: ActorType.Background,
+    layerDepth: 0.25,
+    scrollSpeedMultiplier: 0.8
+  }
+];
+
 //#endregion
 
-//#region Cell data 
-   
-   const BEE_CELLS = [
-      { left: 5,   top: 234, width:  BEE_CELLS_WIDTH,
-                            height: BEE_CELLS_HEIGHT },
+//#region UI
+const FontType = Object.freeze({
+  //Command & Conquer - battle unit - info overlay
+  UnitInformationMedium: "18px Comic Sans MS",
+  UnitInformationLarge: "30px Comic Sans MS"
+});
 
-      { left: 75,  top: 234, width:  BEE_CELLS_WIDTH, 
-                            height: BEE_CELLS_HEIGHT },
-
-      { left: 145, top: 234, width:  BEE_CELLS_WIDTH, 
-                            height: BEE_CELLS_HEIGHT }
-   ];
-   
-   const BACKGROUND_CELL = [
-      { left: 0,   top: 590, width: 1104, height: 400 }
-   ];
-
-   
-   const RUNNER_CELLS_RIGHT = [
-      { left: 414, top: 385, 
-        width: 47, height: RUNNER_CELLS_HEIGHT },
-
-      { left: 362, top: 385, 
-         width: 44, height: RUNNER_CELLS_HEIGHT },
-
-      { left: 314, top: 385, 
-         width: 39, height: RUNNER_CELLS_HEIGHT },
-
-      { left: 265, top: 385, 
-         width: 46, height: RUNNER_CELLS_HEIGHT },
-
-      { left: 205, top: 385, 
-         width: 49, height: RUNNER_CELLS_HEIGHT },
-
-      { left: 150, top: 385, 
-         width: 46, height: RUNNER_CELLS_HEIGHT },
-
-      { left: 96,  top: 385, 
-         width: 46, height: RUNNER_CELLS_HEIGHT },
-
-      { left: 45,  top: 385, 
-         width: 35, height: RUNNER_CELLS_HEIGHT },
-
-      { left: 0,   top: 385, 
-         width: 35, height: RUNNER_CELLS_HEIGHT }
-   ];
-
-   const RUNNER_CELLS_LEFT = [
-      { left: 0,   top: 305, 
-         width: 47, height: RUNNER_CELLS_HEIGHT },
-
-      { left: 55,  top: 305, 
-         width: 44, height: RUNNER_CELLS_HEIGHT },
-
-      { left: 107, top: 305, 
-         width: 39, height: RUNNER_CELLS_HEIGHT },
-
-      { left: 152, top: 305, 
-         width: 46, height: RUNNER_CELLS_HEIGHT },
-
-      { left: 208, top: 305, 
-         width: 49, height: RUNNER_CELLS_HEIGHT },
-
-      { left: 265, top: 305, 
-         width: 46, height: RUNNER_CELLS_HEIGHT },
-
-      { left: 320, top: 305, 
-         width: 42, height: RUNNER_CELLS_HEIGHT },
-
-      { left: 380, top: 305, 
-         width: 35, height: RUNNER_CELLS_HEIGHT },
-
-      { left: 425, top: 305, 
-         width: 35, height: RUNNER_CELLS_HEIGHT },
-   ];
-
-   const SAPPHIRE_CELLS = [
-      { left: 185,   top: 138, width:  SAPPHIRE_CELLS_WIDTH,
-                             height: SAPPHIRE_CELLS_HEIGHT },
-
-      { left: 220,  top: 138, width:  SAPPHIRE_CELLS_WIDTH, 
-                             height: SAPPHIRE_CELLS_HEIGHT },
-
-      { left: 258,  top: 138, width:  SAPPHIRE_CELLS_WIDTH, 
-                             height: SAPPHIRE_CELLS_HEIGHT },
-
-      { left: 294, top: 138, width:  SAPPHIRE_CELLS_WIDTH, 
-                             height: SAPPHIRE_CELLS_HEIGHT },
-
-      { left: 331, top: 138, width:  SAPPHIRE_CELLS_WIDTH, 
-                             height: SAPPHIRE_CELLS_HEIGHT }
-   ];
-
-   const BAT_CELLS = [
-      { left: 3,   top: 0, width: 36, height: BAT_CELLS_HEIGHT },
-      { left: 41,  top: 0, width: 46, height: BAT_CELLS_HEIGHT },
-      { left: 93,  top: 0, width: 36, height: BAT_CELLS_HEIGHT },
-      { left: 132, top: 0, width: 46, height: BAT_CELLS_HEIGHT },
-   ];
-
-   const BAT_RED_EYE_CELLS = [
-      { left: 185, top: 0, 
-        width: 36, height: BAT_CELLS_HEIGHT },
-
-      { left: 222, top: 0, 
-        width: 46, height: BAT_CELLS_HEIGHT },
-
-      { left: 273, top: 0, 
-        width: 36, height: BAT_CELLS_HEIGHT },
-
-      { left: 313, top: 0, 
-        width: 46, height: BAT_CELLS_HEIGHT },
-   ];
-   
-   const BLUE_COIN_CELLS = [
-      { left: 5, top: 540, width:  COIN_CELLS_WIDTH, 
-                           height: COIN_CELLS_HEIGHT },
-
-      { left: 5 + this.COIN_CELLS_WIDTH, top: 540,
-       width: COIN_CELLS_WIDTH, 
-        height: COIN_CELLS_HEIGHT }
-   ];
-
-   const EXPLOSION_CELLS = [
-      { left: 3,   top: 48, 
-        width: 52, height: EXPLOSION_CELLS_HEIGHT },
-      { left: 63,  top: 48, 
-        width: 70, height: EXPLOSION_CELLS_HEIGHT },
-      { left: 146, top: 48, 
-        width: 70, height: EXPLOSION_CELLS_HEIGHT },
-      { left: 233, top: 48, 
-        width: 70, height: EXPLOSION_CELLS_HEIGHT },
-      { left: 308, top: 48, 
-        width: 70, height: EXPLOSION_CELLS_HEIGHT },
-      { left: 392, top: 48, 
-        width: 70, height: EXPLOSION_CELLS_HEIGHT },
-      { left: 473, top: 48, 
-        width: 70, height: EXPLOSION_CELLS_HEIGHT }
-   ];
-
-   const GOLD_COIN_CELLS = [
-      { left: 65, top: 540, width:  COIN_CELLS_WIDTH, 
-                            height: COIN_CELLS_HEIGHT },
-      { left: 96, top: 540, width:  COIN_CELLS_WIDTH, 
-                            height: COIN_CELLS_HEIGHT },
-      { left: 128, top: 540, width:  COIN_CELLS_WIDTH, 
-                             height: COIN_CELLS_HEIGHT },
-   ];
-
-   const RUBY_CELLS = [
-      { left: 3,   top: 138, width:  RUBY_CELLS_WIDTH,
-                             height: RUBY_CELLS_HEIGHT },
-
-      { left: 39,  top: 138, width:  RUBY_CELLS_WIDTH, 
-                             height: RUBY_CELLS_HEIGHT },
-
-      { left: 76,  top: 138, width:  RUBY_CELLS_WIDTH, 
-                             height: RUBY_CELLS_HEIGHT },
-
-      { left: 112, top: 138, width:  RUBY_CELLS_WIDTH, 
-                             height: RUBY_CELLS_HEIGHT },
-
-      { left: 148, top: 138, width:  RUBY_CELLS_WIDTH, 
-                             height: RUBY_CELLS_HEIGHT }
-   ];
-
-   const SNAIL_BOMB_CELLS = [
-      { left: 40, top: 512, width: 30, height: 20 },
-      { left: 2, top: 512, width: 30, height: 20 }
-   ];
-
-   const SNAIL_CELLS = [
-      { left: 142, top: 466, width:  SNAIL_CELLS_WIDTH,
-                             height: SNAIL_CELLS_HEIGHT },
-
-      { left: 75,  top: 466, width:  SNAIL_CELLS_WIDTH, 
-                             height: SNAIL_CELLS_HEIGHT },
-
-      { left: 2,   top: 466, width:  SNAIL_CELLS_WIDTH, 
-                             height: SNAIL_CELLS_HEIGHT },
-   ]; 
-//#endregion
-
-//#region Platform data
-
-   //the 5 scollable backgrounds - see game.js\LoadBackgrounds()
-  const BACKGROUND_DATA = [
-   {
-     id: "background_1",
-     spriteSheet: document.getElementById("snailbait_background_1"),
-     sourcePosition: new Vector2(0,0),
-     sourceDimensions: new Vector2(384, 216),
-     translation: new Vector2(0,0),
-     rotation: 0,
-     scale: new Vector2(1,1),
-     origin: new Vector2(0,0),
-     actorType: ActorType.Background,
-     layerDepth: 0,
-     scrollSpeedMultiplier: 0.2
-   },
-   {
-      id: "background_2",
-      spriteSheet: document.getElementById("snailbait_background_2"),
-      sourcePosition: new Vector2(0,0),
-      sourceDimensions: new Vector2(384, 216),
-      translation: new Vector2(0,0),
-      rotation: 0,
-      scale: new Vector2(1,1),
-      origin: new Vector2(0,0),
-      actorType: ActorType.Background,
-      layerDepth: 0.1,
-      scrollSpeedMultiplier: 0.3
-    },
-    {
-      id: "background_3",
-      spriteSheet: document.getElementById("snailbait_background_3"),
-      sourcePosition: new Vector2(0,0),
-      sourceDimensions: new Vector2(384, 216),
-      translation: new Vector2(0,0),
-      rotation: 0,
-      scale: new Vector2(1,1),
-      origin: new Vector2(0,0),
-      actorType: ActorType.Background,
-      layerDepth: 0.15,
-      scrollSpeedMultiplier: 0.5
-    },
-    {
-      id: "background_4",
-      spriteSheet: document.getElementById("snailbait_background_4"),
-      sourcePosition: new Vector2(0,0),
-      sourceDimensions: new Vector2(384, 216),
-      translation: new Vector2(0,0),
-      rotation: 0,
-      scale: new Vector2(1,1),
-      origin: new Vector2(0,0),
-      actorType: ActorType.Background,
-      layerDepth: 0.2,
-      scrollSpeedMultiplier: 0.7
-    },
-    {
-      id: "background_5",
-      spriteSheet: document.getElementById("snailbait_background_5"),
-      sourcePosition: new Vector2(0,0),
-      sourceDimensions: new Vector2(384, 216),
-      translation: new Vector2(0,0),
-      rotation: 0,
-      scale: new Vector2(1,1),
-      origin: new Vector2(0,0),
-      actorType: ActorType.Background,
-      layerDepth: 0.25,
-      scrollSpeedMultiplier: 0.8
-    },
- ];
-
- const PLATFORM_DATA = {
-      id: "platform",
-      spriteSheet: document.getElementById("snailbait_jungle_tileset"),
-      sourcePosition: new Vector2(0, 112),
-      sourceDimensions: new Vector2(48, 48),
-      rotation: 0,
-      scale: new Vector2(1,1),
-      origin: new Vector2(0,0),
-      actorType: ActorType.Platform,
-      layerDepth: 0,
-      scrollSpeedMultiplier: 1,
-      explodeBoundingBoxInPixels: -6,
-      translationArray: [new Vector2(30,420),new Vector2(80,420), new Vector2(130,420), 
-                     new Vector2(230,370),new Vector2(280,370), new Vector2(330,370),new Vector2(380,370),
-                     new Vector2(480,300),new Vector2(530,300),
-                     new Vector2(280,240),new Vector2(330,240)]
-};
+//move to constants.js!
+const TextAlignType = Object.freeze({
+  Left: "left",
+  Center: "center",
+  Right: "right"
+});
 
 //#endregion

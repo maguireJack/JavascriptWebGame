@@ -1,12 +1,42 @@
 //#region Development Diary
 /*
+Week 6 
+------
+Notes:
+- None
+
+To Do:
+- Fix no translate on numpad keys left, right.
+- Re-factor MyObjectManager
+- Fix UpdateHorizontalScrolling().
+
+
+- Add countdown toast when we gain window focus.
+- Add pause/unpause to SoundManager when we lose/gain window focus.
+- Add check for "P" key in MyMenuManager::Update() to show/hide menu
+- Continue adding documentation to all classes and methods.
+- Improve SoundManager to block load until all sound resources have loaded.
+- Improve KeyboardManager to add IsFirstKeyPress() method.
+- Add Camera2D and re-factor use of translationOffset in Transform2D and artist Draw().
+- Add CameraManager to update all cameras.
+- Complete menu demo.
+
+Done:
+- Complete TextSpriteArtist.
+- Improve AnimatedSpriteArtist to store all animations for a sprite inside an object and not in a single array of cells.
+
+Bugs:
+- When we scroll too far L/R then scrolling stops - see ScrollingSpriteArtist.
+- When we use background scroll <- and -> then collisions are not tested and responded to
+- When platform and platform above are separated by only player height?
+
+
 Week 5 
 ------
 Notes:
 - None
 
 To Do:
-
 - Continue adding documentation to all classes and methods.
 - Complete TextSpriteArtist.
 - Improve AnimatedSpriteArtist to store all animations for a sprite inside an object and not in a single array of cells.
@@ -22,9 +52,6 @@ Bugs:
 - When we use background scroll <- and -> then collisions are not tested and responded to
 - When platform and platform above are separated by only player height?
 
-*/
-
-/*
 Week 4 
 ------
 Notes:
@@ -45,9 +72,6 @@ Bugs:
 - When jumping and touch platform to L or R - allows double jump?
 - When platform and platform above are separated by only player height?
 
-*/
-
-/*
 Week 3 
 ------
 Notes:
@@ -75,9 +99,6 @@ Bugs:
 - When jumping and touch platform to L or R - allows double jump?
 - When platform and platform above are separated by only player height?
 
-*/
-
-/*
 Week 2 
 ------
 To Do:
@@ -88,9 +109,7 @@ To Do:
 Done:
 - Added RectangleSpriteArtist
 - Added initial fall code
-*/
 
-/*
 Week 1
 ------
 To Do:
@@ -118,13 +137,14 @@ var ctx = cvs.getContext("2d");
 //stores elapsed time
 var gameTime;
 //assets
-var spriteSheet, backgroundSpriteSheet;
+var spriteSheet;
 
 //managers and notification
+var notificationCenter;
 var objectManager;
 var soundManager;
-var notificationCenter;
 var gameStateManager;
+var cameraManager;
 //...
 
 //stores screen bounds in a rectangle
@@ -142,7 +162,13 @@ function LoadGame() {
   Start();
 
   //publish an event to pause the object manager (i.e. no update, no draw) and show the menu
- this.notificationCenter.Notify(new Notification(NotificationType.Menu, NotificationAction.ShowMenuChanged,  [StatusType.Off]));
+  this.notificationCenter.Notify(
+    new Notification(
+      NotificationType.Menu,
+      NotificationAction.ShowMenuChanged,
+      [StatusType.Off]
+    )
+  );
 }
 
 function Start() {
@@ -172,14 +198,8 @@ function Update(gameTime) {
   //updates the menu manager to listen for show/hide menu keystroke
   this.menuManager.Update(gameTime);
 
-  //#region Platform Test
-  //press -> and move platform left
-  if (this.keyboardManager.IsKeyDown(Keys.ArrowRight)) {
-    this.objectManager.DeltaTranslationOffset = new Vector2(-3, 0);
-  } else if (this.keyboardManager.IsKeyDown(Keys.ArrowLeft)) {
-    this.objectManager.DeltaTranslationOffset = new Vector2(3, 0);
-  }
-  //#endregion
+  //updates the camera manager which in turn updates all cameras
+  this.cameraManager.Update(gameTime);
 }
 
 function Draw(gameTime) {
@@ -206,11 +226,83 @@ function Initialize() {
   InitializeScreenRectangle();
   LoadAssets();
   LoadNotificationCenter();
-  LoadManagers();
+  LoadInputAndCameraManagers();
+  LoadCameras(); //make at the end as 1+ behaviors in camera may depend on sprite
+  LoadAllOtherManagers();
   LoadSprites();
+  LoadOnScreenText();
   this.isPlaying = false;
 }
 
+function LoadCameras() {
+  let transform = new Transform2D(
+    new Vector2(0, 0),
+    0,
+    Vector2.One,
+    new Vector2(432, 234),
+    new Vector2(cvs.clientWidth, cvs.clientHeight),
+    0
+  );
+
+  let camera = new Camera2D(
+    "intro camera",
+    ActorType.Camera,
+    transform,
+    StatusType.IsUpdated
+  );
+
+  camera.AttachBehavior(
+    new FlightCameraBehavior(
+      this.keyboardManager,
+      [
+        Keys.NumPad4,
+        Keys.NumPad6,
+        Keys.NumPad1,
+        Keys.NumPad9,
+        Keys.NumPad8,
+        Keys.NumPad2,
+        Keys.NumPad5
+      ],
+      new Vector2(3, 0),
+      Math.PI / 180,
+      new Vector2(0.005, 0.005)
+    )
+  );
+
+  this.cameraManager.Add(camera);
+}
+
+function LoadOnScreenText() {
+  let transform = new Transform2D(
+    new Vector2(400, 200),
+    0,
+    Vector2.One,
+    Vector2.Zero,
+    new Vector2(10, 10),
+    0
+  );
+
+  let spriteArtist = new TextSpriteArtist(
+    this.ctx,
+    "Hello World",
+    FontType.UnitInformationMedium,
+    "rgb(0, 255, 0)",
+    TextAlignType.Center,
+    200
+  );
+
+  let sprite = new Sprite(
+    "txt_ui_hello",
+    ActorType.UIText,
+    transform,
+    spriteArtist,
+    StatusType.IsUpdated | StatusType.IsDrawn,
+    1,
+    1
+  );
+
+  this.objectManager.Add(sprite);
+}
 
 function InitializeScreenRectangle() {
   this.screenRectangle = new Rect(
@@ -225,30 +317,40 @@ function LoadNotificationCenter() {
   this.notificationCenter = new NotificationCenter();
 }
 
-function LoadManagers() {
+
+function LoadInputAndCameraManagers() {
+  //checks for keyboard input
+  this.keyboardManager = new KeyboardManager();
+  //stores the cameras in our game
+  this.cameraManager = new CameraManager("stores and manages cameras");
+}
+
+function LoadAllOtherManagers() {
+
   let debugEnabled = true;
-  let scrollBoundingBoxBorder = 20;
   this.objectManager = new MyObjectManager(
     "game sprites",
     StatusType.IsUpdated | StatusType.IsDrawn,
+    this.cvs, this.ctx,
+    this.cameraManager,
     this.notificationCenter,
-    this.cvs,
-    this.ctx,
-    debugEnabled,
-    scrollBoundingBoxBorder
+    debugEnabled
   );
 
-  //checks for keyboard input
-  this.keyboardManager = new KeyboardManager();
-
   //adds support for storing and responding to changes in game state e.g. player collect all inventory items, or health == 0
-  this.gameStateManager = new MyGameStateManager("store and manage game state", this.notificationCenter);
+  this.gameStateManager = new MyGameStateManager(
+    "store and manage game state",
+    this.notificationCenter
+  );
 
   //audio - step 3 - instanciate the sound manager with the array of cues
   this.soundManager = new SoundManager(audioCueArray, this.notificationCenter);
 
   //adds support for a menu system
-  this.menuManager = new MyMenuManager(this.notificationCenter, this.keyboardManager);
+  this.menuManager = new MyMenuManager(
+    this.notificationCenter,
+    this.keyboardManager
+  );
 
   //load other managers...
 }
@@ -270,9 +372,7 @@ function LoadSprites() {
 }
 
 function LoadBackground() {
-
-  for(let i = 0; i < BACKGROUND_DATA.length; i++)
-  {
+  for (let i = 0; i < BACKGROUND_DATA.length; i++) {
     let spriteArtist = new ScrollingSpriteArtist(
       ctx,
       BACKGROUND_DATA[i].spriteSheet,
@@ -296,19 +396,21 @@ function LoadBackground() {
         spriteArtist,
         StatusType.IsUpdated | StatusType.IsDrawn,
         BACKGROUND_DATA[i].scrollSpeedMultiplier,
-        BACKGROUND_DATA[i].layerDepth,
+        BACKGROUND_DATA[i].layerDepth
       )
     );
   }
 
   //sort all background sprites by depth 0 (back) -> 1 (front)
-  this.objectManager.SortAllByDepth(this.objectManager.BackgroundSprites, 
-                      function sortAscendingDepth(a, b) {return a.LayerDepth - b.LayerDepth});
-  
+  this.objectManager.SortAllByDepth(
+    this.objectManager.BackgroundSprites,
+    function sortAscendingDepth(a, b) {
+      return a.LayerDepth - b.LayerDepth;
+    }
+  );
 }
 
-function LoadPlatforms(){
-
+function LoadPlatforms() {
   let spriteArtist = new SpriteArtist(
     ctx,
     PLATFORM_DATA.spriteSheet,
@@ -332,41 +434,35 @@ function LoadPlatforms(){
     spriteArtist,
     StatusType.IsUpdated | StatusType.IsDrawn,
     PLATFORM_DATA.scrollSpeedMultiplier,
-    PLATFORM_DATA.layerDepth,
-  )
+    PLATFORM_DATA.layerDepth
+  );
 
   this.objectManager.Add(platformSprite);
 
   let clone = null;
 
-  for(let i = 1; i < PLATFORM_DATA.translationArray.length; i++)
-  {
+  for (let i = 1; i < PLATFORM_DATA.translationArray.length; i++) {
     clone = platformSprite.Clone();
     clone.Transform2D.Translation = PLATFORM_DATA.translationArray[i];
     this.objectManager.Add(clone);
   }
-
 }
 
-function LoadPickups(){
-  let spriteArtist = new AnimatedSpriteArtist(
-    ctx,
-    this.spriteSheet,
-    SAPPHIRE_CELLS_FPS,
-    SAPPHIRE_CELLS, //used to access animation sprites - see MyConstants
-    0
-  );
+function LoadPickups() {
+  let spriteArtist = new AnimatedSpriteArtist(ctx, COLLECTIBLES_ANIMATION_DATA);
+  spriteArtist.SetTake("gold_glint");
 
   let transform = new Transform2D(
     new Vector2(530, 250),
     0,
-    new Vector2(1, 1),
-    new Vector2(0, 0),
-    new Vector2(SAPPHIRE_CELLS_WIDTH, SAPPHIRE_CELLS_HEIGHT) //used for CD/CR rectangle - see MyConstants
+    Vector2.One,
+    Vector2.Zero,
+    spriteArtist.GetBoundingBoxByTakeName("gold_glint"),
+    0
   );
 
   let pickupSprite = new Sprite(
-    "sapphire",
+    "gold",
     ActorType.Health,
     transform,
     spriteArtist,
@@ -380,26 +476,21 @@ function LoadPickups(){
   this.objectManager.Add(pickupSprite);
 }
 
-
 function LoadEnemies() {
-  let spriteArtist = new AnimatedSpriteArtist(
-    ctx,
-    this.spriteSheet,
-    BEE_ANIMATION_FPS,
-    BEE_CELLS, //used to access animation sprites - see MyConstants
-    0
-  );
+  let spriteArtist = new AnimatedSpriteArtist(ctx, ENEMY_ANIMATION_DATA);
+  spriteArtist.SetTake("wasp_fly");
 
   let transform = new Transform2D(
     new Vector2(200, 200),
     0,
-    new Vector2(1, 1),
-    new Vector2(0, 0),
-    new Vector2(BEE_CELLS_WIDTH, BEE_CELLS_HEIGHT) //used for CD/CR rectangle - see MyConstants
+    Vector2.One,
+    Vector2.Zero,
+    spriteArtist.GetBoundingBoxByTakeName("wasp_fly"),
+    0
   );
 
   let enemySprite = new MoveableSprite(
-    "bee",
+    "wasp",
     ActorType.Enemy,
     transform,
     spriteArtist,
@@ -416,25 +507,19 @@ function LoadEnemies() {
   //your code - add bee move behavior here...
 
   this.objectManager.Add(enemySprite);
-
-  
 }
 
 function LoadPlayer() {
-  let spriteArtist = new AnimatedSpriteArtist(
-    ctx,
-    this.spriteSheet,
-    RUNNER_ANIMATION_FPS,
-    RUNNER_CELLS_RIGHT, //used to access animation sprites for right walk - see MyConstants
-    0
-  );
+  let spriteArtist = new AnimatedSpriteArtist(ctx, RUNNER_ANIMATION_DATA);
+  spriteArtist.SetTake("run_right");
 
   let transform = new Transform2D(
-    new Vector2(RUNNER_START_X_POSITION, RUNNER_START_Y_POSITION),
+    RUNNER_START_POSITION,
     0,
-    new Vector2(1, 1),
-    new Vector2(0, 0),
-    new Vector2(RUNNER_CELLS_WIDTH, RUNNER_CELLS_HEIGHT) //used for CD/CR rectangle - see MyConstants
+    Vector2.One,
+    Vector2.Zero,
+    spriteArtist.GetBoundingBoxByTakeName("run_right"),
+    0
   );
 
   let playerSprite = new MoveableSprite(
@@ -447,7 +532,7 @@ function LoadPlayer() {
     1
   );
 
-  //set performance characteristics of the body attached to the moveable sprite
+  // //set performance characteristics of the body attached to the moveable sprite
   playerSprite.Body.MaximumSpeed = 6;
   playerSprite.Body.Friction = FrictionType.Normal;
   playerSprite.Body.Gravity = GravityType.Normal;
@@ -458,12 +543,9 @@ function LoadPlayer() {
       this.objectManager,
       RUNNER_MOVE_KEYS,
       RUNNER_RUN_VELOCITY,
-      RUNNER_JUMP_VELOCITY,
-      RUNNER_CELLS_LEFT,
-      RUNNER_CELLS_RIGHT
-      )
+      RUNNER_JUMP_VELOCITY
+    )
   );
 
   this.objectManager.Add(playerSprite); //add player sprite
 }
-

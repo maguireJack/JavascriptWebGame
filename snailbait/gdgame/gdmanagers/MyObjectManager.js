@@ -6,6 +6,7 @@
  */
 
 class MyObjectManager extends ObjectManager {
+  //#region Fields
   //PC and NPCs
   enemySprites = [];
   playerSprites = [];
@@ -20,11 +21,15 @@ class MyObjectManager extends ObjectManager {
   //stores all other sprites
   decoratorSprites = [];
 
-  //this offset will be applied to all sprites listed in UpdateGlobalTranslationOffset()
-  deltaTranslationOffset = Vector2.Zero;
-  translationOffset = Vector2.Zero;
+  //stores all UI sprites
+  uiSprites = [];
+  //#endregion
 
+  //#region Properties
   //these getters allow a collision manager to get access to the sprites for collision detection/collision response (CD/CR) testing
+  get UISprites() {
+    return this.uiSprites;
+  }
   get EnemySprites() {
     return this.enemySprites;
   }
@@ -40,28 +45,25 @@ class MyObjectManager extends ObjectManager {
   get BackgroundSprites() {
     return this.backgroundSprites;
   }
-
-  /**
-   * Used by a player sprite to set the translation offset for all sprites that need to be moved when player moves.
-   * e.g. in a scrollable game we move everything around the player instead of moving the player.     *
-   * @memberof MyObjectManager
-   */
-  set DeltaTranslationOffset(deltaTranslationOffset) {
-    this.deltaTranslationOffset = deltaTranslationOffset;
-    this.translationOffset.Add(deltaTranslationOffset);
-    this.IsDirty = true;
-  }
+  //#endregion
 
   constructor(
     id,
     statusType,
-    notificationCenter,
     canvas,
     context,
-    debugEnabled,
-    scrollBoundingBoxBorder
-  ) {
-    super(id, statusType, canvas, context, debugEnabled, scrollBoundingBoxBorder);
+    cameraManager,
+    notificationCenter,
+    debugEnabled) {
+    super(
+      id,
+      statusType,
+      canvas,
+      context,
+      cameraManager,
+      debugEnabled,
+    );
+    
     this.notificationCenter = notificationCenter;
     this.RegisterForNotifications();
   }
@@ -70,7 +72,6 @@ class MyObjectManager extends ObjectManager {
 
   //handle all GameState type events - see PlayerBehavior::HandleEnemyCollision()
   RegisterForNotifications() {
-
     //handle events related to add/remove sprites
     this.notificationCenter.Register(
       NotificationType.Sprite,
@@ -84,8 +85,6 @@ class MyObjectManager extends ObjectManager {
       this,
       this.HandleNotification
     );
-
-
   }
 
   HandleNotification(...argArray) {
@@ -116,7 +115,6 @@ class MyObjectManager extends ObjectManager {
     let spriteToRemove = argArray[0];
     this.Remove(spriteToRemove);
   }
-
 
   //#endregion
 
@@ -161,6 +159,10 @@ class MyObjectManager extends ObjectManager {
             this.interactableSprites.push(sprite);
             break;
 
+          case ActorType.UIText:
+            this.uiSprites.push(sprite);
+            break;
+
           //add more cases for each of the new ActorTypes that you add in your game
           default:
             this.decoratorSprites.push(sprite);
@@ -189,6 +191,10 @@ class MyObjectManager extends ObjectManager {
             this.backgroundSprites.splice(this.FindIndex(sprite), 1);
             break;
 
+          case ActorType.UIText:
+            this.uiSprites.splice(this.FindIndex(sprite), 1);
+            break;
+
           //notice we can group lots of similar actor types into a single array i.e. interactables
           case ActorType.Health:
           case ActorType.Inventory:
@@ -212,27 +218,31 @@ class MyObjectManager extends ObjectManager {
     if (sprite) {
       switch (sprite.ActorType) {
         case ActorType.Enemy:
-          index = this.enemySprites.findIndex((s) => s === sprite);
+          index = this.enemySprites.findIndex(s => s === sprite);
           break;
         case ActorType.Player:
-          index = this.playerSprites.findIndex((s) => s === sprite);
+          index = this.playerSprites.findIndex(s => s === sprite);
           break;
         case ActorType.Platform:
-          index = this.platformSprites.findIndex((s) => s === sprite);
+          index = this.platformSprites.findIndex(s => s === sprite);
           break;
         case ActorType.Background:
-          index = this.backgroundSprites.findIndex((s) => s === sprite);
+          index = this.backgroundSprites.findIndex(s => s === sprite);
+          break;
+
+        case ActorType.UIText:
+          index = this.uiSprites.findIndex(s => s === sprite);
           break;
 
         case ActorType.Health:
         case ActorType.Inventory:
         case ActorType.Interactable:
         case ActorType.Ammo:
-          index = this.interactableSprites.findIndex((s) => s === sprite);
+          index = this.interactableSprites.findIndex(s => s === sprite);
           break;
 
         default:
-          index = this.decoratorSprites.findIndex((s) => s === sprite);
+          index = this.decoratorSprites.findIndex(s => s === sprite);
           break;
       }
     }
@@ -255,6 +265,10 @@ class MyObjectManager extends ObjectManager {
           break;
         case ActorType.Background:
           this.backgroundSprites.splice(0, this.backgroundSprites.length);
+          break;
+
+        case ActorType.UIText:
+          this.uiSprites.splice(0, this.uiSprites.length);
           break;
 
         case ActorType.Health:
@@ -280,6 +294,7 @@ class MyObjectManager extends ObjectManager {
     this.interactableSprites.splice(0, this.interactableSprites.length);
     this.decoratorSprites.splice(0, this.decoratorSprites.length);
     this.playerSprites.splice(0, this.playerSprites.length);
+    this.uiSprites.splice(0, this.uiSprites.length);
   }
 
   //#endregion
@@ -289,7 +304,6 @@ class MyObjectManager extends ObjectManager {
   Update(gameTime) {
     //should we be updating? if menu is shown then we should not
     if ((this.statusType & StatusType.IsUpdated) != 0) {
-      this.UpdateTranslationOffset(gameTime);
       this.UpdateAll(gameTime);
     }
   }
@@ -298,70 +312,35 @@ class MyObjectManager extends ObjectManager {
     //should we be drawing? if menu is shown then we should not
     if ((this.statusType & StatusType.IsDrawn) != 0) {
       this.DrawAll(gameTime);
+
       if (this.DebugEnabled)
-        this.DrawDebug("red", "green", "white", "yellow");
-    }
-  }
-
-  /**
-   * Call this to re-position all the sprites that move around the player sprite i.e. to enable side-scrolling.
-   * Note: Player sprite is not updated here since all sprites move around the player sprite so its translation offset is zero.
-   * @param {GameTime} gameTime
-   * @memberof MyObjectManager
-   */
-  UpdateTranslationOffset(gameTime) {
-    //add to each sprites existing translation offset if non-zero
-    if (this.deltaTranslationOffset.Length() != 0) {
-      this.deltaTranslationOffset.MultiplyScalar(gameTime.ElapsedTimeInMs);
-
-      for (let i = 0; i < this.enemySprites.length; i++)
-        this.enemySprites[i].Transform2D.SetTranslationOffset(
-          this.translationOffset
-        );
-
-      for (let i = 0; i < this.platformSprites.length; i++)
-        this.platformSprites[i].Transform2D.SetTranslationOffset(
-          this.translationOffset
-        );
-
-      for (let i = 0; i < this.decoratorSprites.length; i++)
-        this.decoratorSprites[i].Transform2D.SetTranslationOffset(
-          this.translationOffset
-        );
-
-      for (let i = 0; i < this.interactableSprites.length; i++)
-        this.interactableSprites[i].Transform2D.SetTranslationOffset(
-          this.translationOffset
-        );
-
-      for (let i = 0; i < this.backgroundSprites.length; i++)
-        this.backgroundSprites[i].Transform2D.SetTranslationOffset(
-          this.translationOffset
-        );
-
-      //set the delta back to zero, otherwise it will keep being applied in each Update()
-      this.deltaTranslationOffset = Vector2.Zero;
+        this.DrawDebug("red", "green", "white", "yellow", "blue");
     }
   }
 
   UpdateAll(gameTime) {
+    let activeCamera = this.cameraManager.ActiveCamera;
+
     for (let i = 0; i < this.enemySprites.length; i++)
-      this.enemySprites[i].Update(gameTime);
+      this.enemySprites[i].Update(gameTime, activeCamera);
 
     for (let i = 0; i < this.playerSprites.length; i++)
-      this.playerSprites[i].Update(gameTime);
+      this.playerSprites[i].Update(gameTime, activeCamera);
 
     for (let i = 0; i < this.platformSprites.length; i++)
-      this.platformSprites[i].Update(gameTime);
+      this.platformSprites[i].Update(gameTime, activeCamera);
 
     for (let i = 0; i < this.interactableSprites.length; i++)
-      this.interactableSprites[i].Update(gameTime);
+      this.interactableSprites[i].Update(gameTime, activeCamera);
 
     for (let i = 0; i < this.decoratorSprites.length; i++)
-      this.decoratorSprites[i].Update(gameTime);
+      this.decoratorSprites[i].Update(gameTime, activeCamera);
 
     for (let i = 0; i < this.backgroundSprites.length; i++)
-      this.backgroundSprites[i].Update(gameTime);
+      this.backgroundSprites[i].Update(gameTime, activeCamera);
+
+    for (let i = 0; i < this.uiSprites.length; i++)
+      this.uiSprites[i].Update(gameTime, activeCamera);
   }
 
   /**
@@ -374,51 +353,43 @@ class MyObjectManager extends ObjectManager {
   DrawAll(gameTime) {
     this.drawn = 0;
 
+    let activeCamera = this.cameraManager.ActiveCamera;
+
     for (let i = 0; i < this.backgroundSprites.length; i++)
-      this.backgroundSprites[i].Draw(gameTime);
+      this.backgroundSprites[i].Draw(gameTime, activeCamera);
 
     //this will cull(remove) sprites that arent visible on the screen
     for (let i = 0; i < this.decoratorSprites.length; i++) {
-      if (
-        this.screenBoundingBox.Intersects(
-          this.decoratorSprites[i].Transform2D.BoundingBox
-        )
-      )
-        this.decoratorSprites[i].Draw(gameTime);
+  //    if (activeCamera.Transform2D.BoundingBox.Intersects(this.decoratorSprites[i].Transform2D.BoundingBox))
+        this.decoratorSprites[i].Draw(gameTime, activeCamera);
     }
 
     //this will cull(remove) sprites that arent visible on the screen
     for (let i = 0; i < this.interactableSprites.length; i++) {
-      if (
-        this.screenBoundingBox.Intersects(
-          this.interactableSprites[i].Transform2D.BoundingBox
-        )
-      )
-        this.interactableSprites[i].Draw(gameTime);
+  //    if (activeCamera.Transform2D.BoundingBox.Intersects(this.interactableSprites[i].Transform2D.BoundingBox))
+        this.interactableSprites[i].Draw(gameTime, activeCamera);
     }
 
     //this will cull(remove) sprites that arent visible on the screen
     for (let i = 0; i < this.enemySprites.length; i++) {
-      if (
-        this.screenBoundingBox.Intersects(
-          this.enemySprites[i].Transform2D.BoundingBox
-        )
-      )
-        this.enemySprites[i].Draw(gameTime);
+  //    if (activeCamera.Transform2D.BoundingBox.Intersects(this.enemySprites[i].Transform2D.BoundingBox))
+        this.enemySprites[i].Draw(gameTime, activeCamera);
     }
 
     //this will cull(remove) sprites that arent visible on the screen
     for (let i = 0; i < this.platformSprites.length; i++) {
-      if (
-        this.screenBoundingBox.Intersects(
-          this.platformSprites[i].Transform2D.BoundingBox
-        )
-      )
-        this.platformSprites[i].Draw(gameTime);
+ //     if (activeCamera.Transform2D.BoundingBox.Intersects(this.platformSprites[i].Transform2D.BoundingBox))
+        this.platformSprites[i].Draw(gameTime, activeCamera);
     }
 
     for (let i = 0; i < this.playerSprites.length; i++)
-      this.playerSprites[i].Draw(gameTime);
+      this.playerSprites[i].Draw(gameTime, activeCamera);
+
+    //this will cull(remove) sprites that arent visible on the screen
+    for (let i = 0; i < this.uiSprites.length; i++) {
+ //     if (activeCamera.Transform2D.BoundingBox.Intersects(this.uiSprites[i].Transform2D.BoundingBox))
+        this.uiSprites[i].Draw(gameTime, activeCamera);
+    }
   }
 
   //#endregion
@@ -429,8 +400,8 @@ class MyObjectManager extends ObjectManager {
     debugEnemyColor,
     debugInteractableColor,
     debugPlayerColor,
-    debugPlatformColor
-  ) {
+    debugPlatformColor,
+    debugUIColor) {
     for (let i = 0; i < this.enemySprites.length; i++)
       this.DrawDebugBoundingBox(debugEnemyColor, this.enemySprites[i]);
 
@@ -445,6 +416,9 @@ class MyObjectManager extends ObjectManager {
 
     for (let i = 0; i < this.platformSprites.length; i++)
       this.DrawDebugBoundingBox(debugPlatformColor, this.platformSprites[i]);
+
+    for (let i = 0; i < this.uiSprites.length; i++)
+      this.DrawDebugBoundingBox(debugUIColor, this.uiSprites[i]);
 
     //add more for loops here for any other arrays containing sprites with bounding boxes...
   }

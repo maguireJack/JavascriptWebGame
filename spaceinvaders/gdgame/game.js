@@ -214,8 +214,9 @@ function ClearScreen(color) {
 function Initialize() {
   InitializeScreenRectangle();
   LoadAssets();
+  LoadInputManagers();
   LoadNotificationCenter();
-  LoadManagers();
+  LoadAllOtherManagers();
   LoadSprites();
   this.isPlaying = false;
 }
@@ -229,14 +230,15 @@ function LoadNotificationCenter() {
   this.notificationCenter = new NotificationCenter();
 }
 
-function LoadManagers() {
+function LoadInputManagers() {
+    //checks for keyboard input
+    this.keyboardManager = new KeyboardManager();
+}
 
+function LoadAllOtherManagers() {
   //renders game sprites
   let debugEnabled = false;
   this.objectManager = new MyObjectManager("game sprites", this.ctx, debugEnabled);
-
-  //checks for keyboard input
-  this.keyboardManager = new KeyboardManager();
 
   //plays sound
   this.soundManager = new SoundManager(audioCueArray);

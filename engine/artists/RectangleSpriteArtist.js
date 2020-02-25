@@ -4,17 +4,11 @@
  * @version 1.0
  * @class RectangleSpriteArtist
  */
-class RectangleSpriteArtist {
+class RectangleSpriteArtist extends Artist{
     //#region  Fields 
     //#endregion 
 
     //#region  Properties
-    get Rect() {
-        return this.rect;
-    }
-    set Rect(rect) {
-        this.rect = rect;
-    }
     get LineWidth() {
         return this.lineWidth;
     }
@@ -41,10 +35,8 @@ class RectangleSpriteArtist {
     }
     //#endregion
 
-    constructor(context, rect, lineWidth, strokeStyle,
-        fillStyle, alpha) {
-        this.context = context;
-        this.rect = rect;
+    constructor(context, lineWidth, strokeStyle, fillStyle, alpha) {
+        super(context);
         this.lineWidth = lineWidth;
         this.strokeStyle = strokeStyle;
         this.fillStyle = fillStyle;
@@ -58,7 +50,7 @@ class RectangleSpriteArtist {
      * @param {Sprite} parent (unused)
      * @memberof RectangleSpriteArtist
      */
-    Update(gameTime, parent) {
+    Update(gameTime, parent, camera) {
 
     }
 
@@ -69,22 +61,19 @@ class RectangleSpriteArtist {
      * @param {Sprite} parent 
      * @memberof RectangleSpriteArtist
      */
-    Draw(gameTime, parent) {
-        this.context.save();
-        var transform = parent.Transform2D;
-        this.context.translate(
-            transform.TranslationOffset.X,
-            transform.TranslationOffset.Y);
-        this.context.scale(transform.Scale.X, transform.Scale.Y);
+    Draw(gameTime, parent, activeCamera) {
+        this.Context.save();
+        this.ApplyCamera(activeCamera);
 
-        this.context.lineWidth = this.lineWidth;
-        this.context.strokeStyle = this.strokeStyle;
-        this.context.fillStyle = this.fillStyle;
-        this.context.globalAlpha = this.alpha;
-        this.context.strokeRect(this.rect.X, this.rect.Y, this.rect.Width, this.rect.Height);
-        this.context.fillRect(this.rect.X, this.rect.Y, this.rect.Width, this.rect.Height);
+        let transform = parent.Transform2D;
+        this.Context.lineWidth = this.lineWidth;
+        this.Context.strokeStyle = this.strokeStyle;
+        this.Context.fillStyle = this.fillStyle;
+        this.Context.globalAlpha = this.alpha;
+        this.Context.strokeRect(transform.Translation.X, transform.Translation.Y, transform.Dimensions.X, transform.Dimensions.Y);
+        this.Context.fillRect(this.rect.X, this.rect.Y, this.rect.Width, this.rect.Height);
 
-        this.context.restore();
+        this.Context.restore();
     }
 
     //#region Equals, Clone, ToString 

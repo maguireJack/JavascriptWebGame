@@ -6,51 +6,54 @@
  * @class ObjectManager
  */
 
-class ObjectManager{
+class ObjectManager {
 
+    //#region Fields
     id = "";
     context;
     debugEnabled = false;
-    
-    constructor(id, statusType, canvas, context, debugEnabled=false, scrollBoundingBoxBorder=20){
+    //#endregion
+
+    //#region Properties
+    get StatusType() {
+        return this.statusType;
+    }
+    get DebugEnabled() {
+        return this.debugEnabled;
+    }
+    //#endregion
+
+    constructor(id, statusType, canvas, context, cameraManager, debugEnabled = false) {
         this.id = id;
         this.statusType = statusType;
         this.canvas = canvas;
         this.context = context;
+        this.cameraManager = cameraManager;
         this.debugEnabled = debugEnabled;
-
-        //used to determine if a sprite is visible i.e. intersects this rectangle
-        this.screenBoundingBox = new Rect(0, 0,  this.canvas.width, this.canvas.height);
-         
-        //used to determine when we apply a delta to the translation offset for non-player sprites (i.e. when player moves outside this rectangle we scroll all non-player sprites)
-        this.scrollBoundingBox = this.screenBoundingBox.Clone();
-        this.scrollBoundingBox.Explode(-scrollBoundingBoxBorder);
     }
 
-    get StatusType() 
+    Update(gameTime) {
+
+    }
+
+    Draw(gameTime) {
+
+    }
+
+    ApplyCamera(activeCamera)
     {
-        return this.statusType;
+        let cameraTransform = activeCamera.Transform2D;
+        this.context.translate(cameraTransform.Origin.X, cameraTransform.Origin.Y);
+        this.context.scale(cameraTransform.Scale.X, cameraTransform.Scale.Y);
+        this.context.rotate(cameraTransform.RotationInRadians);
+        this.context.translate(-cameraTransform.Origin.X, -cameraTransform.Origin.Y);
+        this.context.translate(-cameraTransform.X, -cameraTransform.Translation.Y);
     }
 
-    get DebugEnabled() 
-    {
-        return this.debugEnabled;
-    }
-
-    Update(gameTime){
-
-    }
-
-    Draw(gameTime){
-
-    }
-
-    DrawDebugBoundingBox(color, parent)
-    {
+    DrawDebugBoundingBox(color, parent) {
         this.context.save();
-        var transform = parent.Transform2D;
-        this.context.scale(transform.Scale.X, transform.Scale.Y);
-
+        this.ApplyCamera(this.cameraManager.ActiveCamera);
+        let transform = parent.Transform2D;
         this.context.lineWidth = 2;
         this.context.strokeStyle = color;
         this.context.globalAlpha = 1;
