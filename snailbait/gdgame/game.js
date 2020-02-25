@@ -440,7 +440,7 @@ function LoadEnemies() {
   let transform = new Transform2D(
     new Vector2(200, 200),
     0,
-    new Vector2(2, 2),
+    new Vector2(1, 1),
     Vector2.Zero,
     spriteArtist.GetBoundingBoxByTakeName("wasp_fly"),
     0
@@ -509,7 +509,7 @@ function LoadPlayer() {
 
 function LoadOnScreenText() {
   let transform = new Transform2D(
-    new Vector2(400, 200),
+    new Vector2(180,180),
     0,
     Vector2.One,
     Vector2.Zero,
@@ -519,10 +519,10 @@ function LoadOnScreenText() {
 
   let spriteArtist = new TextSpriteArtist(
     this.ctx,
-    "Hello World",
-    FontType.UnitInformationMedium,
+    "Wasp[20, 5]",
+    FontType.UnitInformationSmall,
     "rgb(0, 255, 0)",
-    TextAlignType.Center,
+    TextAlignType.Left,
     1,
     200
   );

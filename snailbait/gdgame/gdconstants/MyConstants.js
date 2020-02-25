@@ -232,8 +232,9 @@ const BACKGROUND_DATA = [
 //#region UI Data
 const FontType = Object.freeze({
   //Command & Conquer - battle unit - info overlay
+  UnitInformationSmall: "12px Comic Sans MS",
   UnitInformationMedium: "18px Comic Sans MS",
-  UnitInformationLarge: "30px Comic Sans MS"
+  UnitInformationLarge: "24px Comic Sans MS"
 });
 
 //move to constants.js!
