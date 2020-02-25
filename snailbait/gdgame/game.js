@@ -215,7 +215,7 @@ function ClearScreen(color) {
 
 /************************************************************ YOUR GAME SPECIFIC UNDER THIS POINT ************************************************************/
 
-// #region  Initialize, Load
+// #region Initialize, Load
 function Initialize() {
   LoadAssets();
   LoadNotificationCenter();
@@ -276,12 +276,12 @@ function LoadInputAndCameraManagers() {
 }
 
 function LoadAllOtherManagers() {
-
   let debugEnabled = true;
   this.objectManager = new MyObjectManager(
     "game sprites",
     StatusType.IsUpdated | StatusType.IsDrawn,
-    this.cvs, this.ctx,
+    this.cvs,
+    this.ctx,
     this.cameraManager,
     this.notificationCenter,
     debugEnabled
@@ -402,7 +402,11 @@ function LoadPlatforms() {
 }
 
 function LoadPickups() {
-  let spriteArtist = new AnimatedSpriteArtist(ctx, 1, COLLECTIBLES_ANIMATION_DATA);
+  let spriteArtist = new AnimatedSpriteArtist(
+    ctx,
+    1,
+    COLLECTIBLES_ANIMATION_DATA
+  );
   spriteArtist.SetTake("gold_glint");
 
   let transform = new Transform2D(
@@ -535,4 +539,3 @@ function LoadOnScreenText() {
 
   this.objectManager.Add(sprite);
 }
-
