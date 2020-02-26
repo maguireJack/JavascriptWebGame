@@ -50,23 +50,23 @@ const AudioType = Object.freeze({ //replaced user-defined values with Symbol
 
 
   const ActorType = Object.freeze({ //replaced user-defined values with Symbol 
-    Player:                 Symbol('Player'),
-    Enemy:                  Symbol('Enemy'),
-    NPC:                    Symbol('NPC'),
-    Interactable:           Symbol('Interactable'),
-    Inventory:              Symbol('Inventory'),
-    Health:                 Symbol('Health'),
-    Ammo:                   Symbol('Ammo'),
-    Decorator:              Symbol('Decorator'),
-    Platform:               Symbol('Platform'),
-    NonDesctructibleObstacle: Symbol('NonDesctructibleObstacle'),
-    DestructibleObstacle:   Symbol('DestructibleObstacle'),
-    Bullet:                 Symbol('Bullet'),
-    Menu:                   Symbol('Menu'),
-    HUD:                    Symbol('HUD'),
-    Background:             Symbol('Background'),
-    UIText:                 Symbol('UIText'),
-    Camera2D:               Symbol('Camera2D')
+    Player:                 'Player',
+    Enemy:                  'Enemy',
+    NPC:                    'NPC',
+    Interactable:           'Interactable',
+    Inventory:              'Inventory',
+    Health:                 'Health',
+    Ammo:                   'Ammo',
+    Decorator:              'Decorator',
+    Platform:               'Platform',
+    NonDesctructibleObstacle: 'NonDesctructibleObstacle',
+    DestructibleObstacle:   'DestructibleObstacle',
+    Bullet:                 'Bullet',
+    Menu:                   'Menu',
+    HUD:                    'HUD',
+    Background:             'Background',
+    UIText:                 'UIText',
+    Camera2D:               'Camera2D'
     //add as many actor types as your game needs here...
 });
 

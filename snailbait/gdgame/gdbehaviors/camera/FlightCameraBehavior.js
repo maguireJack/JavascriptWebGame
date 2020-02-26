@@ -53,9 +53,10 @@ class FlightCameraBehavior {
         //to do...
         return "undefined";
     }
-    */
+  
 
   Clone() {
     return new MoveBehavior(this.moveDirection, this.moveSpeed);
   }
+  */
 }

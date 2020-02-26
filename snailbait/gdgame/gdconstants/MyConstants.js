@@ -71,11 +71,11 @@ const ENEMY_ANIMATION_DATA = Object.freeze({
       maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
       startCellIndex: 0,
       endCellIndex: 2,
-      boundingBoxDimensions: new Vector2(34, 50), 
+      boundingBoxDimensions: new Vector2(35, 50), 
       cellData: [
-        new Rect(5, 234, 34, 50),
-        new Rect(75, 234, 34, 50),
-        new Rect(145, 234, 34, 50)
+        new Rect(20, 234, 35, 50),
+        new Rect(90, 234, 35, 50),
+        new Rect(160, 234, 35, 50)
       ]
     }
   }

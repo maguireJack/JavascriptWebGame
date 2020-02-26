@@ -152,6 +152,7 @@ var cameraManager;
 
 // #region  LoadGame, Start, Animate
 function LoadGame() {
+
   //load content
   Initialize();
 
@@ -229,9 +230,9 @@ function Initialize() {
 function LoadCameras() {
   let transform = new Transform2D(
     new Vector2(0, 0),
-    0,
+    0 * Math.PI/180,
     Vector2.One,
-    new Vector2(432, 234),
+    new Vector2(cvs.clientWidth/2,  cvs.clientHeight/2),
     new Vector2(cvs.clientWidth, cvs.clientHeight),
     0
   );
@@ -243,24 +244,20 @@ function LoadCameras() {
     StatusType.IsUpdated
   );
 
-  camera.AttachBehavior(
-    new FlightCameraBehavior(
-      this.keyboardManager,
-      [
-        Keys.NumPad4,
-        Keys.NumPad6,
-        Keys.NumPad1,
-        Keys.NumPad9,
-        Keys.NumPad8,
-        Keys.NumPad2,
-        Keys.NumPad5
-      ],
-      new Vector2(3, 0),
-      Math.PI / 180,
-      new Vector2(0.005, 0.005)
-    )
-  );
+  // camera.AttachBehavior(
+  //   new FlightCameraBehavior(
+  //     this.keyboardManager,
+  //     [
+  //       Keys.NumPad4,   Keys.NumPad6,  Keys.NumPad1,   Keys.NumPad9,
+  //       Keys.NumPad8,   Keys.NumPad2,  Keys.NumPad5
+  //     ],
+  //     new Vector2(3,0),
+  //     Math.PI / 180,
+  //     new Vector2(0.005, 0.005)
+  //   )
+  // );
 
+ // camera.AttachBehavior(new PanCameraBehavior());
   this.cameraManager.Add(camera);
 }
 
@@ -277,7 +274,7 @@ function LoadInputAndCameraManagers() {
 
 function LoadAllOtherManagers() {
   let debugEnabled = true;
-  this.objectManager = new MyObjectManager(
+  this.objectManager = new ObjectManager(
     "game sprites",
     StatusType.IsUpdated | StatusType.IsDrawn,
     this.cvs,
@@ -354,9 +351,7 @@ function LoadBackground() {
   }
 
   //sort all background sprites by depth 0 (back) -> 1 (front)
-  this.objectManager.SortAllByDepth(
-    this.objectManager.BackgroundSprites,
-    function sortAscendingDepth(a, b) {
+  this.objectManager.Sort(ActorType.Background, function sortAscendingDepth(a, b) {
       return a.LayerDepth - b.LayerDepth;
     }
   );
