@@ -224,6 +224,12 @@ function Initialize() {
   LoadCameras(); //make at the end as 1+ behaviors in camera may depend on sprite
   LoadAllOtherManagers();
   LoadSprites();
+
+  //sort the sprites array of the object manager so that the row arrays are sorted by their ActorType - see Constants.js
+  //by sorting by ActorType we ensure that ActorType.Background are drawn first and ActorType.UI are drawn last.
+  this.objectManager.SetDrawOrder(function sortDrawOrder(a,b) { return a.DrawOrder - b.DrawOrder;});
+
+  //set game is playing
   this.isPlaying = false;
 }
 
@@ -273,7 +279,7 @@ function LoadInputAndCameraManagers() {
 }
 
 function LoadAllOtherManagers() {
-  let debugEnabled = true;
+  let debugEnabled = false;
   this.objectManager = new ObjectManager(
     "game sprites",
     StatusType.IsUpdated | StatusType.IsDrawn,
@@ -415,7 +421,7 @@ function LoadPickups() {
 
   let pickupSprite = new Sprite(
     "gold",
-    ActorType.Health,
+    ActorType.Pickup,
     transform,
     spriteArtist,
     StatusType.IsUpdated | StatusType.IsDrawn,
@@ -524,7 +530,7 @@ function LoadOnScreenText() {
 
   let sprite = new Sprite(
     "txt_ui_hello",
-    ActorType.UIText,
+    ActorType.HUD,
     transform,
     spriteArtist,
     StatusType.IsUpdated | StatusType.IsDrawn,

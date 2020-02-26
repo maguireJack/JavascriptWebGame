@@ -60,7 +60,7 @@ class PlayerBehavior {
   }
 
   HandlePickupCollision(parent) {
-    let sprites = this.objectManager.Get(ActorType.Health);
+    let sprites = this.objectManager.Get(ActorType.Pickup);
 
     for (let i = 0; i < sprites.length; i++) {
       let sprite = sprites[i];

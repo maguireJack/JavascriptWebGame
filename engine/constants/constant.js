@@ -50,25 +50,40 @@ const AudioType = Object.freeze({ //replaced user-defined values with Symbol
 
 
   const ActorType = Object.freeze({ //replaced user-defined values with Symbol 
-    Player:                 'Player',
-    Enemy:                  'Enemy',
-    NPC:                    'NPC',
-    Interactable:           'Interactable',
-    Inventory:              'Inventory',
-    Health:                 'Health',
-    Ammo:                   'Ammo',
-    Decorator:              'Decorator',
-    Platform:               'Platform',
-    NonDesctructibleObstacle: 'NonDesctructibleObstacle',
-    DestructibleObstacle:   'DestructibleObstacle',
-    Bullet:                 'Bullet',
-    Menu:                   'Menu',
-    HUD:                    'HUD',
-    Background:             'Background',
-    UIText:                 'UIText',
-    Camera2D:               'Camera2D'
+    Background:     {ID: "Background", DrawOrder: 0},
+    Platform:       {ID: "Platform", DrawOrder: 1},
+    Decorator:      {ID: "Decorator", DrawOrder: 2},
+    Pickup:         {ID: "Pickup", DrawOrder: 3},
+    Interactable:   {ID: "Interactable", DrawOrder: 4},
+    Bullet:         {ID: "Bullet", DrawOrder: 5},
+    Enemy:          {ID: "Enemy", DrawOrder: 6},
+    NPC:            {ID: "NPC", DrawOrder: 7},
+    Player:         {ID: "Player", DrawOrder: 8},
+    Camera:         {ID: "Camera", DrawOrder: 9},
+    HUD:            {ID: "HUD", DrawOrder: 10},
     //add as many actor types as your game needs here...
 });
+
+// const ActorType = Object.freeze({ //replaced user-defined values with Symbol 
+//     Player:                 'Player',
+//     Enemy:                  'Enemy',
+//     NPC:                    'NPC',
+//     Interactable:           'Interactable',
+//     Inventory:              'Inventory',
+//     Health:                 'Health',
+//     Ammo:                   'Ammo',
+//     Decorator:              'Decorator',
+//     Platform:               'Platform',
+//     NonDesctructibleObstacle: 'NonDesctructibleObstacle',
+//     DestructibleObstacle:   'DestructibleObstacle',
+//     Bullet:                 'Bullet',
+//     Menu:                   'Menu',
+//     HUD:                    'HUD',
+//     Background:             'Background',
+//     UIText:                 'UIText',
+//     Camera2D:               'Camera2D'
+//     //add as many actor types as your game needs here...
+// });
 
 const EasingStrengthType = Object.freeze({
         Slow: 1.1,

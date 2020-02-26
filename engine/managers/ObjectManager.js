@@ -91,25 +91,25 @@ class ObjectManager {
 
   //#region Add, Remove, Find, Clear
   Add(sprite) {
-    if (this.sprites[sprite.ActorType])
-      this.sprites[sprite.ActorType].push(sprite);
+    if (this.sprites[sprite.ActorType.ID])
+      this.sprites[sprite.ActorType.ID].push(sprite);
     else {
-      this.sprites[sprite.ActorType] = [];
-      this.sprites[sprite.ActorType].push(sprite);
+      this.sprites[sprite.ActorType.ID] = [];
+      this.sprites[sprite.ActorType.ID].push(sprite);
     }
   }
 
   FindIndex(actorType, predicate) {
-    if (this.sprites[actorType])
-      return this.sprites[actorType].findIndex(predicate);
+    if (this.sprites[actorType.ID])
+      return this.sprites[actorType.ID].findIndex(predicate);
     else return -1;
   }
 
   FindIndices(actorType, predicate) {
-    if (this.sprites[actorType]) {
+    if (this.sprites[actorType.ID]) {
       let foundIndices = [];
       let index = 0;
-      for (let i = 0; i < this.sprites[actorType].length; i++) {
+      for (let i = 0; i < this.sprites[actorType.ID].length; i++) {
         if (predicate(sprite)) foundIndices[index] = i;
         index++;
       }
@@ -118,36 +118,40 @@ class ObjectManager {
   }
 
   Find(actorType, predicate) {
-    let index = this.sprites[actorType].findIndex(predicate);
+    let index = this.sprites[actorType.ID].findIndex(predicate);
 
-    if (index != -1) return this.sprites[actorType][index];
+    if (index != -1) return this.sprites[actorType.ID][index];
     else return -1;
   }
 
   Remove(actorType, predicate) {
-    if (this.sprites[actorType])
+    if (this.sprites[actorType.ID])
       this.sprites.splice(this.FindIndex(actorType, predicate), 1);
   }
 
   RemoveAll(actorType, predicate) {
-    if (this.sprites[actorType])
-      this.sprites.splice(this.FindIndex(actorType, predicate), 1);
+    if (this.sprites[actorType.ID])
+      this.sprites.splice(this.FindIndex(actorType.ID, predicate), 1);
   }
 
   RemoveAllByType(actorType) {
-    if (this.sprites[actorType])
-      this.sprites[actorType].splice(0, this.sprites[actorType].length);
+    if (this.sprites[actorType.ID])
+      this.sprites[actorType.ID].splice(0, this.sprites[actorType.ID].length);
   }
 
   Get(actorType){
-    if (this.sprites[actorType])
-    return this.sprites[actorType];
+    if (this.sprites[actorType.ID])
+    return this.sprites[actorType.ID];
   }
 
   Sort(actorType, compareFunction) {
-    if (this.sprites[actorType]) {
-      this.sprites[actorType].sort(compareFunction);
+    if (this.sprites[actorType.ID]) {
+      this.sprites[actorType.ID].sort(compareFunction);
     }
+  }
+
+  SetDrawOrder(compareFunction){
+    this.sprites.sort(compareFunction);
   }
 
   Clear() {
@@ -169,14 +173,10 @@ class ObjectManager {
     //if update enabled for the object manager?
     if ((this.statusType & StatusType.IsUpdated) != 0) {
       //for each of the keys in the sprites array (e.g. keys could be...ActorType.Enemy, ActorType.Player)
-      let keys = Object.keys(this.sprites);
-      for (let i = 0; i < keys.length; i++) {
+      for (let key of Object.keys(this.sprites)) {
         //for the sprites inside the array for the current key call update
-        for (let j = 0; j < this.sprites[keys[i]].length; j++)
-          this.sprites[keys[i]][j].Update(
-            gameTime,
-            this.cameraManager.ActiveCamera
-          );
+        for (let sprite of this.sprites[key])
+          sprite.Update(gameTime,this.cameraManager.ActiveCamera);
       }
     }
   }
@@ -185,14 +185,14 @@ class ObjectManager {
     //if update enabled for the object manager?
     if ((this.statusType & StatusType.IsDrawn) != 0) {
       //for each of the keys in the sprites array (e.g. keys could be...ActorType.Enemy, ActorType.Player)
-      let keys = Object.keys(this.sprites);
-      for (let i = 0; i < keys.length; i++) {
+      for (let key of Object.keys(this.sprites)) {
         //for the sprites inside the array for the current key call update
-        for (let j = 0; j < this.sprites[keys[i]].length; j++) {
-          this.sprites[keys[i]][j].Draw(
-            gameTime,
-            this.cameraManager.ActiveCamera
-          );
+        for (let sprite of this.sprites[key])
+        {
+          sprite.Draw(gameTime,this.cameraManager.ActiveCamera);
+          //do we want to see the CD/CR bounding boxes?
+          if(this.DebugEnabled)
+            this.DrawDebugBoundingBox(sprite, "red");
         }
       }
     }
@@ -216,7 +216,7 @@ class ObjectManager {
   //#endregion
 
   //#region Debug
-  DrawDebugBoundingBox(color, sprite) {
+  DrawDebugBoundingBox(sprite, color) {
     this.context.save();
     this.SetContext(this.cameraManager.ActiveCamera);
     let transform = sprite.Transform2D;

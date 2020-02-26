@@ -39,8 +39,8 @@ class PlayerMoveBehavior
         return "undefined";
     }
     */
-
    Clone() {
     return new PlayerMoveBehavior(this.keyboardManager, this.moveDirection, this.moveSpeedMultiplier);
    }
+
 }
