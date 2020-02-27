@@ -50,18 +50,18 @@ const AudioType = Object.freeze({ //replaced user-defined values with Symbol
 
 
   const ActorType = Object.freeze({ //replaced user-defined values with Symbol 
-    Background:     {ID: "Background", DrawOrder: 0},
-    Platform:       {ID: "Platform", DrawOrder: 1},
-    Decorator:      {ID: "Decorator", DrawOrder: 2},
-    Pickup:         {ID: "Pickup", DrawOrder: 3},
-    Interactable:   {ID: "Interactable", DrawOrder: 4},
-    Bullet:         {ID: "Bullet", DrawOrder: 5},
-    Enemy:          {ID: "Enemy", DrawOrder: 6},
-    NPC:            {ID: "NPC", DrawOrder: 7},
-    Player:         {ID: "Player", DrawOrder: 8},
-    Camera:         {ID: "Camera", DrawOrder: 9},
-    HUD:            {ID: "HUD", DrawOrder: 10},
-    //add as many actor types as your game needs here...
+    Background:     0,
+    Platform:       1,
+    Decorator:      2,
+    Pickup:         3,
+    Interactable:   4,
+    Bullet:         5,
+    Enemy:          6,
+    NPC:            7,
+    Player:         9,
+    Camera:         10,
+    HUD:            11,
+    //add as many actor types as your game needs here BUT remember that the assigned number will determine drawn sort order...
 });
 
 // const ActorType = Object.freeze({ //replaced user-defined values with Symbol 

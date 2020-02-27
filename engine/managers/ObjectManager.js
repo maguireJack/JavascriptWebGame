@@ -91,25 +91,25 @@ class ObjectManager {
 
   //#region Add, Remove, Find, Clear
   Add(sprite) {
-    if (this.sprites[sprite.ActorType.ID])
-      this.sprites[sprite.ActorType.ID].push(sprite);
+    if (this.sprites[sprite.ActorType])
+      this.sprites[sprite.ActorType].push(sprite);
     else {
-      this.sprites[sprite.ActorType.ID] = [];
-      this.sprites[sprite.ActorType.ID].push(sprite);
+      this.sprites[sprite.ActorType] = [];
+      this.sprites[sprite.ActorType].push(sprite);
     }
   }
 
   FindIndex(actorType, predicate) {
-    if (this.sprites[actorType.ID])
-      return this.sprites[actorType.ID].findIndex(predicate);
+    if (this.sprites[actorType])
+      return this.sprites[actorType].findIndex(predicate);
     else return -1;
   }
 
   FindIndices(actorType, predicate) {
-    if (this.sprites[actorType.ID]) {
+    if (this.sprites[actorType]) {
       let foundIndices = [];
       let index = 0;
-      for (let i = 0; i < this.sprites[actorType.ID].length; i++) {
+      for (let i = 0; i < this.sprites[actorType].length; i++) {
         if (predicate(sprite)) foundIndices[index] = i;
         index++;
       }
@@ -118,40 +118,36 @@ class ObjectManager {
   }
 
   Find(actorType, predicate) {
-    let index = this.sprites[actorType.ID].findIndex(predicate);
+    let index = this.sprites[actorType].findIndex(predicate);
 
-    if (index != -1) return this.sprites[actorType.ID][index];
+    if (index != -1) return this.sprites[actorType][index];
     else return -1;
   }
 
   Remove(actorType, predicate) {
-    if (this.sprites[actorType.ID])
+    if (this.sprites[actorType])
       this.sprites.splice(this.FindIndex(actorType, predicate), 1);
   }
 
   RemoveAll(actorType, predicate) {
-    if (this.sprites[actorType.ID])
-      this.sprites.splice(this.FindIndex(actorType.ID, predicate), 1);
+    if (this.sprites[actorType])
+      this.sprites.splice(this.FindIndex(actorType, predicate), 1);
   }
 
   RemoveAllByType(actorType) {
-    if (this.sprites[actorType.ID])
-      this.sprites[actorType.ID].splice(0, this.sprites[actorType.ID].length);
+    if (this.sprites[actorType])
+      this.sprites[actorType].splice(0, this.sprites[actorType].length);
   }
 
   Get(actorType){
-    if (this.sprites[actorType.ID])
-    return this.sprites[actorType.ID];
+    if (this.sprites[actorType])
+    return this.sprites[actorType];
   }
 
   Sort(actorType, compareFunction) {
-    if (this.sprites[actorType.ID]) {
-      this.sprites[actorType.ID].sort(compareFunction);
+    if (this.sprites[actorType]) {
+      this.sprites[actorType].sort(compareFunction);
     }
-  }
-
-  SetDrawOrder(compareFunction){
-    this.sprites.sort(compareFunction);
   }
 
   Clear() {

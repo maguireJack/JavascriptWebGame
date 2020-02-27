@@ -225,10 +225,6 @@ function Initialize() {
   LoadAllOtherManagers();
   LoadSprites();
 
-  //sort the sprites array of the object manager so that the row arrays are sorted by their ActorType - see Constants.js
-  //by sorting by ActorType we ensure that ActorType.Background are drawn first and ActorType.UI are drawn last.
-  this.objectManager.SetDrawOrder(function sortDrawOrder(a,b) { return a.DrawOrder - b.DrawOrder;});
-
   //set game is playing
   this.isPlaying = false;
 }
