@@ -6,19 +6,25 @@ Notes:
 - None
 
 To Do:
-- Re-factor MyObjectManager.
+- Camera2D bounding box is not updating with scale or rotation changes.
 - Re-introduce culling in MyObjectManager::Draw() based on Camera2D bounding box.
-- Fix bounding box on TextSpriteArtist.
+- Add DebugDrawer::Draw() and show object count, fps etc.
+
+
+- Improve SoundManager to block load until all sound resources have loaded.
+- Add pause/unpause to SoundManager when we lose/gain window focus.
+- Fix bounding box on TextSpriteArtist - see constants::TextBaselineType and https://www.w3schools.com/tags/canvas_textbaseline.asp and https://www.w3schools.com/tags/canvas_measuretext.asp
 - Fix UpdateHorizontalScrolling().
 - Add countdown toast when we gain window focus.
-- Add pause/unpause to SoundManager when we lose/gain window focus.
 - Add check for "P" key in MyMenuManager::Update() to show/hide menu
-- Improve SoundManager to block load until all sound resources have loaded.
 - Improve KeyboardManager to add IsFirstKeyPress() method.
 - Complete menu demo.
 - Continue adding documentation to all classes and methods.
 
 Done:
+- Removed ObjectManager::DrawDebugBoundingBox and created DebugDrawer to handle showing debug (bounding boxes, FPS) related information
+- Added CollisionType to allow us to say which actors are collidable, or not.
+- Re-factor MyObjectManager.
 - Added predicate based remove, find, and sort functions to CameraManager.
 - Fix no translate on numpad keys left, right.
 - Add Camera2D and re-factor use of translationOffset in Transform2D and artist Draw().
@@ -30,7 +36,6 @@ Bugs:
 - When we scroll too far L/R then scrolling stops - see ScrollingSpriteArtist.
 - When we use background scroll <- and -> then collisions are not tested and responded to
 - When player and platform above are separated by only player height?
-
 
 Week 5 
 ------
@@ -232,7 +237,7 @@ function Initialize() {
 function LoadCameras() {
   let transform = new Transform2D(
     new Vector2(0, 0),
-    0 * Math.PI/180,
+    0,
     Vector2.One,
     new Vector2(cvs.clientWidth/2,  cvs.clientHeight/2),
     new Vector2(cvs.clientWidth, cvs.clientHeight),
@@ -246,18 +251,18 @@ function LoadCameras() {
     StatusType.IsUpdated
   );
 
-  // camera.AttachBehavior(
-  //   new FlightCameraBehavior(
-  //     this.keyboardManager,
-  //     [
-  //       Keys.NumPad4,   Keys.NumPad6,  Keys.NumPad1,   Keys.NumPad9,
-  //       Keys.NumPad8,   Keys.NumPad2,  Keys.NumPad5
-  //     ],
-  //     new Vector2(3,0),
-  //     Math.PI / 180,
-  //     new Vector2(0.005, 0.005)
-  //   )
-  // );
+  camera.AttachBehavior(
+    new FlightCameraBehavior(
+      this.keyboardManager,
+      [
+        Keys.NumPad4,   Keys.NumPad6,  Keys.NumPad1,   Keys.NumPad9,
+        Keys.NumPad8,   Keys.NumPad2,  Keys.NumPad5
+      ],
+      new Vector2(3,0),
+      Math.PI / 180,
+      new Vector2(0.005, 0.005)
+    )
+  );
 
  // camera.AttachBehavior(new PanCameraBehavior());
   this.cameraManager.Add(camera);
@@ -275,15 +280,12 @@ function LoadInputAndCameraManagers() {
 }
 
 function LoadAllOtherManagers() {
-  let debugEnabled = false;
   this.objectManager = new ObjectManager(
     "game sprites",
     StatusType.IsUpdated | StatusType.IsDrawn,
-    this.cvs,
     this.ctx,
     this.cameraManager,
-    this.notificationCenter,
-    debugEnabled
+    this.notificationCenter
   );
 
   //adds support for storing and responding to changes in game state e.g. player collect all inventory items, or health == 0
@@ -343,6 +345,7 @@ function LoadBackground() {
       new Sprite(
         BACKGROUND_DATA[i].id,
         BACKGROUND_DATA[i].actorType,
+        BACKGROUND_DATA[i].collisionType,
         transform,
         spriteArtist,
         StatusType.IsUpdated | StatusType.IsDrawn,
@@ -380,6 +383,7 @@ function LoadPlatforms() {
   let platformSprite = new Sprite(
     PLATFORM_DATA.id,
     PLATFORM_DATA.actorType,
+    PLATFORM_DATA.collisionType, 
     transform,
     spriteArtist,
     StatusType.IsUpdated | StatusType.IsDrawn,
@@ -418,6 +422,7 @@ function LoadPickups() {
   let pickupSprite = new Sprite(
     "gold",
     ActorType.Pickup,
+    CollisionType.Collidable,
     transform,
     spriteArtist,
     StatusType.IsUpdated | StatusType.IsDrawn,
@@ -446,6 +451,7 @@ function LoadEnemies() {
   let enemySprite = new MoveableSprite(
     "wasp",
     ActorType.Enemy,
+    CollisionType.Collidable,
     transform,
     spriteArtist,
     StatusType.IsUpdated | StatusType.IsDrawn,
@@ -479,6 +485,7 @@ function LoadPlayer() {
   let playerSprite = new MoveableSprite(
     "player",
     ActorType.Player,
+    CollisionType.Collidable,
     transform,
     spriteArtist,
     StatusType.IsUpdated | StatusType.IsDrawn,
@@ -506,7 +513,7 @@ function LoadPlayer() {
 
 function LoadOnScreenText() {
   let transform = new Transform2D(
-    new Vector2(180,180),
+    new Vector2(180,190),
     0,
     Vector2.One,
     Vector2.Zero,
@@ -518,7 +525,7 @@ function LoadOnScreenText() {
     this.ctx,
     "Wasp[20, 5]",
     FontType.UnitInformationSmall,
-    "rgb(0, 255, 0)",
+    "rgb(0, 0, 0)",
     TextAlignType.Left,
     1,
     200
@@ -527,6 +534,7 @@ function LoadOnScreenText() {
   let sprite = new Sprite(
     "txt_ui_hello",
     ActorType.HUD,
+    CollisionType.NotCollidable,
     transform,
     spriteArtist,
     StatusType.IsUpdated | StatusType.IsDrawn,

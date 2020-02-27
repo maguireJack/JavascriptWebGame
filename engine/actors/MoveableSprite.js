@@ -20,8 +20,8 @@ class MoveableSprite extends Sprite {
     }
     //#endregion 
 
-    constructor(id, actorType, transform2D, artist, statusType, scrollSpeedMultiplier, layerDepth) {
-        super(id, actorType, transform2D, artist, statusType, scrollSpeedMultiplier, layerDepth);
+    constructor(id, actorType, collisionType, transform2D, artist, statusType, scrollSpeedMultiplier, layerDepth) {
+        super(id, actorType, collisionType, transform2D, artist, statusType, scrollSpeedMultiplier, layerDepth);
     }
 
     //#region Equals, Clone, ToString 
@@ -31,8 +31,8 @@ class MoveableSprite extends Sprite {
     }
 
     ToString() {
-        //to do - lazy option is to call parent method, add a class specific method here later...
-        return super.ToString();
+        //to do...a lazy option is to call parent method, add a class specific method here later...
+        return super.ToString();  
     }
 
     Clone() {

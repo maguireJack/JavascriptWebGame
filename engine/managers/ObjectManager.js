@@ -29,18 +29,13 @@ class ObjectManager {
   constructor(
     id,
     statusType,
-    canvas,
     context,
     cameraManager,
-    notificationCenter,
-    debugEnabled
-  ) {
+    notificationCenter) {
     this.id = id;
     this.statusType = statusType;
-    this.canvas = canvas;
     this.context = context;
     this.cameraManager = cameraManager;
-    this.debugEnabled = debugEnabled;
     this.notificationCenter = notificationCenter;
     this.RegisterForNotifications();
   }
@@ -67,32 +62,41 @@ class ObjectManager {
     let notification = argArray[0];
     switch (notification.NotificationAction) {
       case NotificationAction.ShowMenuChanged:
-        this.HandleShowMenu(notification.NotificationArguments);
+        this.statusType = notification.NotificationArguments[0];
         break;
 
-      case NotificationAction.Remove:
-        this.HandleRemoveSprite(notification.NotificationArguments);
+      case NotificationAction.Add:
+        this.Add(notification.NotificationArguments[0]);
+        break;
+
+      case NotificationAction.RemoveFirst:
+        this.RemoveFirst(notification.NotificationArguments[0]);
+        break;
+
+      case NotificationAction.RemoveFirstBy:
+        this.RemoveFirstBy(notification.NotificationArguments[0], notification.NotificationArguments[1]);
+        break;
+
+      case NotificationAction.RemoveAllBy:
+        this.RemoveAllBy(notification.NotificationArguments[0], notification.NotificationArguments[1]);
+        break;
+
+      case NotificationAction.RemoveAllByType:
+        this.RemoveAllByType(notification.NotificationArguments[0]);
         break;
 
       default:
         break;
     }
   }
-
-  HandleShowMenu(argArray) {
-    this.statusType = argArray[0];
-  }
-
-  HandleRemoveSprite(argArray) {
-    let spriteToRemove = argArray[0];
-    this.Remove(spriteToRemove);
-  }
   //#endregion
 
   //#region Add, Remove, Find, Clear
   Add(sprite) {
+    //we have a sprite of this ActorType already in the 2D sprites array
     if (this.sprites[sprite.ActorType])
       this.sprites[sprite.ActorType].push(sprite);
+    //we have a sprite with a new ActorType so we need a new array in the 2D sprites array
     else {
       this.sprites[sprite.ActorType] = [];
       this.sprites[sprite.ActorType].push(sprite);
@@ -107,31 +111,46 @@ class ObjectManager {
 
   FindIndices(actorType, predicate) {
     if (this.sprites[actorType]) {
-      let foundIndices = [];
       let index = 0;
+      let foundIndices = [];
       for (let i = 0; i < this.sprites[actorType].length; i++) {
-        if (predicate(sprite)) foundIndices[index] = i;
-        index++;
+        if (predicate(this.sprites[actorType][i])) 
+        {
+          foundIndices[index] = i;
+          index++;
+        }
       }
+      return foundIndices.length != 0 ? foundIndices : null;
     }
-    return foundIndices.length != 0 ? foundIndices : null;
+    return null;
   }
 
   Find(actorType, predicate) {
     let index = this.sprites[actorType].findIndex(predicate);
-
-    if (index != -1) return this.sprites[actorType][index];
-    else return -1;
+    if (index != -1) 
+      return this.sprites[actorType][index];
+    else 
+      return -1;
   }
 
-  Remove(actorType, predicate) {
-    if (this.sprites[actorType])
-      this.sprites.splice(this.FindIndex(actorType, predicate), 1);
+  RemoveFirst(sprite) {
+    if (this.sprites[sprite.ActorType])
+    {
+      let index = this.sprites[sprite.ActorType].indexOf(sprite);
+      if(index != -1)
+        this.sprites[sprite.ActorType].splice(index, 1);
+    }
   }
 
-  RemoveAll(actorType, predicate) {
+  RemoveFirstBy(actorType, predicate) {
     if (this.sprites[actorType])
-      this.sprites.splice(this.FindIndex(actorType, predicate), 1);
+      this.sprites[actorType].splice(this.FindIndex(actorType, predicate), 1);
+  }
+
+  RemoveAllBy(actorType, predicate) {
+    let indices = this.FindIndices(actorType, predicate);
+    for (let i = indices.length - 1; i >= 0; i--) 
+      this.sprites[actorType].splice(this.sprites[actorType][i], 1); 
   }
 
   RemoveAllByType(actorType) {
@@ -155,8 +174,10 @@ class ObjectManager {
     //see https://www.tutorialspoint.com/in-javascript-how-to-empty-an-array
 
     //remove each of the sprites inside each of the arrays
-    for (let key in Object.keys(this.sprites)) {
-      this.sprites[key].splice(0, this.sprites[key].length);
+    for (let i = 0; i < this.sprites.length; i++) 
+    {
+      if(this.sprites[i] != undefined)      //if we have a valid array at index == i
+        this.sprites[i].splice(0, this.sprites[i].length);
     }
 
     //remove each empty array from the parent array
@@ -185,46 +206,12 @@ class ObjectManager {
         //for the sprites inside the array for the current key call update
         for (let sprite of this.sprites[key])
         {
-          sprite.Draw(gameTime,this.cameraManager.ActiveCamera);
-          //do we want to see the CD/CR bounding boxes?
-          if(this.DebugEnabled)
-            this.DrawDebugBoundingBox(sprite, "red");
+          if(sprite.Transform2D.BoundingBox.Intersects(this.cameraManager.ActiveCamera.Transform2D.BoundingBox))
+            sprite.Draw(gameTime,this.cameraManager.ActiveCamera);
         }
       }
     }
   }
-
-  SetContext(activeCamera) {
-    let cameraTransform = activeCamera.Transform2D;
-    this.context.translate(cameraTransform.Origin.X, cameraTransform.Origin.Y);
-    this.context.scale(cameraTransform.Scale.X, cameraTransform.Scale.Y);
-    this.context.rotate(cameraTransform.RotationInRadians);
-    this.context.translate(
-      -cameraTransform.Origin.X,
-      -cameraTransform.Origin.Y
-    );
-    this.context.translate(
-      -cameraTransform.Translation.X,
-      -cameraTransform.Translation.Y
-    );
-    this.context.globalAlpha = 1;
-  }
   //#endregion
 
-  //#region Debug
-  DrawDebugBoundingBox(sprite, color) {
-    this.context.save();
-    this.SetContext(this.cameraManager.ActiveCamera);
-    let transform = sprite.Transform2D;
-    this.context.lineWidth = 2;
-    this.context.strokeStyle = color;
-    this.context.strokeRect(
-      transform.BoundingBox.X,
-      transform.BoundingBox.Y,
-      transform.BoundingBox.Width,
-      transform.BoundingBox.Height
-    );
-    this.context.restore();
-  }
-  //#endregion
 }

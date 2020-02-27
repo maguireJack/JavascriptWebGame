@@ -75,35 +75,33 @@ class PlayerBehavior {
         notificationCenter.Notify(
           new Notification(
             NotificationType.GameState,
-            NotificationAction.Health,
+            NotificationAction.Pickup,
             [5, "mega", "key"]
           )
         );
 
         notificationCenter.Notify(
-          new Notification(NotificationType.Sprite, NotificationAction.Remove, [
-            sprite
-          ])
+          new Notification(
+            NotificationType.Sprite,
+            NotificationAction.RemoveFirst,
+            [sprite]
+          )
         );
       }
     }
   }
+
   HandleEnemyCollision(parent) {
     let sprites = this.objectManager.Get(ActorType.Enemy);
 
     for (let i = 0; i < sprites.length; i++) {
       let sprite = sprites[i];
 
-      //we call this method because we might care what side we collide with the enemy e.g. hit on top to remove
-      let collisionLocationType = Collision.GetCollisionLocationType(
-        parent,
-        sprite
-      );
-
-      if (collisionLocationType != null) {
-        console.log(
-          "collision: " + collisionLocationType + "kill enemy sprite!"
-        );
+      if (
+        parent.Transform2D.BoundingBox.Intersects(
+          sprite.Transform2D.BoundingBox
+        )
+      ) {
 
         //your code - play sound, remove enemy, add health e.g. you could write code like this...
         notificationCenter.Notify(
@@ -114,22 +112,17 @@ class PlayerBehavior {
           )
         );
         notificationCenter.Notify(
-          new Notification(NotificationType.Sprite, NotificationAction.Remove, [
-            sprite
-          ])
+          new Notification(
+            NotificationType.Sprite,
+            NotificationAction.RemoveFirst,
+            [sprite]
+          )
         );
         notificationCenter.Notify(
           new Notification(NotificationType.Sound, NotificationAction.Play, [
             "background"
           ])
         );
-
-        /*
-                //audio - step 4 - create a notification and request one of the unique IDs from the cues
-                notificationCenter.Notify(new Notification(NotificationType.Sound, 
-                    NotificationAction.Play,  ["kill_enemy"]));
-
-                */
       }
     }
   }

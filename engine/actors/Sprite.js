@@ -38,9 +38,9 @@ class Sprite extends Actor2D {
     }
     //#endregion
 
-    constructor(id, actorType, transform2D, artist, statusType,
+    constructor(id, actorType, collisionType, transform2D, artist, statusType,
         scrollSpeedMultiplier, layerDepth) {
-        super(id, actorType, transform2D, statusType);
+        super(id, actorType, collisionType, transform2D, statusType);
         this.artist = artist;
         this.ScrollSpeedMultiplier = scrollSpeedMultiplier;
         this.LayerDepth = layerDepth;
@@ -84,12 +84,13 @@ class Sprite extends Actor2D {
         if (other == null || other == undefined || !other instanceof Sprite)
             throw 'Error: One or more objects is null, undefined, or not type ' + this.constructor.name;
 
-        return this.id === other.ID && this.actorType === other.ActorType && this.transform2D.Equals(other.Transform2D) && this.artist.Equals(other.Artist);
+        return this.id === other.ID && this.actorType === other.ActorType 
+                    && this.collisionType === other.CollisionType && this.transform2D.Equals(other.Transform2D) && this.artist.Equals(other.Artist);
     }
 
     Clone() {
         //make a clone of the actor
-        let clone = new Sprite("clone - " + this.id, this.actorType, this.transform2D.Clone(), this.artist.Clone(), this.statusType);
+        let clone = new Sprite("clone - " + this.id, this.actorType, this.collisionType, this.transform2D.Clone(), this.artist.Clone(), this.statusType);
 
         //now clone all the actors attached behaviors
         for (let behavior of this.behaviors)
@@ -100,7 +101,7 @@ class Sprite extends Actor2D {
     }
 
     ToString() {
-        return "[" + this.id + "," + this.actorType.toString() + "," + this.transform2D.ToString() + "]";
+        return "[" + this.id + "," + this.actorType + "," + this.collisionType + "," + this.transform2D.ToString() + "]";
     }
     //#endregion
 

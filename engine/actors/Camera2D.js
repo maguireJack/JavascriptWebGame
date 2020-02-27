@@ -7,29 +7,25 @@ class Camera2D extends Actor2D{
     //#endregion
 
     constructor(id, actorType, transform2D, statusType) {
-        super(id, actorType, transform2D, statusType);
+        super(id, actorType, CollisionType.NotCollidable, transform2D, statusType);
     }
 
     //other methods...
     Update(gameTime){
-     super.Update(gameTime); //call parent to update any attached behaviors   
-
+     super.Update(gameTime); //call parent - is this methods necessary?
     }
 
     //#region Equals, Clone, ToString 
     Equals(other) {
-        //to do...  
-        throw "Not Yet Implemented";
-    }
+        return super.Equals(other); //call parent - is this methods necessary?
+    } 
 
     ToString() {
-        //to do...
-        throw "Not Yet Implemented";
+        return super.ToString(); //call parent - is this methods necessary?
     }
 
     Clone() {
-        //to do...
-        throw "Not Yet Implemented";
+        return new Camera2D(this.ID, this.ActorType, this.CollisionType, this.Transform2D, this.StatusType);
 
     }
     //#endregion

@@ -19,7 +19,7 @@ class TextSpriteArtist extends Artist{
         this.text = text;
         this.fontType = fontType;      
         this.fillStyle = fillStyle;
-        this.textAlign = textAlign;    
+        this.textAlign = textAlign; 
         this.maxWidth = maxWidth;
     }
 
@@ -37,6 +37,7 @@ class TextSpriteArtist extends Artist{
         this.Context.font = this.fontType;
         this.Context.fillStyle = this.fillStyle;
         this.Context.textAlign = this.textAlign;
+        this.Context.textBaseline = TextBaselineType.Top;
         this.Context.globalAlpha = this.Alpha;
         this.Context.fillText(this.text, transform.Translation.X, transform.Translation.Y, this.maxWidth);
         this.Context.restore();

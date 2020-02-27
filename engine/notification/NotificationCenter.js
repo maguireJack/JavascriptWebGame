@@ -30,17 +30,17 @@ const NotificationAction = Object.freeze({
 
   Fire: Symbol("Fire"),
   Win: Symbol("Win"),
-
   Lose: Symbol("Lose"),
-  Spawn: Symbol("Spawn"),
 
-  Remove: Symbol("Remove"),
-  Health: Symbol("Health"),
-  Ammo: Symbol("Ammo"),
-  Inventory: Symbol("Inventory"),
+  Add: Symbol("Add"),
+  RemoveFirst: Symbol("RemoveFirst"),
+  RemoveFirstBy: Symbol("RemoveFirstBy"),
+  RemoveAllBy: Symbol("RemoveAllBy"),
+  RemoveAllByType: Symbol("RemoveAllByType"),
+
+  Pickup: Symbol("Pickup"),
 
   ShowMenuChanged: Symbol("ShowMenuChanged"),
-
   SetVolume: Symbol("SetVolume"),
   SetVolumeByTheme: Symbol("SetVolumeByTheme"),
   SetVolumeAll: Symbol("SetVolumeAll"),

@@ -14,6 +14,9 @@ class Actor2D {
     get ID() {
         return this.id;
     }
+    get CollisionType() {
+        return this.collisionType;
+    }
     get ActorType() {
         return this.actorType;
     }
@@ -27,6 +30,9 @@ class Actor2D {
     set ID(id) {
         this.id = id;
     }
+    set CollisionType(collisionType) {
+        this.collisionType = collisionType;
+    }
     set ActorType(actorType) {
         this.actorType = actorType;
     }
@@ -38,9 +44,10 @@ class Actor2D {
     }
     //#endregion
 
-    constructor(id, actorType, transform2D, statusType) {
+    constructor(id, actorType, collisionType, transform2D, statusType) {
         this.id = id;
         this.actorType = actorType;
+        this.collisionType = collisionType;
         this.transform2D = transform2D;
         this.statusType = statusType;
         this.behaviors = [];
@@ -88,20 +95,14 @@ class Actor2D {
         if (other == null || other == undefined || !other instanceof Actor2D)
             throw 'Error: One or more objects is null, undefined, or not type ' + a.constructor.name;
 
-        return this.id === other.ID && this.actorType === other.ActorType && this.transform2D.Equals(other.Transform2D);
-    }
-
-    static Equals(a, b) {
-        if (a == null || a == undefined || !a instanceof Actor2D)
-            throw 'Error: One or more objects is null, undefined, or not type ' + this.constructor.name;
-
-        return a.Equals(b);
+        return this.id === other.ID && this.actorType === other.ActorType 
+                && this.collisionType === other.CollisionType && this.transform2D.Equals(other.Transform2D);
     }
 
     Clone() {
 
         //make a clone of the actor
-        let clone = new Actor2D("clone - " + this.id, this.actorType, this.transform2D.Clone(), this.statusType);
+        let clone = new Actor2D("clone - " + this.id, this.actorType, this.collisionType, this.transform2D.Clone(), this.statusType);
 
         //now clone all the actors attached behaviors
         for (let behavior of this.behaviors)
@@ -112,7 +113,7 @@ class Actor2D {
     }
 
     ToString() {
-        return "[" + this.id + "," + this.actorType + "," + this.transform2D.ToString() + "]";
+        return "[" + this.id + "," + this.actorType + "," + this.collisionType + "," + this.transform2D.ToString() + "]";
     }
     //#endregion
 

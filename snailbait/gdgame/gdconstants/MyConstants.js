@@ -143,6 +143,7 @@ const PLATFORM_DATA = Object.freeze({
   scale: new Vector2(1, 1),
   origin: new Vector2(0, 0),
   actorType: ActorType.Platform,
+  collisionType: CollisionType.Collidable,
   layerDepth: 0,
   explodeBoundingBoxInPixels: -6,
   translationArray: [
@@ -171,6 +172,7 @@ const BACKGROUND_DATA = [
     scale: new Vector2(1, 1),
     origin: new Vector2(0, 0),
     actorType: ActorType.Background,
+    collisionType: CollisionType.NotCollidable,
     layerDepth: 0,
     scrollSpeedMultiplier: 0.2
   },
@@ -237,10 +239,4 @@ const FontType = Object.freeze({
   UnitInformationLarge: "24px Comic Sans MS"
 });
 
-//move to constants.js!
-const TextAlignType = Object.freeze({
-  Left: "left",
-  Center: "center",
-  Right: "right"
-});
 //#endregion
