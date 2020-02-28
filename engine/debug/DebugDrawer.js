@@ -1,5 +1,5 @@
 /**
- * Description goes here...
+ * This component allows us to draw debug information to the screen (e.g. sprite and camera bounding boxes, fps etc)
  * @author NMCG
  * @version 1.0
  * @class DebugDrawer
@@ -8,46 +8,61 @@
 class DebugDrawer {
   //#region Fields
   id = "";
+  static SPRITE_BOUNDING_BOX_COLOR = "red";
+  static CAMERA_BOUNDING_BOX_COLOR  = "blue"
   //#endregion
 
   //#region Properties
   //#endregion
 
-  constructor(id, ctx, objectManager, cameraManager) {
-      this.id = id;
-      this.ctx = ctx;
-      this.objectManager = objectManager;
-      this.cameraManager = cameraManager;
+  constructor(id, context, objectManager, cameraManager) {
+    this.id = id;
+    this.context = context;
+    this.objectManager = objectManager;
+    this.cameraManager = cameraManager;
   }
 
   //#region Draw, Update
   Update(gameTime) {
-        //does nothing here yet...
+    //does nothing here yet...
   }
 
   Draw(gameTime) {
-    let count = 0;
 
-    //if update enabled for the object manager?
-    if ((this.statusType & StatusType.IsDrawn) != 0) {
-      //for each of the keys in the sprites array (e.g. keys could be...ActorType.Enemy, ActorType.Player)
-      for (let key of Object.keys(this.sprites)) {
-        //for the sprites inside the array for the current key call update
-        for (let sprite of this.sprites[key])
-        {
-          if(sprite.Transform2D.BoundingBox.Intersects(this.cameraManager.ActiveCamera.Transform2D.BoundingBox))
-          {
-            sprite.Draw(gameTime,this.cameraManager.ActiveCamera);
-            count++;
-          }
-          //do we want to see the CD/CR bounding boxes?
-          if(this.DebugEnabled && sprite.CollisionType === CollisionType.Collidable)
-            this.DrawDebugBoundingBox(sprite, "red");
+    //draw the bounfing boxes for the in-view (i.e. inside the bounding box of the active camera) sprites
+    let drawCount = this.DrawCollidableSpriteBoundingBoxes(DebugDrawer.SPRITE_BOUNDING_BOX_COLOR);
+   
+    //draws the collision surface (i.e. Transform2D.BoundingBox) around the active camera
+    this.DrawActiveCameraBoundingBoxes(DebugDrawer.CAMERA_BOUNDING_BOX_COLOR);
+
+    //draws any additional information to screen
+    this.DrawDebugText(gameTime, drawCount);
+  }
+
+  DrawDebugText(gameTime, drawCount) {
+    console.log("Sprites inside camera bounding box: " + drawCount);
+    console.log("Active Camera: " + this.cameraManager.ActiveCamera.ActorType);
+  }
+
+  DrawActiveCameraBoundingBoxes(boundingBoxColor) {
+    this.DrawBoundingBox(this.cameraManager.ActiveCamera.Transform2D, boundingBoxColor);
+  }
+
+  DrawCollidableSpriteBoundingBoxes(boundingBoxColor) {
+    let drawCount = 0;
+    let sprites = this.objectManager.Sprites;
+    //for each of the keys in the sprites array (e.g. keys could be...ActorType.Enemy, ActorType.Player)
+    for (let key of Object.keys(sprites)) {
+      //for the sprites inside the array for the current key call update
+      for (let sprite of sprites[key]) {
+        if (sprite.Transform2D.BoundingBox.Intersects(this.cameraManager.ActiveCamera.Transform2D.BoundingBox) &&
+          sprite.CollisionType === CollisionType.Collidable) {
+          drawCount++;
+          this.DrawBoundingBox(sprite.Transform2D, boundingBoxColor);
         }
       }
     }
-
-    console.log(count);
+    return drawCount;
   }
 
   SetContext(activeCamera) {
@@ -68,10 +83,9 @@ class DebugDrawer {
   //#endregion
 
   //#region Debug
-  DrawDebugBoundingBox(sprite, color) {
+  DrawBoundingBox(transform, color) {
     this.context.save();
     this.SetContext(this.cameraManager.ActiveCamera);
-    let transform = sprite.Transform2D;
     this.context.lineWidth = 2;
     this.context.strokeStyle = color;
     this.context.strokeRect(

@@ -85,6 +85,9 @@ class PlayerBehavior {
             NotificationType.Sprite,
             NotificationAction.RemoveFirst,
             [sprite]
+
+        //Q: how could we remove all the platforms? what would the notification message be?
+
           )
         );
       }

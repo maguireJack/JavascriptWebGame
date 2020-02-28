@@ -3,14 +3,15 @@
 Week 6 
 ------
 Notes:
-- None
+- Demo: CollisionType, ActorType, ObjectManager, DebugDrawer
 
 To Do:
+- Add booleans to DebugDrawer to enable/disable drawing of BBs for objects and camera, and drawing of debug text.
 - Camera2D bounding box is not updating with scale or rotation changes.
 - Re-introduce culling in MyObjectManager::Draw() based on Camera2D bounding box.
 - Add DebugDrawer::Draw() and show object count, fps etc.
 
-
+- Re-factor CameraManager to align with ObjectManager use of predicates etc?
 - Improve SoundManager to block load until all sound resources have loaded.
 - Add pause/unpause to SoundManager when we lose/gain window focus.
 - Fix bounding box on TextSpriteArtist - see constants::TextBaselineType and https://www.w3schools.com/tags/canvas_textbaseline.asp and https://www.w3schools.com/tags/canvas_measuretext.asp
@@ -33,6 +34,7 @@ Done:
 - Improve AnimatedSpriteArtist to store all animations for a sprite inside an object and not in a single array of cells.
 
 Bugs:
+- When we scroll L/R and the active camera NO LONGER intersects the centre background image (i.e. its bounding box) then the background is no drawn.
 - When we scroll too far L/R then scrolling stops - see ScrollingSpriteArtist.
 - When we use background scroll <- and -> then collisions are not tested and responded to
 - When player and platform above are separated by only player height?
@@ -153,6 +155,10 @@ var gameStateManager;
 var cameraManager;
 //#endregion
 
+//#region 
+var debugModeOn = true;
+//#endregion
+
 /************************************************************ CORE GAME LOOP CODE UNDER THIS POINT ************************************************************/
 
 // #region  LoadGame, Start, Animate
@@ -201,6 +207,10 @@ function Update(gameTime) {
 
   //updates the camera manager which in turn updates all cameras
   this.cameraManager.Update(gameTime);
+
+  //DEBUG - REMOVE LATER
+  if(this.debugModeOn)
+    this.debugDrawer.Update(gameTime);
 }
 
 function Draw(gameTime) {
@@ -209,6 +219,10 @@ function Draw(gameTime) {
 
   //draw all the game sprites
   this.objectManager.Draw(gameTime);
+
+    //DEBUG - REMOVE LATER
+  if(this.debugModeOn)
+    this.debugDrawer.Draw(gameTime);
 }
 
 function ClearScreen(color) {
@@ -232,6 +246,15 @@ function Initialize() {
 
   //set game is playing
   this.isPlaying = false;
+
+  //DEBUG - REMOVE LATER
+  if(this.debugModeOn)
+    LoadDebug();
+
+}
+
+function LoadDebug(){
+  this.debugDrawer = new DebugDrawer("shows debug info", this.ctx, this.objectManager, this.cameraManager);
 }
 
 function LoadCameras() {
@@ -246,7 +269,7 @@ function LoadCameras() {
 
   let camera = new Camera2D(
     "intro camera",
-    ActorType.Camera2D,
+    ActorType.Camera,
     transform,
     StatusType.IsUpdated
   );
@@ -534,7 +557,7 @@ function LoadOnScreenText() {
   let sprite = new Sprite(
     "txt_ui_hello",
     ActorType.HUD,
-    CollisionType.NotCollidable,
+    CollisionType.Collidable,
     transform,
     spriteArtist,
     StatusType.IsUpdated | StatusType.IsDrawn,
