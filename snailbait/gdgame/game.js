@@ -34,6 +34,7 @@ Done:
 - Improve AnimatedSpriteArtist to store all animations for a sprite inside an object and not in a single array of cells.
 
 Bugs:
+- Camera bounding box is not updating on camera scale, rotate.
 - When we scroll L/R and the active camera NO LONGER intersects the centre background image (i.e. its bounding box) then the background is no drawn.
 - When we scroll too far L/R then scrolling stops - see ScrollingSpriteArtist.
 - When we use background scroll <- and -> then collisions are not tested and responded to
