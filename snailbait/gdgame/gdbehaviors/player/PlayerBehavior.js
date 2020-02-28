@@ -53,7 +53,6 @@ class PlayerBehavior {
 
   CheckCollisions(parent) {
     parent.Body.IsOnGround = false;
-
     this.HandlePlatformCollision(parent);
     this.HandleEnemyCollision(parent);
     this.HandlePickupCollision(parent);
@@ -66,30 +65,31 @@ class PlayerBehavior {
       let sprite = sprites[i];
 
       //we can use simple collision check here (i.e. Intersects) because dont need to think was it top, bottom, left, or right
-      if (
-        parent.Transform2D.BoundingBox.Intersects(
-          sprite.Transform2D.BoundingBox
-        )
-      ) {
-        //your code - play sound, remove enemy, add health e.g. you could write code like this...
-        notificationCenter.Notify(
-          new Notification(
-            NotificationType.GameState,
-            NotificationAction.Pickup,
-            [5, "mega", "key"]
-          )
-        );
+      if (parent.Transform2D.BoundingBox.Intersects(sprite.Transform2D.BoundingBox)) {
+
 
         notificationCenter.Notify(
           new Notification(
             NotificationType.Sprite,
             NotificationAction.RemoveFirst,
-            [sprite]
+            [sprite]));
 
-        //Q: how could we remove all the platforms? what would the notification message be?
+        //uncomment this code to see how we could remove ALL platforms    
+        // notificationCenter.Notify(new Notification(
+        //   NotificationType.Sprite,  //Who is registered to listen to this notification? see ObjectManager::RegisterForNotifications
+        //   NotificationAction.RemoveAllByType, //how does the ObjectManager handle the notification? see ObjectManager::HandleNotification
+        //   [ActorType.Platform]));  //what parameters does the method you are calling expect? see ObjectManager::RemoveAllByType()
 
+        //uncomment this code to see how we could remove the first platform with an X position > 400
+        notificationCenter.Notify(
+          new Notification(
+            NotificationType.Sprite, NotificationAction.RemoveFirstBy,
+            [ActorType.Platform, 
+          sprite => 
+          sprite.Transform2D.Translation.X > 400]
           )
         );
+
       }
     }
   }

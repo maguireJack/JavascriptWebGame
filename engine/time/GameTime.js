@@ -30,7 +30,7 @@ class GameTime
 
     UpdateFPS(now) 
     {
-        this.fps = Math.round(1 / (now - this.lastAnimationFrameTimeInMs) * 1000);  
+        this.fps = Math.floor(1 / (now - this.lastAnimationFrameTimeInMs) * 1000);  
         if (now - this.lastFpsUpdateTime > 1000) 
             this.lastFpsUpdateTime = now;
     }

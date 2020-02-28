@@ -10,16 +10,12 @@ class ObjectManager {
   //#region Fields
   id = "";
   context;
-  debugEnabled = false;
   sprites = [];
   //#endregion
 
   //#region Properties
   get StatusType() {
     return this.statusType;
-  }
-  get DebugEnabled() {
-    return this.debugEnabled;
   }
   get Sprites() {
     return this.sprites;

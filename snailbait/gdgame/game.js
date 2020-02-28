@@ -255,7 +255,8 @@ function Initialize() {
 }
 
 function LoadDebug(){
-  this.debugDrawer = new DebugDrawer("shows debug info", this.ctx, this.objectManager, this.cameraManager);
+  this.debugDrawer = new DebugDrawer("shows debug info", 
+        this.ctx, this.objectManager, this.cameraManager);
 }
 
 function LoadCameras() {

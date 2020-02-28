@@ -9,7 +9,10 @@ class DebugDrawer {
   //#region Fields
   id = "";
   static SPRITE_BOUNDING_BOX_COLOR = "red";
-  static CAMERA_BOUNDING_BOX_COLOR  = "blue"
+  static CAMERA_BOUNDING_BOX_COLOR  = "yellow";
+  static DEBUG_TEXT_FONT = "8px Comic Sans MS";
+  static DEBUD_TEXT_MAXWIDTH = 200;
+
   //#endregion
 
   //#region Properties
@@ -40,9 +43,32 @@ class DebugDrawer {
   }
 
   DrawDebugText(gameTime, drawCount) {
-    console.log("Sprites inside camera bounding box: " + drawCount);
-    console.log("Active Camera: " + this.cameraManager.ActiveCamera.ActorType);
+    let x = 10, y = 10;
+    let yOffset = 10;
+
+    this.DrawText("Debug Info", x, y + yOffset, "white");
+    this.DrawText("--------------------------", x, y + 2 * yOffset,  "white");
+    this.DrawText("Draw Count:" + drawCount, x, y + 3 * yOffset, "white");
+    this.DrawText("FPS:" + gameTime.FPS + " ms", x, y + 4 * yOffset,  "white");
   }
+
+  DrawText(text, x, y, color){
+    this.context.save();
+    //uncomment this line and see what happens to the debug text when you move camera using numpad 4 - 6
+    //this.SetContext(this.cameraManager.ActiveCamera);
+    this.context.font = DebugDrawer.DEBUG_TEXT_FONT;
+    this.context.fillStyle = color; 
+    this.context.textBaseline = "top";
+    this.context.globalAlpha = DebugDrawer.DEBUG_TEXT_ALPHA;
+    this.context.fillText(text, x, y, DebugDrawer.DEBUG_TEXT_MAXWIDTH);
+    this.context.restore();
+  }
+
+
+
+
+
+
 
   DrawActiveCameraBoundingBoxes(boundingBoxColor) {
     this.DrawBoundingBox(this.cameraManager.ActiveCamera.Transform2D, boundingBoxColor);

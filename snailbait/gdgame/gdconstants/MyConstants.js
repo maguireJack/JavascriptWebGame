@@ -150,12 +150,15 @@ const PLATFORM_DATA = Object.freeze({
     new Vector2(30, 420),
     new Vector2(80, 420),
     new Vector2(130, 420),
+
     new Vector2(230, 370),
     new Vector2(280, 370),
     new Vector2(330, 370),
     new Vector2(380, 370),
+
     new Vector2(480, 300),
     new Vector2(530, 300),
+    
     new Vector2(280, 240),
     new Vector2(330, 240)
   ]

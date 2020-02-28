@@ -102,7 +102,8 @@ class Actor2D {
     Clone() {
 
         //make a clone of the actor
-        let clone = new Actor2D("clone - " + this.id, this.actorType, this.collisionType, this.transform2D.Clone(), this.statusType);
+        let clone = new Actor2D("clone - " + this.id, 
+        this.actorType, this.collisionType, this.transform2D.Clone(), this.statusType);
 
         //now clone all the actors attached behaviors
         for (let behavior of this.behaviors)

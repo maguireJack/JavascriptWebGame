@@ -7,7 +7,7 @@ class Camera2D extends Actor2D{
     //#endregion
 
     constructor(id, actorType, transform2D, statusType) {
-        super(id, actorType, CollisionType.NotCollidable, transform2D, statusType);
+        super(id, actorType, CollisionType.Collidable, transform2D, statusType);
     }
 
     //other methods...

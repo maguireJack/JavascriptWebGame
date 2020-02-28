@@ -61,9 +61,6 @@ class MyCollisionManager{
             if(!boundingBox.Intersects(this.screenRectangle))
                 this.objectManager.BulletSprites.splice(i, 1);
         }
-
-        //debug to test if the sprite has been removed
-        //console.log(this.objectManager.BulletSprites.length);
     }
 
     HandleHitEnemy(gameTime)
