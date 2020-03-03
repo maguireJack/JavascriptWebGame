@@ -7,6 +7,7 @@ Comments:
 - GDUtility.IsSameTypeAsTarget() and its impact on Equals() methods in classes.
 
 Exercises: 
+- Re-factor CameraManager to align with ObjectManager use of predicates etc.
 - Use ContextParameter classes in the appropriate artist.
 - Complete the RenderManager to move ObjectManager::Draw()
 - Add context to the camera class.
@@ -15,9 +16,9 @@ Notes:
 - None
 
 To Do:
+- Re-factor CameraManager to align with ObjectManager use of predicates etc.
 - Wrap MyConstants.js and Constants.js in a class to set scope and no longer pollute global project space.
 - Add booleans to DebugDrawer to enable/disable drawing of BBs for objects and camera, and drawing of debug text.
-- Re-factor CameraManager to align with ObjectManager use of predicates etc?
 - Improve SoundManager to block load until all sound resources have loaded.
 - Add pause/unpause to SoundManager when we lose/gain window focus.
 - Add code to calculate TextSpriteArtist bounding box size based on text used.

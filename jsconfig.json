@@ -2,7 +2,11 @@
     "compilerOptions": {
         "target": "ES6"
     },
-    "include": ["engine/**/*", 
+    "include": [
+        "engine/**/*", 
+        "temp_dev_support/*",
         "spaceinvaders/gdgame/**/*", 
-        "snailbait/gdgame/**/*", "snailbait/temp_dev_support"] /*added to support Intellisense for JS files outside current file*/
+        "snailbait/gdgame/**/*", 
+        "splitscreensam/gdgame/**/*",
+        ] /*added to support Intellisense for JS files outside current file*/
 }

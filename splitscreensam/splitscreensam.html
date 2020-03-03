@@ -1,60 +1,99 @@
 <html>
+
 <head>
-    <title>Space Invaders</title>
+    <title>Splitscreen Sam</title>
+    <link rel='stylesheet' href='splitscreensam.css' />
+    <!-- Menu -->
+    <link rel="stylesheet" href="ui.css" type="text/css" media="screen">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 </head>
+
 <body>
-    <div style="text-align:center">
-        <!-- <div id="fps" style="font-size:2rem">FPS:</div> -->
-        <canvas id="game-canvas" width="600" height="800" style="border:2px dotted #000000;">    </canvas>  
+    <div id="game-window" class="wrapper">
+        <div id="menu">
+            <div id="main">
+                <h1>Game Title Here</h1>
+                <ul>
+                    <li><a href="javascript:void(0)" class="button play">Start Game</a></li>
+                </ul>
+            </div>
+        </div>
+        <canvas id='game-canvas' width='864' height='468'></canvas>
+        
     </div>
+    <canvas id='game-canvas2' width='864' height='468'></canvas>
 
     <!--------------------------------------------CORE ENGINE CODE----------------------------------------------------->
 
     <!-- dependent code is added first -->
-    <script src="../engine/constants/constant.js"></script>  
+    <script src="../engine/constants/constant.js"></script>
 
-    <script src="../engine/time/StopWatch.js"></script>  
-    <script src="../engine/time/GameTime.js"></script>  
+    <script src="../engine/time/GameTime.js"></script>
+    <script src="../engine/time/StopWatch.js"></script> <!-- new to support jump/fall -->
+    <script src="../engine/time/AnimationTimer.js"></script> <!-- new to support jump/fall -->
 
-    <script src="../engine/utilities/GDArray.js"></script> 
-    <script src="../engine/utilities/GDMath.js"></script> 
-    <script src="../engine/types/Vector2.js"></script>  
-    <script src="../engine/types/Transform2D.js"></script> 
-    <script src="../engine/types/Rect.js"></script>  
+    <script src="../engine/utilities/Utilities.js"></script>
+    <script src="../engine/types/Vector2.js"></script>
+    <script src="../engine/types/Transform2D.js"></script>
+    <script src="../engine/types/Rect.js"></script>
+    <script src="../engine/types/Matrix.js"></script>
+
+    <script src="../engine/physics/Body.js"></script>
+    <script src="../engine/physics/Collision.js"></script>
 
     <script src="../engine/notification/NotificationCenter.js"></script>
 
-    <script src="../engine/artists/SpriteArtist.js"></script>  
-    <script src="../engine/artists/AnimatedSpriteArtist.js"></script>  
+    <script src="../engine/artists/base/Artist.js"></script>
+    <script src="../engine/artists/imagebased/SpriteArtist.js"></script>
+    <script src="../engine/artists/imagebased/AnimatedSpriteArtist.js"></script>
+    <script src="../engine/artists/imagebased/ScrollingSpriteArtist.js"></script>
+    <script src="../engine/artists/primitive/RectangleSpriteArtist.js"></script>
+    <script src="../engine/artists/primitive/TextSpriteArtist.js"></script>
 
-    <script src="../engine/actors/Actor2D.js"></script>    
-    <script src="../engine/actors/Sprite.js"></script>  
+    <script src="../engine/actors/Actor2D.js"></script>
+    <script src="../engine/actors/Sprite.js"></script>
+    <script src="../engine/actors/MoveableSprite.js"></script>
+    <script src="../engine/actors/Camera2D.js"></script>
 
-    <script src="../engine/managers/ObjectManager.js"></script>  
-    <script src="../engine/managers/KeyboardManager.js"></script>  
-    <script src="../engine/managers/SoundManager.js"></script>  
+    <script src="../engine/managers/ObjectManager.js"></script>
+    <script src="../engine/managers/KeyboardManager.js"></script>
+    <script src="../engine/managers/SoundManager.js"></script>
+    <script src="../engine/managers/GameStateManager.js"></script>
+    <script src="../engine/managers/CameraManager.js"></script>
 
+    <script src="../engine/parameters/ContextParameters.js"></script>
 
     <!--------------------------------------------GAME SPECIFIC ASSETS----------------------------------------------------->
-    <img id="invaders_background" src="assets/images/invaders_background.png" style="display:none;"/>
-    <img id="invaders_sprite_sheet" src="assets/images/invaders.png" style="display:none;"/>
+    <img id="snailbait_background_1" src="assets/images/background/plx-1.png" style="display:none;" />
+    <img id="snailbait_background_2" src="assets/images/background/plx-2.png" style="display:none;" />
+    <img id="snailbait_background_3" src="assets/images/background/plx-3.png" style="display:none;" />
+    <img id="snailbait_background_4" src="assets/images/background/plx-4.png" style="display:none;" />
+    <img id="snailbait_background_5" src="assets/images/background/plx-5.png" style="display:none;" />
 
-    <audio preload="auto" id="sound_background" src="assets/sound/background/spaceinvaders.mpeg"></audio>
-    <audio preload="auto" id="sound_shoot" src="assets/sound/effects/shoot.wav"></audio>  
-    <audio preload="auto" id="sound_bading" src="assets/sound/effects/bading.wav"></audio>
+    <img id="snailbait_jungle_tileset" src="assets/images/platform/jungle tileset.png" style="display:none;" />
+    <img id="snailbait_sprite_sheet" src="assets/images/spritesheet.png" style="display:none;" />
+
+    <!-- audio - step 1 - load resources and assign unique IDs... -->
+    <audio preload="auto" id="background" src="assets/sound/background/bg.mp3"></audio>
+    <audio preload="auto" id="jump" src="assets/sound/effects/jump.mp3"></audio>
+    <audio preload="auto" id="gameOver" src="assets/sound/effects/gameOver.mp3"></audio>
 
     <!--------------------------------------------GAME SPECIFIC CODE----------------------------------------------------->
 
-    <script src="gdgame/gdconstants/MyConstants.js"></script>  
-
-    <script src="gdgame/gdbehaviors/PlayerFireBehavior.js"></script>
-    <script src="gdgame/gdbehaviors/MoveBehavior.js"></script>  
-    <script src="gdgame/gdbehaviors/CycleMoveDescendBehavior.js"></script>
-    <script src="gdgame/gdbehaviors/PlayerMoveBehavior.js"></script>
+    <script src="gdgame/gdconstants/MyConstants.js"></script>
     
-    <script src="gdgame/gdmanagers/MyCollisionManager.js"></script>  
-    <script src="gdgame/gdmanagers/MyObjectManager.js"></script>  
-    <script src="gdgame/game.js"></script>  
+    <script src="gdgame/gdbehaviors/camera/PanCameraBehavior.js"></script>
+    <script src="gdgame/gdbehaviors/player/PlayerBehavior.js"></script>
+    <script src="gdgame/gdbehaviors/camera/FlightCameraBehavior.js"></script>
+
+    <script src="gdgame/gdmanagers/MyGameStateManager.js"></script>
+    <script src="gdgame/gdmanagers/MyMenuManager.js"></script>
+
+    <!-- //DEBUG - REMOVE LATER -->
+    <script src="../engine/debug/DebugDrawer.js"></script>
+
+    <script src="gdgame/game.js"></script>
 
 </body>
+
 </html>

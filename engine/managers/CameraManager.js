@@ -74,6 +74,27 @@ class CameraManager {
     this.cameras.sort(compareFunction);
   }
 
+/*
+//These are a subset of the method definitions (with some minor parameter changes) from ObjectManager
+  Add(camera) {
+  }
+
+  FindIndex(predicate) {
+  }
+
+  FindIndices(predicate) {
+  }
+
+  RemoveFirstBy(predicate) {
+  }
+
+  RemoveAllBy(predicate) {
+  }
+
+  Sort(compareFunction) {
+  }
+*/
+
   Update(gameTime) {
     //should we be updating?
     if ((this.ActiveCamera.StatusType & StatusType.IsUpdated) != 0) {
