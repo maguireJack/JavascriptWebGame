@@ -1,6 +1,6 @@
-class Camera2D extends Actor2D{
+class Camera2D extends Actor2D {
 
-     //#region  Fields 
+    //#region  Fields 
     //#endregion 
 
     //#region  Properties
@@ -10,15 +10,38 @@ class Camera2D extends Actor2D{
         super(id, actorType, CollisionType.Collidable, transform2D, statusType);
     }
 
-    //other methods...
-    Update(gameTime){
-     super.Update(gameTime); //call parent - is this methods necessary?
+    /**
+     * Updates state information and executes attached behavior(s)
+     *
+     * @param {GameTime} gameTime
+     * @see Actor2D::Update()
+     * @memberof Camera2D
+     */
+    Update(gameTime) {
+        super.Update(gameTime); //call parent, do nothing else
+    }
+
+    /**
+     * Allows the context to be transformed (i.e. translation, rotation, scale) based on the camera (i.e. allows us to create camera effects on-screen).
+     * 
+     * @param {*} context
+     * @see DebugDrawer::DrawBoundingBox()
+     * @memberof Camera2D
+     */
+    SetContext(context) {
+        let transform = this.Transform2D;
+        context.translate(transform.Origin.X, transform.Origin.Y);
+        context.scale(transform.Scale.X, transform.Scale.Y);
+        context.rotate(transform.RotationInRadians);
+        context.translate(-transform.Origin.X, -transform.Origin.Y);
+        context.translate(-transform.Translation.X, -transform.Translation.Y);
+
     }
 
     //#region Equals, Clone, ToString 
     Equals(other) {
         return super.Equals(other); //call parent - is this methods necessary?
-    } 
+    }
 
     ToString() {
         return super.ToString(); //call parent - is this methods necessary?

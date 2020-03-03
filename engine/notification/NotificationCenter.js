@@ -70,15 +70,8 @@ class Notification {
   }
 
   Equals(other) {
-    if (other == null || other == undefined || !other instanceof Notification)
-      throw "Error: One or more objects is null, undefined, or not type " +
-        this.constructor.name;
-
-    //both point to the same object in RAM i.e. a shallow copy
-    if (this == other) return true;
-
     //if we get here then we have two valid (i.e. non-null, defined, correct type) and distinct (i.e. separate RAM) objects that we need to test
-    return (
+    return GDUtility.IsSameTypeAsTarget(this, other) && (
       this.notificationType === other.NotificationType &&
       this.notificationAction === other.NotificationAction &&
       this.notificationArguments === other.NotificationArguments

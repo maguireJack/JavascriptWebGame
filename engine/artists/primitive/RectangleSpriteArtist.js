@@ -4,7 +4,7 @@
  * @version 1.0
  * @class RectangleSpriteArtist
  */
-class RectangleSpriteArtist extends Artist{
+class RectangleSpriteArtist extends Artist {
     //#region  Fields 
     //#endregion 
 
@@ -35,7 +35,7 @@ class RectangleSpriteArtist extends Artist{
     }
     //#endregion
 
-    constructor(context, lineWidth, strokeStyle, fillStyle, alpha=1) {
+    constructor(context, lineWidth, strokeStyle, fillStyle, alpha = 1) {
         super(context, alpha);
         this.lineWidth = lineWidth;
         this.strokeStyle = strokeStyle;
@@ -63,17 +63,19 @@ class RectangleSpriteArtist extends Artist{
      * @memberof RectangleSpriteArtist
      */
     Draw(gameTime, parent, activeCamera) {
+        //save whatever context settings were used before this (color, line, text styles)
         this.Context.save();
-
-        super.SetContext(activeCamera);
+        //apply the camera transformations to the scene (i.e. to enable camera zoom, pan, rotate)
+        activeCamera.SetContext(this.context);
+        //access the transform for the parent that this artist is attached to
         let transform = parent.Transform2D;
 
         this.Context.lineWidth = this.lineWidth;
         this.Context.strokeStyle = this.strokeStyle;
         this.Context.fillStyle = this.fillStyle;
-        this.Context.strokeRect(transform.Translation.X, transform.Translation.Y, 
+        this.Context.strokeRect(transform.Translation.X, transform.Translation.Y,
             transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
-        this.Context.fillRect(transform.Translation.X, transform.Translation.Y, 
+        this.Context.fillRect(transform.Translation.X, transform.Translation.Y,
             transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
         this.Context.restore();
     }
@@ -81,10 +83,7 @@ class RectangleSpriteArtist extends Artist{
     //#region Equals, Clone, ToString 
 
     Equals(other) {
-        if (other == null || other == undefined || !other instanceof RectangleSpriteArtist)
-            throw 'Error: One or more objects is null, undefined, or not type ' + this.constructor.name;
-
-        return this.rect.Equals(other.Rect) && this.lineWidth === other.Cells &&
+        return super.Equals(other) && this.rect.Equals(other.Rect) && this.lineWidth === other.Cells &&
             this.strokeStyle === other.StrokeStyle && this.fillStyle === other.FillStyle &&
             this.alpha === other.Alpha;
     }

@@ -6,7 +6,7 @@
  * @class AnimatedSpriteArtist
  */
 
-class AnimatedSpriteArtist extends Artist{
+class AnimatedSpriteArtist extends Artist {
 
     //#region  Fields
     //#endregion 
@@ -20,7 +20,7 @@ class AnimatedSpriteArtist extends Artist{
     }
     //#endregion
 
-    constructor(context, alpha=1, animationData) {
+    constructor(context, alpha = 1, animationData) {
         super(context, alpha);
 
         this.animationData = animationData;
@@ -114,9 +114,11 @@ class AnimatedSpriteArtist extends Artist{
      * @memberof AnimatedSpriteArtist
      */
     Draw(gameTime, parent, activeCamera) {
+        //save whatever context settings were used before this (color, line, text styles)
         this.Context.save();
-
-        super.SetContext(activeCamera);
+        //apply the camera transformations to the scene (i.e. to enable camera zoom, pan, rotate)
+        activeCamera.SetContext(this.context);
+        //access the transform for the parent that this artist is attached to
         let transform = parent.Transform2D;
 
         let cell = this.cells[this.currentCellIndex];
@@ -137,10 +139,9 @@ class AnimatedSpriteArtist extends Artist{
     Advance() {
         if (this.currentCellIndex < this.endCellIndex)
             this.currentCellIndex++;
-        else
-        {
+        else {
             this.currentCellIndex = this.startCellIndex;
-            
+
             //add code to handle 0 or N loops here...
         }
     }
@@ -148,12 +149,7 @@ class AnimatedSpriteArtist extends Artist{
     //#region Equals, Clone, ToString 
 
     Equals(other) {
-        if (other == null || other == undefined || !other instanceof AnimatedSpriteArtist)
-            throw 'Error: One or more objects is null, undefined, or not type ' + this.constructor.name;
-
-        //if('12' == 12) //true
-        //if('12' === 12) //false
-        return this.animationData.id === other.AnimationData.id &&
+        return super.Equals(other) && this.animationData.id === other.AnimationData.id &&
             this.animationData.spriteSheet === other.AnimationData.spriteSheet;
     }
 

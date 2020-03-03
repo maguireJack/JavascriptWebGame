@@ -4,7 +4,7 @@
  * @version 1.0
  * @class ScrollingSpriteArtist
  */
-class ScrollingSpriteArtist extends Artist{
+class ScrollingSpriteArtist extends Artist {
 
     //#region  Fields 
     //#endregion 
@@ -28,11 +28,11 @@ class ScrollingSpriteArtist extends Artist{
     set SourceDimensions(sourceDimensions) {
         this.sourceDimensions = sourceDimensions;
     }
-    
+
     //#endregion
 
     constructor(context, spritesheet,
-        sourcePosition, sourceDimensions, alpha=1,
+        sourcePosition, sourceDimensions, alpha = 1,
         screenWidth, screenHeight) {
         super(context, alpha);
 
@@ -45,7 +45,7 @@ class ScrollingSpriteArtist extends Artist{
         this.screenHeight = screenHeight;
     }
 
-     /**
+    /**
      * Resets the translation offset on the parent so that when the user passes to the LEFT/RIGHT of the centre image
      * the parentTranslationOffsetX (in the case of horizontal scrolling) is reset. If we did not reset this value
      * then we when we pass to the LEFT/RIGHT we would see the edge of the LEFT/RIGHT image.
@@ -74,7 +74,7 @@ class ScrollingSpriteArtist extends Artist{
 
         //if we have moved across one complete canvas width, either left or right, then reset the offset to initial position
         if (parentTranslationOffsetX >= resetScreenWidth)
-            parent.Transform2D.SetTranslationOffset(new Vector2(0, -activeCamera.Transform2D.Translation.Y));
+            parent.Transform2D.Translation = new Vector2(0,0);
     }
 
     /**
@@ -97,13 +97,15 @@ class ScrollingSpriteArtist extends Artist{
      * @memberof ScrollingSpriteArtist
      */
     Draw(gameTime, parent, activeCamera) {
+        //save whatever context settings were used before this (color, line, text styles)
         this.Context.save();
-
-        super.SetContext(activeCamera);
+        //apply the camera transformations to the scene (i.e. to enable camera zoom, pan, rotate)
+        activeCamera.SetContext(this.context);
+        //access the transform for the parent that this artist is attached to
         let transform = parent.Transform2D;
 
         //add additional translation to create parallax effect across background layers (hint: use scroll speed multiplier from 0.01 - 0.2 - see MyConstants::BACKGROUND_DATA)
-        this.Context.translate(-activeCamera.Transform2D.Translation.X * parent.ScrollSpeedMultiplier, 
+        this.Context.translate(-activeCamera.Transform2D.Translation.X * parent.ScrollSpeedMultiplier,
             -activeCamera.Transform2D.Translation.Y * parent.ScrollSpeedMultiplier);
 
         //allows us to run left
@@ -111,13 +113,13 @@ class ScrollingSpriteArtist extends Artist{
             this.sourcePosition.X, this.sourcePosition.Y,
             this.sourceDimensions.X, this.sourceDimensions.Y,
             transform.Translation.X - transform.Dimensions.X,
-            transform.Translation.Y, 
+            transform.Translation.Y,
             transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
 
         this.Context.drawImage(this.spritesheet,
             this.sourcePosition.X, this.sourcePosition.Y,
             this.sourceDimensions.X, this.sourceDimensions.Y,
-            transform.Translation.X, transform.Translation.Y, 
+            transform.Translation.X, transform.Translation.Y,
             transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
 
         //allows us to run right
@@ -134,10 +136,7 @@ class ScrollingSpriteArtist extends Artist{
     //#region Equals, Clone, ToString 
 
     Equals(other) {
-        if (other == null || other == undefined || !other instanceof ScrollingSpriteArtist)
-            throw 'Error: One or more objects is null, undefined, or not type ' + this.constructor.name;
-
-        return this.spritesheet === other.Spritesheet && this.sourcePosition === other.SourcePosition && this.sourceDimensions === other.SourceDimensions;
+        return super.Equals(other) && this.spritesheet === other.Spritesheet && this.sourcePosition === other.SourcePosition && this.sourceDimensions === other.SourceDimensions;
     }
 
     Clone() {

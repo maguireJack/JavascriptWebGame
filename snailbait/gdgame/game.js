@@ -1,21 +1,27 @@
 //#region Development Diary
 /*
-Week 6 
+
+Week 7 
 ------
+Comments: 
+- GDUtility.IsSameTypeAsTarget() and its impact on Equals() methods in classes.
+
+Exercises: 
+- Use ContextParameter classes in the appropriate artist.
+- Complete the RenderManager to move ObjectManager::Draw()
+- Add context to the camera class.
+
 Notes:
-- Demo: CollisionType, ActorType, ObjectManager, DebugDrawer
+- None
 
 To Do:
+- Wrap MyConstants.js and Constants.js in a class to set scope and no longer pollute global project space.
 - Add booleans to DebugDrawer to enable/disable drawing of BBs for objects and camera, and drawing of debug text.
-- Camera2D bounding box is not updating with scale or rotation changes.
-- Re-introduce culling in MyObjectManager::Draw() based on Camera2D bounding box.
-- Add DebugDrawer::Draw() and show object count, fps etc.
-
 - Re-factor CameraManager to align with ObjectManager use of predicates etc?
 - Improve SoundManager to block load until all sound resources have loaded.
 - Add pause/unpause to SoundManager when we lose/gain window focus.
-- Fix bounding box on TextSpriteArtist - see constants::TextBaselineType and https://www.w3schools.com/tags/canvas_textbaseline.asp and https://www.w3schools.com/tags/canvas_measuretext.asp
-- Fix UpdateHorizontalScrolling().
+- Add code to calculate TextSpriteArtist bounding box size based on text used.
+- Fix background UpdateHorizontalScrolling().
 - Add countdown toast when we gain window focus.
 - Add check for "P" key in MyMenuManager::Update() to show/hide menu
 - Improve KeyboardManager to add IsFirstKeyPress() method.
@@ -23,6 +29,42 @@ To Do:
 - Continue adding documentation to all classes and methods.
 
 Done:
+- When we scroll L/R and the active camera NO LONGER intersects the centre background image (i.e. its bounding box) then the background is no drawn - See ObjectManager::Draw() specifically (if(sprite.ActorType == ActorType.Background ||...) 
+- Added GDUtility.IsSameTypeAsTarget() 
+- Added Matrix class in preparation for rotating sprites.
+
+Bugs:
+- Camera bounding box is not updating on camera scale, rotate.
+- When we scroll too far L/R then scrolling stops - see ScrollingSpriteArtist.
+- When we use background scroll <- and -> then collisions are not tested and responded to
+- When player and platform above are separated by only player height?
+
+
+Week 6 
+------
+Notes:
+- None
+
+To Do:
+- Add booleans to DebugDrawer to enable/disable drawing of BBs for objects and camera, and drawing of debug text.
+- Re-factor CameraManager to align with ObjectManager use of predicates etc?
+- Improve SoundManager to block load until all sound resources have loaded.
+- Add pause/unpause to SoundManager when we lose/gain window focus.
+- Add code to calculate TextSpriteArtist bounding box size based on text used.
+- Fix background UpdateHorizontalScrolling().
+- Add countdown toast when we gain window focus.
+- Add check for "P" key in MyMenuManager::Update() to show/hide menu
+- Improve KeyboardManager to add IsFirstKeyPress() method.
+- Complete menu demo.
+- Continue adding documentation to all classes and methods.
+
+Done:
+- Removed unused GDArray.
+- Added "if (this == other) return true;" to Equals() methods to test if this and other are same object.
+- Add Vector2::Distance().
+- Fix bounding box on TextSpriteArtist - see constants::TextBaselineType and https://www.w3schools.com/tags/canvas_textbaseline.asp and https://www.w3schools.com/tags/canvas_measuretext.asp
+- Re-introduce culling in MyObjectManager::Draw() based on Camera2D bounding box.
+- Add DebugDrawer::Draw() and show object count, fps etc.
 - Removed ObjectManager::DrawDebugBoundingBox and created DebugDrawer to handle showing debug (bounding boxes, FPS) related information
 - Added CollisionType to allow us to say which actors are collidable, or not.
 - Re-factor MyObjectManager.
@@ -34,6 +76,7 @@ Done:
 - Improve AnimatedSpriteArtist to store all animations for a sprite inside an object and not in a single array of cells.
 
 Bugs:
+- Camera2D bounding box is not updating with scale changes.
 - Camera bounding box is not updating on camera scale, rotate.
 - When we scroll L/R and the active camera NO LONGER intersects the centre background image (i.e. its bounding box) then the background is no drawn.
 - When we scroll too far L/R then scrolling stops - see ScrollingSpriteArtist.
@@ -238,6 +281,7 @@ function ClearScreen(color) {
 
 // #region Initialize, Load
 function Initialize() {
+
   LoadAssets();
   LoadNotificationCenter();
   LoadInputAndCameraManagers();
@@ -340,12 +384,12 @@ function LoadAssets() {
 }
 
 function LoadSprites() {
-  LoadBackground();
-  LoadPlatforms();
-  LoadPickups();
-  LoadEnemies();
-  LoadPlayer();
-  LoadOnScreenText();
+ LoadBackground();
+ LoadPlatforms();
+ LoadPickups();
+ LoadEnemies();
+ LoadPlayer();
+ LoadOnScreenText();
 }
 
 function LoadBackground() {

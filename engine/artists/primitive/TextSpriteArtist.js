@@ -10,7 +10,47 @@ class TextSpriteArtist extends Artist{
     //#region  Fields 
     //#endregion 
 
-    //#region  Properties
+    //#region Properties
+    get Text()
+    {
+        return this.text;
+    }
+    set Text(text)
+    {
+        this.text = text;
+    }
+    get FontType()
+    {
+        return this.fontType;
+    }
+    set FontType(fontType)
+    {
+        this.fontType = fontType;
+    }
+    get FillStyle()
+    {
+        return this.fillStyle;
+    }
+    set FillStyle(fillStyle)
+    {
+        this.fillStyle = fillStyle;
+    }
+    get TextAlign()
+    {
+        return this.textAlign;
+    }
+    set TextAlign(textAlign)
+    {
+        this.textAlign = textAlign;
+    }
+    get Alpha()
+    {
+        return this.alpha;
+    }
+    set Alpha(alpha)
+    {
+        this.alpha = alpha;
+    }
     //#endregion
 
     constructor(context, text, fontType, fillStyle, textAlign, alpha=1, maxWidth) {
@@ -29,11 +69,13 @@ class TextSpriteArtist extends Artist{
     }
 
     Draw(gameTime, parent, activeCamera) {
+        //save whatever context settings were used before this (color, line, text styles)
         this.Context.save();
-
-        super.SetContext(activeCamera);
+        //apply the camera transformations to the scene (i.e. to enable camera zoom, pan, rotate)
+        activeCamera.SetContext(this.context);
+        //access the transform for the parent that this artist is attached to
         let transform = parent.Transform2D;
-
+        
         this.Context.font = this.fontType;
         this.Context.fillStyle = this.fillStyle;
         this.Context.textAlign = this.textAlign;

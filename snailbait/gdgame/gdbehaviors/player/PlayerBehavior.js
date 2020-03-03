@@ -114,13 +114,13 @@ class PlayerBehavior {
             [5]
           )
         );
-        notificationCenter.Notify(
-          new Notification(
-            NotificationType.Sprite,
-            NotificationAction.RemoveFirst,
-            [sprite]
-          )
-        );
+        // notificationCenter.Notify(
+        //   new Notification(
+        //     NotificationType.Sprite,
+        //     NotificationAction.RemoveFirst,
+        //     [sprite]
+        //   )
+        // );
         notificationCenter.Notify(
           new Notification(NotificationType.Sound, NotificationAction.Play, [
             "background"

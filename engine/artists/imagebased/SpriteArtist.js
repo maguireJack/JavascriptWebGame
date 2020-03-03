@@ -4,8 +4,7 @@
  * @version 1.0
  * @class SpriteArtist
  */
-class SpriteArtist extends Artist
-{
+class SpriteArtist extends Artist {
     //#region  Fields 
     //#endregion 
 
@@ -28,12 +27,11 @@ class SpriteArtist extends Artist
     set SourceDimensions(sourceDimensions) {
         this.sourceDimensions = sourceDimensions;
     }
-    
+
     //#endregion
 
-    constructor(context, spritesheet, 
-        sourcePosition, sourceDimensions, alpha=1)
-    {
+    constructor(context, spritesheet,
+        sourcePosition, sourceDimensions, alpha = 1) {
         super(context, alpha);
 
         this.spritesheet = spritesheet;
@@ -48,12 +46,11 @@ class SpriteArtist extends Artist
      * @param {Sprite} parent (unused)
      * @memberof SpriteArtist
      */
-    Update(gameTime, parent, camera)
-    {
+    Update(gameTime, parent, camera) {
 
     }
 
-     /**
+    /**
      * Renders pixel data from spritesheet to canvas
      *
      * @param {GameTime} gameTime (unused)
@@ -62,14 +59,16 @@ class SpriteArtist extends Artist
      * @memberof SpriteArtist
      */
     Draw(gameTime, parent, activeCamera) {
+        //save whatever context settings were used before this (color, line, text styles)
         this.Context.save();
-
-        super.SetContext(activeCamera);
+        //apply the camera transformations to the scene (i.e. to enable camera zoom, pan, rotate)
+        activeCamera.SetContext(this.context);
+        //access the transform for the parent that this artist is attached to
         let transform = parent.Transform2D;
 
-        this.Context.drawImage(this.spritesheet, 
-            this.sourcePosition.X, this.sourcePosition.Y, 
-            this.sourceDimensions.X, this.sourceDimensions.Y, 
+        this.Context.drawImage(this.spritesheet,
+            this.sourcePosition.X, this.sourcePosition.Y,
+            this.sourceDimensions.X, this.sourceDimensions.Y,
             transform.Translation.X, transform.Translation.Y,
             transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
 
@@ -79,20 +78,15 @@ class SpriteArtist extends Artist
     //#region Equals, Clone, ToString 
 
     Equals(other) {
-        if (other == null || other == undefined || !other instanceof SpriteArtist)
-            throw 'Error: One or more objects is null, undefined, or not type ' + this.constructor.name;
-
-        return this.spritesheet === other.Spritesheet && this.sourcePosition === other.SourcePosition && this.sourceDimensions === other.SourceDimensions;
+        return super.Equals(other) && this.spritesheet === other.Spritesheet && this.sourcePosition === other.SourcePosition && this.sourceDimensions === other.SourceDimensions;
     }
 
-    Clone()
-    {
+    Clone() {
         return new SpriteArtist(this.context, this.spritesheet, this.sourcePosition.Clone(), this.sourceDimensions.Clone(), this.Alpha);
     }
 
-    ToString()
-    {
-        return "[" + this.spritesheet + "," + this.sourcePosition.ToString() + "," + this.sourceDimensions.ToString() +"]";
+    ToString() {
+        return "[" + this.spritesheet + "," + this.sourcePosition.ToString() + "," + this.sourceDimensions.ToString() + "]";
     }
-      //#endregion
+    //#endregion
 }

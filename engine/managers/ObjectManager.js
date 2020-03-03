@@ -202,7 +202,8 @@ class ObjectManager {
         //for the sprites inside the array for the current key call update
         for (let sprite of this.sprites[key])
         {
-          if(sprite.Transform2D.BoundingBox.Intersects(this.cameraManager.ActiveCamera.Transform2D.BoundingBox))
+          //if the sprite is a background sprite OR it is inside the view of the camera then draw it
+          if(sprite.ActorType == ActorType.Background || sprite.Transform2D.BoundingBox.Intersects(this.cameraManager.ActiveCamera.Transform2D.BoundingBox))
             sprite.Draw(gameTime,this.cameraManager.ActiveCamera);
         }
       }

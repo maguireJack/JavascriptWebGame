@@ -71,21 +71,22 @@ class Body {
         this.velocityY += deltaVelocityY;
     }
 
+
+
+
+
     //#region Common Methods - Equals, ToString, Clone
     Equals(other) {
-        //to do...  
-        throw "Not Yet Implemented";
+        return GDUtility.IsSameTypeAsTarget(this, other) && this.maximumSpeed === other.MaximumSpeed && this.gravity === other.Gravity && this.friction === other.Friction;
     }
 
     ToString() {
-        return "[" + this.velocityX + ", " + this.velocityY + "]";
+        return "[" + this.maximumSpeed + ", " + this.gravity + + ", " + this.friction + ", " + this.velocityX + ", " + this.velocityY + "]";
     }
 
 
     Clone() {
-        //to do...
-        throw "Not Yet Implemented";
-
+        return new Body(this.maximumSpeed, this.gravity, this.friction);
     }
     //#endregion
 }

@@ -1,13 +1,64 @@
+//#region Actor related
+//defines the actors we find in the game
+const ActorType = Object.freeze({
+  /*
+  * VERY IMPORTANT - The order of the actors below DEFINES the draw order
+  * which means if we were, for example to set Background to 20 that it would be 
+  * the highest number and the LAST drawn. That would mean we would NOT see anything
+  * EXCEPT the background sprites because it would be OVERDRAWING everything else.
+  */
+  Background: 0,
+  Platform: 1,
+  Decorator: 2,
+  Pickup: 3,
+  Interactable: 4,
+  Bullet: 5,
+  Enemy: 6,
+  NPC: 7,
+  Player: 8,
+  Camera: 9,
+  HUD: 10
+  //add as many actor types as your game needs here BUT remember that the assigned number will determine drawn sort order...
+});
+
+const StatusType = Object.freeze({
+  Off: 1,
+  IsDrawn: 2,
+  IsUpdated: 4
+  //add more here as required but ENSURE they are 2^N values
+  //its important that the values are powers of two because we combine them using a bitwise-OR
+  //e.g. StatusType.IsUpdated | StatusType.IsDrawn
+  //if we dont need to ever combine the values then we just use a number of Symbol() as in the types below.
+});
+//#endregion
+
+//#region CD/CR related
 const CollisionType = Object.freeze({
   Collidable: true,
   NotCollidable: false
 });
+//#endregion
 
-//#region UI Sprite Related
+//#region Canvas (i.e. Line, Text, Color, Sprite) related
+//see https://simon.html5.org/dump/html5-canvas-cheat-sheet.html
+const LineCapType = Object.freeze({
+  Butt: "butt",
+  Round: "round",
+  Square: "square"
+});
+
+const LineJoinType = Object.freeze({
+  Bevel: "bevel",
+  Round: "round",
+  Miter: "miter"
+});
+
 const TextAlignType = Object.freeze({
+  Start: "start",
+  End: "end",
   Left: "left",
-  Center: "center",
-  Right: "right"
+  Right: "right",
+  Center: "center"
 });
 
 //see https://www.w3schools.com/tags/canvas_textbaseline.asp
@@ -20,6 +71,7 @@ const TextBaselineType = Object.freeze({
 });
 //#endregion
 
+//#region Keyboard, Color, Audio related
 //used to draw color to the screen e.g. ClearScreen(Color.Black)
 const Color = Object.freeze({
   Black: "#000000",
@@ -86,17 +138,7 @@ const Keys = Object.freeze({
   NumPad9: 105
 });
 
-//used by Actor2D
-const StatusType = Object.freeze({
-  Off: 1,
-  IsDrawn: 2,
-  IsUpdated: 4
-  //add more here as required but ENSURE they are 2^N values
-  //its important that the values are powers of two because we combine them using a bitwise-OR
-  //e.g. StatusType.IsUpdated | StatusType.IsDrawn
-  //if we dont need to ever combine the values then we just use a number of Symbol() as in the types below.
-});
-
+//defines the "themes/types" of music we have within the game so we can pause/unpause and set volume by a type
 const AudioType = Object.freeze({
   //replaced user-defined values with Symbol
   Background: Symbol("Background"),
@@ -110,19 +152,4 @@ const AudioType = Object.freeze({
   All: Symbol("All")
   //add as many audio types as your game needs here...
 });
-
-const ActorType = Object.freeze({
-  //replaced user-defined values with Symbol
-  Background: 0,
-  Platform: 1,
-  Decorator: 2,
-  Pickup: 3,
-  Interactable: 4,
-  Bullet: 5,
-  Enemy: 6,
-  NPC: 7,
-  Player: 8,
-  Camera: 9,
-  HUD: 10
-  //add as many actor types as your game needs here BUT remember that the assigned number will determine drawn sort order...
-});
+//#endregion

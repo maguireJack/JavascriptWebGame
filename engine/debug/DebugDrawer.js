@@ -54,8 +54,10 @@ class DebugDrawer {
 
   DrawText(text, x, y, color){
     this.context.save();
+
     //uncomment this line and see what happens to the debug text when you move camera using numpad 4 - 6
     //this.SetContext(this.cameraManager.ActiveCamera);
+
     this.context.font = DebugDrawer.DEBUG_TEXT_FONT;
     this.context.fillStyle = color; 
     this.context.textBaseline = "top";
@@ -63,12 +65,6 @@ class DebugDrawer {
     this.context.fillText(text, x, y, DebugDrawer.DEBUG_TEXT_MAXWIDTH);
     this.context.restore();
   }
-
-
-
-
-
-
 
   DrawActiveCameraBoundingBoxes(boundingBoxColor) {
     this.DrawBoundingBox(this.cameraManager.ActiveCamera.Transform2D, boundingBoxColor);
@@ -90,35 +86,21 @@ class DebugDrawer {
     }
     return drawCount;
   }
-
-  SetContext(activeCamera) {
-    let cameraTransform = activeCamera.Transform2D;
-    this.context.translate(cameraTransform.Origin.X, cameraTransform.Origin.Y);
-    this.context.scale(cameraTransform.Scale.X, cameraTransform.Scale.Y);
-    this.context.rotate(cameraTransform.RotationInRadians);
-    this.context.translate(
-      -cameraTransform.Origin.X,
-      -cameraTransform.Origin.Y
-    );
-    this.context.translate(
-      -cameraTransform.Translation.X,
-      -cameraTransform.Translation.Y
-    );
-    this.context.globalAlpha = 1;
-  }
   //#endregion
 
   //#region Debug
   DrawBoundingBox(transform, color) {
     this.context.save();
-    this.SetContext(this.cameraManager.ActiveCamera);
+    this.cameraManager.ActiveCamera.SetContext(this.context);
+    this.context.globalAlpha = 1;
     this.context.lineWidth = 2;
     this.context.strokeStyle = color;
+    let bb = transform.BoundingBox;
     this.context.strokeRect(
-      transform.BoundingBox.X,
-      transform.BoundingBox.Y,
-      transform.BoundingBox.Width,
-      transform.BoundingBox.Height
+      bb.X,
+      bb.Y,
+      bb.Width,
+      bb.Height
     );
     this.context.restore();
   }
