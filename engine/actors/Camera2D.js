@@ -1,13 +1,19 @@
 class Camera2D extends Actor2D {
 
-    //#region  Fields 
+    //#region Fields
     //#endregion 
 
-    //#region  Properties
+    //#region Properties
+    get Context()
+    {
+        return this.context;
+    }
     //#endregion
 
-    constructor(id, actorType, transform2D, statusType) {
+    constructor(id, actorType, transform2D, statusType, context) {
         super(id, actorType, CollisionType.Collidable, transform2D, statusType);
+
+        this.context = context;
     }
 
     /**
@@ -28,14 +34,13 @@ class Camera2D extends Actor2D {
      * @see DebugDrawer::DrawBoundingBox()
      * @memberof Camera2D
      */
-    SetContext(context) {
+    SetContext() {
         let transform = this.Transform2D;
-        context.translate(transform.Origin.X, transform.Origin.Y);
-        context.scale(transform.Scale.X, transform.Scale.Y);
-        context.rotate(transform.RotationInRadians);
-        context.translate(-transform.Origin.X, -transform.Origin.Y);
-        context.translate(-transform.Translation.X, -transform.Translation.Y);
-
+        this.context.translate(transform.Origin.X, transform.Origin.Y);
+        this.context.scale(transform.Scale.X, transform.Scale.Y);
+        this.context.rotate(transform.RotationInRadians);
+        this.context.translate(-transform.Origin.X, -transform.Origin.Y);
+        this.context.translate(-transform.Translation.X, -transform.Translation.Y);
     }
 
     //#region Equals, Clone, ToString 

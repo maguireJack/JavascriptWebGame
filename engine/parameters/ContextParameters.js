@@ -17,7 +17,8 @@ class ColorParameters{
     //#region Properties
     //#endregion
 
-    constructor(strokeStyle, fillStyle, shadowOffsetX, shadowOffsetY, shadowBlur, shadowColor)
+    constructor(strokeStyle, fillStyle, shadowOffsetX, shadowOffsetY, 
+        shadowBlur, shadowColor)
     {
         this.strokeStyle = strokeStyle || ColorParameters.DEFAULT_STROKE_FILL_SHADOW;	
         this.fillStyle = fillStyle || ColorParameters.DEFAULT_STROKE_FILL_SHADOW;
@@ -28,12 +29,12 @@ class ColorParameters{
     }
 
     Draw(context){
-        context.strokeStyle = strokeStyle;
-        context.fillStyle = fillStyle;
-        context.shadowOffsetX = shadowOffsetX;
-        context.shadowOffsetY = shadowOffsetY;
-        context.shadowBlur = shadowBlur;
-        context.shadowColor = shadowColor;
+        context.strokeStyle = this.strokeStyle;
+        context.fillStyle = this.fillStyle;
+        context.shadowOffsetX = this.shadowOffsetX;
+        context.shadowOffsetY = this.shadowOffsetY;
+        context.shadowBlur = this.shadowBlur;
+        context.shadowColor = this.shadowColor;
     }
 
     //#region Equals, Clone, ToString 
@@ -78,9 +79,9 @@ class TextParameters{
     }
     
     Draw(context){
-        context.font = font;
-        context.textAlign = textAlign;
-        context.textBaseline = textBaseline;
+        context.font = this.font;
+        context.textAlign = this.textAlign;
+        context.textBaseline = this.textBaseline;
     }
 
     //#region Equals, Clone, ToString 
@@ -123,10 +124,10 @@ class LineParameters{
     }
     
     Draw(context){
-        context.lineWidth = lineWidth;
-        context.lineCap = lineCap;
-        context.lineJoin = lineJoin;
-        context.miterLimit = miterLimit;
+        context.lineWidth = this.lineWidth;
+        context.lineCap = this.lineCap;
+        context.lineJoin = this.lineJoin;
+        context.miterLimit = this.miterLimit;
     }
 
     //#region Equals, Clone, ToString 

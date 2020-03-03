@@ -20,8 +20,8 @@ class AnimatedSpriteArtist extends Artist {
     }
     //#endregion
 
-    constructor(context, alpha = 1, animationData) {
-        super(context, alpha);
+    constructor(alpha = 1, animationData) {
+        super(alpha);
 
         this.animationData = animationData;
         this.frameRatePerSec = 0;
@@ -115,19 +115,19 @@ class AnimatedSpriteArtist extends Artist {
      */
     Draw(gameTime, parent, activeCamera) {
         //save whatever context settings were used before this (color, line, text styles)
-        this.Context.save();
+        activeCamera.Context.save();
         //apply the camera transformations to the scene (i.e. to enable camera zoom, pan, rotate)
-        activeCamera.SetContext(this.context);
+        activeCamera.SetContext();
         //access the transform for the parent that this artist is attached to
         let transform = parent.Transform2D;
 
         let cell = this.cells[this.currentCellIndex];
-        this.Context.drawImage(this.animationData.spriteSheet,
+        activeCamera.Context.drawImage(this.animationData.spriteSheet,
             cell.X, cell.Y,
             cell.Width, cell.Height,
             transform.Translation.X, transform.Translation.Y, //0, 0
             cell.Width * transform.Scale.X, cell.Height * transform.Scale.Y);
-        this.Context.restore();
+        activeCamera.Context.restore();
 
     }
 

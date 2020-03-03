@@ -19,30 +19,6 @@ class TextSpriteArtist extends Artist{
     {
         this.text = text;
     }
-    get FontType()
-    {
-        return this.fontType;
-    }
-    set FontType(fontType)
-    {
-        this.fontType = fontType;
-    }
-    get FillStyle()
-    {
-        return this.fillStyle;
-    }
-    set FillStyle(fillStyle)
-    {
-        this.fillStyle = fillStyle;
-    }
-    get TextAlign()
-    {
-        return this.textAlign;
-    }
-    set TextAlign(textAlign)
-    {
-        this.textAlign = textAlign;
-    }
     get Alpha()
     {
         return this.alpha;
@@ -53,13 +29,10 @@ class TextSpriteArtist extends Artist{
     }
     //#endregion
 
-    constructor(context, text, fontType, fillStyle, textAlign, alpha=1, maxWidth) {
-        super(context, alpha);
-
+    constructor(text, textParameters, alpha=1, maxWidth) {
+        super(alpha);
         this.text = text;
-        this.fontType = fontType;      
-        this.fillStyle = fillStyle;
-        this.textAlign = textAlign; 
+        this.textParameters = textParameters;      
         this.maxWidth = maxWidth;
     }
 
@@ -72,15 +45,12 @@ class TextSpriteArtist extends Artist{
         //save whatever context settings were used before this (color, line, text styles)
         this.Context.save();
         //apply the camera transformations to the scene (i.e. to enable camera zoom, pan, rotate)
-        activeCamera.SetContext(this.context);
+        activeCamera.SetContext();
         //access the transform for the parent that this artist is attached to
         let transform = parent.Transform2D;
-        
-        this.Context.font = this.fontType;
-        this.Context.fillStyle = this.fillStyle;
-        this.Context.textAlign = this.textAlign;
-        this.Context.textBaseline = TextBaselineType.Top;
-        this.Context.globalAlpha = this.Alpha;
+        this.Context.fillStyle = this.fillStyle;  //ColorParameters?
+        this.textParameters.Draw(this.Context);
+        this.Context.globalAlpha = this.Alpha; //ColorParameters?
         this.Context.fillText(this.text, transform.Translation.X, transform.Translation.Y, this.maxWidth);
         this.Context.restore();
     }

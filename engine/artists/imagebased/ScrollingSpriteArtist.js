@@ -31,10 +31,10 @@ class ScrollingSpriteArtist extends Artist {
 
     //#endregion
 
-    constructor(context, spritesheet,
+    constructor(spritesheet,
         sourcePosition, sourceDimensions, alpha = 1,
         screenWidth, screenHeight) {
-        super(context, alpha);
+        super(alpha);
 
         this.spritesheet = spritesheet;
         this.sourcePosition = sourcePosition;
@@ -98,39 +98,39 @@ class ScrollingSpriteArtist extends Artist {
      */
     Draw(gameTime, parent, activeCamera) {
         //save whatever context settings were used before this (color, line, text styles)
-        this.Context.save();
+        activeCamera.Context.save();
         //apply the camera transformations to the scene (i.e. to enable camera zoom, pan, rotate)
-        activeCamera.SetContext(this.context);
+        activeCamera.SetContext();
         //access the transform for the parent that this artist is attached to
         let transform = parent.Transform2D;
 
         //add additional translation to create parallax effect across background layers (hint: use scroll speed multiplier from 0.01 - 0.2 - see MyConstants::BACKGROUND_DATA)
-        this.Context.translate(-activeCamera.Transform2D.Translation.X * parent.ScrollSpeedMultiplier,
+        activeCamera.Context.translate(-activeCamera.Transform2D.Translation.X * parent.ScrollSpeedMultiplier,
             -activeCamera.Transform2D.Translation.Y * parent.ScrollSpeedMultiplier);
 
         //allows us to run left
-        this.Context.drawImage(this.spritesheet,
+        activeCamera.Context.drawImage(this.spritesheet,
             this.sourcePosition.X, this.sourcePosition.Y,
             this.sourceDimensions.X, this.sourceDimensions.Y,
             transform.Translation.X - transform.Dimensions.X,
             transform.Translation.Y,
             transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
 
-        this.Context.drawImage(this.spritesheet,
+        activeCamera.Context.drawImage(this.spritesheet,
             this.sourcePosition.X, this.sourcePosition.Y,
             this.sourceDimensions.X, this.sourceDimensions.Y,
             transform.Translation.X, transform.Translation.Y,
             transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
 
         //allows us to run right
-        this.Context.drawImage(this.spritesheet,
+        activeCamera.Context.drawImage(this.spritesheet,
             this.sourcePosition.X, this.sourcePosition.Y,
             this.sourceDimensions.X, this.sourceDimensions.Y,
             transform.Translation.X + transform.Dimensions.X,
             transform.Translation.Y,
             transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
 
-        this.Context.restore();
+        activeCamera.Context.restore();
     }
 
     //#region Equals, Clone, ToString 

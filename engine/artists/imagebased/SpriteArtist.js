@@ -30,9 +30,9 @@ class SpriteArtist extends Artist {
 
     //#endregion
 
-    constructor(context, spritesheet,
+    constructor(spritesheet,
         sourcePosition, sourceDimensions, alpha = 1) {
-        super(context, alpha);
+        super(alpha);
 
         this.spritesheet = spritesheet;
         this.sourcePosition = sourcePosition;
@@ -60,19 +60,19 @@ class SpriteArtist extends Artist {
      */
     Draw(gameTime, parent, activeCamera) {
         //save whatever context settings were used before this (color, line, text styles)
-        this.Context.save();
+        activeCamera.Context.save();
         //apply the camera transformations to the scene (i.e. to enable camera zoom, pan, rotate)
-        activeCamera.SetContext(this.context);
+        activeCamera.SetContext();
         //access the transform for the parent that this artist is attached to
         let transform = parent.Transform2D;
 
-        this.Context.drawImage(this.spritesheet,
+        activeCamera.Context.drawImage(this.spritesheet,
             this.sourcePosition.X, this.sourcePosition.Y,
             this.sourceDimensions.X, this.sourceDimensions.Y,
             transform.Translation.X, transform.Translation.Y,
             transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
 
-        this.Context.restore();
+        activeCamera.Context.restore();
     }
 
     //#region Equals, Clone, ToString 

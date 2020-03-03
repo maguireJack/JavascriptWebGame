@@ -253,6 +253,9 @@ function Update(gameTime) {
   //updates the camera manager which in turn updates all cameras
   this.cameraManager.Update(gameTime);
 
+  //draw the sprites
+  this.renderManager.Update(gameTime);  
+
   //DEBUG - REMOVE LATER
   if(this.debugModeOn)
     this.debugDrawer.Update(gameTime);
@@ -263,7 +266,7 @@ function Draw(gameTime) {
   ClearScreen(Color.Black);
 
   //draw all the game sprites
-  this.objectManager.Draw(gameTime);
+  this.renderManager.Draw(gameTime);
 
     //DEBUG - REMOVE LATER
   if(this.debugModeOn)
@@ -318,7 +321,8 @@ function LoadCameras() {
     "intro camera",
     ActorType.Camera,
     transform,
-    StatusType.IsUpdated
+    StatusType.IsUpdated,
+    this.ctx
   );
 
   camera.AttachBehavior(
@@ -350,13 +354,23 @@ function LoadInputAndCameraManagers() {
 }
 
 function LoadAllOtherManagers() {
+  //update objects
   this.objectManager = new ObjectManager(
     "game sprites",
-    StatusType.IsUpdated | StatusType.IsDrawn,
-    this.ctx,
+    StatusType.IsUpdated,
     this.cameraManager,
     this.notificationCenter
   );
+
+  //draw objects
+  this.renderManager = new RenderManager(
+    "draws sprites in obj manager",
+    StatusType.IsDrawn,
+    this.objectManager,
+    this.cameraManager,
+    this.notificationCenter);
+
+
 
   //adds support for storing and responding to changes in game state e.g. player collect all inventory items, or health == 0
   this.gameStateManager = new MyGameStateManager(
@@ -396,7 +410,6 @@ function LoadSprites() {
 function LoadBackground() {
   for (let i = 0; i < BACKGROUND_DATA.length; i++) {
     let spriteArtist = new ScrollingSpriteArtist(
-      ctx,
       BACKGROUND_DATA[i].spriteSheet,
       BACKGROUND_DATA[i].sourcePosition,
       BACKGROUND_DATA[i].sourceDimensions,
@@ -434,7 +447,6 @@ function LoadBackground() {
 
 function LoadPlatforms() {
   let spriteArtist = new SpriteArtist(
-    ctx,
     PLATFORM_DATA.spriteSheet,
     PLATFORM_DATA.sourcePosition,
     PLATFORM_DATA.sourceDimensions,
@@ -474,7 +486,6 @@ function LoadPlatforms() {
 
 function LoadPickups() {
   let spriteArtist = new AnimatedSpriteArtist(
-    ctx,
     1,
     COLLECTIBLES_ANIMATION_DATA
   );
@@ -506,7 +517,7 @@ function LoadPickups() {
 }
 
 function LoadEnemies() {
-  let spriteArtist = new AnimatedSpriteArtist(ctx, 1, ENEMY_ANIMATION_DATA);
+  let spriteArtist = new AnimatedSpriteArtist(1, ENEMY_ANIMATION_DATA);
   spriteArtist.SetTake("wasp_fly");
 
   let transform = new Transform2D(
@@ -540,7 +551,7 @@ function LoadEnemies() {
 }
 
 function LoadPlayer() {
-  let spriteArtist = new AnimatedSpriteArtist(ctx, 1, RUNNER_ANIMATION_DATA);
+  let spriteArtist = new AnimatedSpriteArtist(1, RUNNER_ANIMATION_DATA);
   spriteArtist.SetTake("run_right");
 
   let transform = new Transform2D(
@@ -591,15 +602,10 @@ function LoadOnScreenText() {
     0
   );
 
-  let spriteArtist = new TextSpriteArtist(
-    this.ctx,
-    "Wasp[20, 5]",
-    FontType.UnitInformationSmall,
-    "rgb(0, 0, 0)",
-    TextAlignType.Left,
-    1,
-    200
-  );
+  let spriteArtist = new TextSpriteArtist("Wasp[4, 5]",
+    new TextParameters(FontType.UnitInformationMedium, 
+              TextAlignType.Left, TextBaselineType.Top),
+              1, 100);
 
   let sprite = new Sprite(
     "txt_ui_hello",

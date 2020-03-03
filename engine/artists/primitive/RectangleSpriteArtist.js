@@ -35,8 +35,8 @@ class RectangleSpriteArtist extends Artist {
     }
     //#endregion
 
-    constructor(context, lineWidth, strokeStyle, fillStyle, alpha = 1) {
-        super(context, alpha);
+    constructor(lineWidth, strokeStyle, fillStyle, alpha = 1) {
+        super(alpha);
         this.lineWidth = lineWidth;
         this.strokeStyle = strokeStyle;
         this.fillStyle = fillStyle;
@@ -64,20 +64,20 @@ class RectangleSpriteArtist extends Artist {
      */
     Draw(gameTime, parent, activeCamera) {
         //save whatever context settings were used before this (color, line, text styles)
-        this.Context.save();
+        activeCamera.Context.save();
         //apply the camera transformations to the scene (i.e. to enable camera zoom, pan, rotate)
-        activeCamera.SetContext(this.context);
+        activeCamera.SetContext();
         //access the transform for the parent that this artist is attached to
         let transform = parent.Transform2D;
 
-        this.Context.lineWidth = this.lineWidth;
-        this.Context.strokeStyle = this.strokeStyle;
-        this.Context.fillStyle = this.fillStyle;
-        this.Context.strokeRect(transform.Translation.X, transform.Translation.Y,
+        activeCamera.Context.lineWidth = this.lineWidth;
+        activeCamera.Context.strokeStyle = this.strokeStyle;
+        activeCamera.Context.fillStyle = this.fillStyle;
+        activeCamera.Context.strokeRect(transform.Translation.X, transform.Translation.Y,
             transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
-        this.Context.fillRect(transform.Translation.X, transform.Translation.Y,
+        activeCamera.Context.fillRect(transform.Translation.X, transform.Translation.Y,
             transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
-        this.Context.restore();
+        activeCamera.Context.restore();
     }
 
     //#region Equals, Clone, ToString 

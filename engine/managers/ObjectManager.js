@@ -25,12 +25,10 @@ class ObjectManager {
   constructor(
     id,
     statusType,
-    context,
     cameraManager,
     notificationCenter) {
     this.id = id;
     this.statusType = statusType;
-    this.context = context;
     this.cameraManager = cameraManager;
     this.notificationCenter = notificationCenter;
     this.RegisterForNotifications();
@@ -181,7 +179,7 @@ class ObjectManager {
   }
   //#endregion
 
-  //#region Draw, Update
+  //#region Update
   Update(gameTime) {
     //if update enabled for the object manager?
     if ((this.statusType & StatusType.IsUpdated) != 0) {
@@ -190,22 +188,6 @@ class ObjectManager {
         //for the sprites inside the array for the current key call update
         for (let sprite of this.sprites[key])
           sprite.Update(gameTime,this.cameraManager.ActiveCamera);
-      }
-    }
-  }
-
-  Draw(gameTime) {
-    //if update enabled for the object manager?
-    if ((this.statusType & StatusType.IsDrawn) != 0) {
-      //for each of the keys in the sprites array (e.g. keys could be...ActorType.Enemy, ActorType.Player)
-      for (let key of Object.keys(this.sprites)) {
-        //for the sprites inside the array for the current key call update
-        for (let sprite of this.sprites[key])
-        {
-          //if the sprite is a background sprite OR it is inside the view of the camera then draw it
-          if(sprite.ActorType == ActorType.Background || sprite.Transform2D.BoundingBox.Intersects(this.cameraManager.ActiveCamera.Transform2D.BoundingBox))
-            sprite.Draw(gameTime,this.cameraManager.ActiveCamera);
-        }
       }
     }
   }

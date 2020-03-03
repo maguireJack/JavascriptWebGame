@@ -1,0 +1,43 @@
+<html>
+<head>
+    <title>Multi-canvas demo</title>
+    <style>
+        #canvas_left, #canvas_right{
+            position: fixed;
+            width: 320;
+            height: 480;
+            border: 1px solid red;
+        }
+        #canvas_left{
+            background-color: rgb(255, 0, 0);
+            z-index: 1;
+        }
+        #canvas_right{
+            left: 340;
+            background-color: rgb(0, 0, 255);
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas_left" width="320" height="480"></canvas>
+    <canvas id="canvas_right" width="320" height="480"></canvas>
+
+    <script>
+        var ctx_left = document.getElementById("canvas_left");
+
+        //ctx_left.save();
+        ctx_left.beginPath();
+        ctx_left.lineWidth = 2;
+        ctx_left.strokeStyle = "green";
+        ctx_left.rect(50, 50, 200, 100);
+        ctx_left.stroke();
+        //ctx_left.restore();
+
+
+    </script>
+
+
+</body>
+
+</html>

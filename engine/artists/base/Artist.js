@@ -9,12 +9,6 @@ class Artist {
     //#endregion 
 
     //#region  Properties
-    get Context() {
-        return this.context;
-    }
-    set Context(context) {
-        this.context = context;
-    }
     get Alpha() {
         return this.alpha;
     }
@@ -23,22 +17,9 @@ class Artist {
     }
     //#endregion
 
-    constructor(context, alpha) {
-        this.context = context;
+    constructor(alpha) {
         this.Alpha = alpha;
     }
-
-    // SetContext(activeCamera) {
-    //     let cameraTransform = activeCamera.Transform2D;
-    //     this.context.translate(cameraTransform.Origin.X, cameraTransform.Origin.Y);
-    //     this.context.scale(cameraTransform.Scale.X, cameraTransform.Scale.Y);
-    //     this.context.rotate(cameraTransform.RotationInRadians);
-    //     this.context.translate(-cameraTransform.Origin.X, -cameraTransform.Origin.Y);
-    //     this.context.translate(-cameraTransform.Translation.X, -cameraTransform.Translation.Y);
-
-    //     //add support for transparency
-    //     this.context.globalAlpha = this.alpha;
-    // }
 
     /**
      * Currently unused.

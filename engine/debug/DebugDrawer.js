@@ -56,7 +56,7 @@ class DebugDrawer {
     this.context.save();
 
     //uncomment this line and see what happens to the debug text when you move camera using numpad 4 - 6
-    //this.SetContext(this.cameraManager.ActiveCamera);
+    //this.cameraManager.ActiveCamera.SetContext(this.context);
 
     this.context.font = DebugDrawer.DEBUG_TEXT_FONT;
     this.context.fillStyle = color; 
@@ -91,7 +91,7 @@ class DebugDrawer {
   //#region Debug
   DrawBoundingBox(transform, color) {
     this.context.save();
-    this.cameraManager.ActiveCamera.SetContext(this.context);
+    this.cameraManager.ActiveCamera.SetContext();
     this.context.globalAlpha = 1;
     this.context.lineWidth = 2;
     this.context.strokeStyle = color;
