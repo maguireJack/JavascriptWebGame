@@ -154,7 +154,7 @@ class AnimatedSpriteArtist extends Artist {
     }
 
     Clone() {
-        return new AnimatedSpriteArtist(this.context, this.Alpha,
+        return new AnimatedSpriteArtist(this.Alpha,
             this.animationData); //a shallow copy is fine, since obj contains no sprite specific data (e.g. velocity, keys)
     }
 

@@ -45,15 +45,15 @@ class Camera2D extends Actor2D {
 
     //#region Equals, Clone, ToString 
     Equals(other) {
-        return super.Equals(other); //call parent - is this methods necessary?
+        return GDUtility.IsSameTypeAsTarget(this, other) && this.context === other.Context; 
     }
 
     ToString() {
-        return super.ToString(); //call parent - is this methods necessary?
+        return super.ToString() + "," + this.context;
     }
 
     Clone() {
-        return new Camera2D(this.ID, this.ActorType, this.CollisionType, this.Transform2D, this.StatusType);
+        return new Camera2D(this.ID, this.ActorType, this.CollisionType, this.Transform2D, this.StatusType, this.context);
 
     }
     //#endregion

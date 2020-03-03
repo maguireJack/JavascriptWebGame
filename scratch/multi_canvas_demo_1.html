@@ -1,0 +1,50 @@
+<html>
+
+<head>
+    <title>Multi-Canvas</title>
+    <style>
+        #game-canvas-left,
+        #game-canvas-right {
+            position: fixed;
+            width: 432px;
+            height: 468px;
+            border: 1px solid blue;
+        }
+
+        #game-canvas-left {
+            background-color:  rgb(248, 190, 190);
+            z-index: 1;
+        }
+
+        #game-canvas-right {
+            left: 452; 
+            background-color:rgb(220, 251, 217);
+            z-index: 2;
+        }
+    </style>
+
+<body>
+    <canvas id='game-canvas-left' width='864' height='468'></canvas>
+    <canvas id='game-canvas-right' width='864' height='468'></canvas>
+
+    <script>
+        function drawRect(ctx, x, y, w, h, lineWidth, strokeStyle)
+        {
+            ctx.beginPath();
+            ctx.lineWidth = lineWidth;
+            ctx.strokeStyle = strokeStyle;
+            ctx.rect(x, y, w, h);
+            ctx.stroke();
+        }
+
+        var ctx_left = document.getElementById("game-canvas-left").getContext("2d");
+        var ctx_right = document.getElementById("game-canvas-right").getContext("2d");
+
+        drawRect(ctx_left, 30, 30, 80, 50, 2, "red");
+        drawRect(ctx_right, 70, 70, 80, 50, 2, "blue");
+
+    </script> 
+</body>
+
+
+</html>

@@ -82,7 +82,7 @@ class SpriteArtist extends Artist {
     }
 
     Clone() {
-        return new SpriteArtist(this.context, this.spritesheet, this.sourcePosition.Clone(), this.sourceDimensions.Clone(), this.Alpha);
+        return new SpriteArtist(this.spritesheet, this.sourcePosition.Clone(), this.sourceDimensions.Clone(), this.Alpha);
     }
 
     ToString() {

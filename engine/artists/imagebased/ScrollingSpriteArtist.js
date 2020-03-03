@@ -140,7 +140,7 @@ class ScrollingSpriteArtist extends Artist {
     }
 
     Clone() {
-        return new ScrollingSpriteArtist(this.context, this.spritesheet, this.sourcePosition.Clone(), this.sourceDimensions.Clone(), this.Alpha, this.screenWidth, this.screenHeight);
+        return new ScrollingSpriteArtist(this.spritesheet, this.sourcePosition.Clone(), this.sourceDimensions.Clone(), this.Alpha, this.screenWidth, this.screenHeight);
     }
 
     ToString() {

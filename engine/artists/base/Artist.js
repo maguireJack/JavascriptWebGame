@@ -50,7 +50,7 @@ class Artist {
     }
 
     Clone() {
-        return new Artist(this.context, this.alpha);
+        return new Artist(this.alpha);
     }
 
     ToString() {

@@ -9,14 +9,11 @@ Comments:
 Exercises: 
 - Re-factor CameraManager to align with ObjectManager use of predicates etc.
 - Use ContextParameter classes in the appropriate artist.
-- Complete the RenderManager to move ObjectManager::Draw()
-- Add context to the camera class.
 
 Notes:
 - None
 
 To Do:
-- Re-factor CameraManager to align with ObjectManager use of predicates etc.
 - Wrap MyConstants.js and Constants.js in a class to set scope and no longer pollute global project space.
 - Add booleans to DebugDrawer to enable/disable drawing of BBs for objects and camera, and drawing of debug text.
 - Improve SoundManager to block load until all sound resources have loaded.
@@ -30,6 +27,8 @@ To Do:
 - Continue adding documentation to all classes and methods.
 
 Done:
+- Add context to the camera class.
+- Complete the RenderManager to move ObjectManager::Draw()
 - When we scroll L/R and the active camera NO LONGER intersects the centre background image (i.e. its bounding box) then the background is no drawn - See ObjectManager::Draw() specifically (if(sprite.ActorType == ActorType.Background ||...) 
 - Added GDUtility.IsSameTypeAsTarget() 
 - Added Matrix class in preparation for rotating sprites.

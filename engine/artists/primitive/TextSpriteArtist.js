@@ -43,16 +43,16 @@ class TextSpriteArtist extends Artist{
 
     Draw(gameTime, parent, activeCamera) {
         //save whatever context settings were used before this (color, line, text styles)
-        this.Context.save();
+        activeCamera.Context.save();
         //apply the camera transformations to the scene (i.e. to enable camera zoom, pan, rotate)
         activeCamera.SetContext();
         //access the transform for the parent that this artist is attached to
         let transform = parent.Transform2D;
-        this.Context.fillStyle = this.fillStyle;  //ColorParameters?
-        this.textParameters.Draw(this.Context);
-        this.Context.globalAlpha = this.Alpha; //ColorParameters?
-        this.Context.fillText(this.text, transform.Translation.X, transform.Translation.Y, this.maxWidth);
-        this.Context.restore();
+        activeCamera.Context.fillStyle = this.fillStyle;  //ColorParameters?
+        this.textParameters.Draw(activeCamera.Context);
+        activeCamera.Context.globalAlpha = this.Alpha; //ColorParameters?
+        activeCamera.Context.fillText(this.text, transform.Translation.X, transform.Translation.Y, this.maxWidth);
+        activeCamera.Context.restore();
     }
 
 

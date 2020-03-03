@@ -89,7 +89,7 @@ class RectangleSpriteArtist extends Artist {
     }
 
     Clone() {
-        return new RectangleSpriteArtist(this.context, this.rect.Clone(), this.lineWidth, this.strokeStyle, this.fillStyle, this.Alpha);
+        return new RectangleSpriteArtist(this.rect.Clone(), this.lineWidth, this.strokeStyle, this.fillStyle, this.Alpha);
     }
 
     ToString() {
