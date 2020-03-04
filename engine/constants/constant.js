@@ -1,3 +1,4 @@
+
 //#region Actor related
 //defines the actors we find in the game
 const ActorType = Object.freeze({
@@ -153,3 +154,4 @@ const AudioType = Object.freeze({
   //add as many audio types as your game needs here...
 });
 //#endregion
+

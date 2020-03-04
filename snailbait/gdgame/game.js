@@ -175,447 +175,464 @@ Done:
 
 //#endregion
 
-//#region Global Variables
-/********************************************************************* EVENT LISTENERS *********************************************************************/
-//add event listener for load
-window.addEventListener("load", LoadGame);
+class Game {
 
-/********************************************************************* GLOBAL VARS *********************************************************************/
-//get a handle to our canvas
-var cvs = document.getElementById("game-canvas");
-//get a handle to 3D context which allows drawing
-var ctx = cvs.getContext("2d");
+  /************************************************************ CORE CODE THAT DOESN'T CHANGE EXCEPT WHEN ADDING/REMOVING/REFACTORING MANAGERS ************************************************************/
 
-//stores elapsed time
-var gameTime;
-//assets
-var spriteSheet;
+  //#region Fields
+  //canvas and context
+  cvs;
+  ctx;
 
-//managers and notification
-var notificationCenter;
-var objectManager;
-var soundManager;
-var gameStateManager;
-var cameraManager;
-//#endregion
+  //game resources
+  spriteSheet;
+  jungleSpriteSheet;
 
-//#region 
-var debugModeOn = true;
-//#endregion
+  //time object and notification 
+  gameTime;
+  notificationCenter;
 
-/************************************************************ CORE GAME LOOP CODE UNDER THIS POINT ************************************************************/
+  //managers
+  objectManager;
+  soundManager;
+  gameStateManager;
+  cameraManager;
 
-// #region  LoadGame, Start, Animate
-function LoadGame() {
+  //debug
+  debugModeOn;
+  //#endregion
 
-  //load content
-  Initialize();
+  //#region Constructor
+  constructor(debugModeOn) {
+    //enable/disable debug info
+    this.debugModeOn = debugModeOn;
+  }
+  //#endregion
 
-  //start timer - notice that it is called only after we loaded all the game content
-  Start();
+  // #region LoadGame, Start, Animate
+  LoadGame(canvasID) {
 
-  //publish an event to pause the object manager (i.e. no update, no draw) and show the menu
-  this.notificationCenter.Notify(
-    new Notification(
-      NotificationType.Menu,
-      NotificationAction.ShowMenuChanged,
-      [StatusType.Off]
-    )
-  );
-}
+    //load content
+    this.Initialize(canvasID);
 
-function Start() {
-  //runs in proportion to refresh rate
-  this.animationTimer = window.requestAnimationFrame(Animate);
-  this.gameTime = new GameTime();
-}
+    //start timer - notice that it is called only after we loaded all the game content
+    this.Start();
 
-function Animate(now) {
-  this.gameTime.Update(now);
-  Update(this.gameTime);
-  Draw(this.gameTime);
-  window.requestAnimationFrame(Animate);
-}
-// #endregion
-
-// #region  Update, Draw
-function Update(gameTime) {
-  //update all the game sprites
-  this.objectManager.Update(gameTime);
-
-  //update game state
-  this.gameStateManager.Update(gameTime);
-
-  //updates the menu manager to listen for show/hide menu keystroke
-  this.menuManager.Update(gameTime);
-
-  //updates the camera manager which in turn updates all cameras
-  this.cameraManager.Update(gameTime);
-
-  //draw the sprites
-  this.renderManager.Update(gameTime);  
-
-  //DEBUG - REMOVE LATER
-  if(this.debugModeOn)
-    this.debugDrawer.Update(gameTime);
-}
-
-function Draw(gameTime) {
-  //clear screen on each draw of ALL sprites (i.e. menu and game sprites)
-  ClearScreen(Color.Black);
-
-  //draw all the game sprites
-  this.renderManager.Draw(gameTime);
-
-    //DEBUG - REMOVE LATER
-  if(this.debugModeOn)
-    this.debugDrawer.Draw(gameTime);
-}
-
-function ClearScreen(color) {
-  ctx.save();
-  ctx.fillStyle = color;
-  ctx.fillRect(0, 0, cvs.clientWidth, cvs.clientHeight);
-  ctx.restore();
-}
-// #endregion
-
-/************************************************************ YOUR GAME SPECIFIC UNDER THIS POINT ************************************************************/
-
-// #region Initialize, Load
-function Initialize() {
-
-  LoadAssets();
-  LoadNotificationCenter();
-  LoadInputAndCameraManagers();
-  LoadCameras(); //make at the end as 1+ behaviors in camera may depend on sprite
-  LoadAllOtherManagers();
-  LoadSprites();
-
-  //set game is playing
-  this.isPlaying = false;
-
-  //DEBUG - REMOVE LATER
-  if(this.debugModeOn)
-    LoadDebug();
-
-}
-
-function LoadDebug(){
-  this.debugDrawer = new DebugDrawer("shows debug info", 
-        this.ctx, this.objectManager, this.cameraManager);
-}
-
-function LoadCameras() {
-  let transform = new Transform2D(
-    new Vector2(0, 0),
-    0,
-    Vector2.One,
-    new Vector2(cvs.clientWidth/2,  cvs.clientHeight/2),
-    new Vector2(cvs.clientWidth, cvs.clientHeight),
-    0
-  );
-
-  let camera = new Camera2D(
-    "intro camera",
-    ActorType.Camera,
-    transform,
-    StatusType.IsUpdated,
-    this.ctx
-  );
-
-  camera.AttachBehavior(
-    new FlightCameraBehavior(
-      this.keyboardManager,
-      [
-        Keys.NumPad4,   Keys.NumPad6,  Keys.NumPad1,   Keys.NumPad9,
-        Keys.NumPad8,   Keys.NumPad2,  Keys.NumPad5
-      ],
-      new Vector2(3,0),
-      Math.PI / 180,
-      new Vector2(0.005, 0.005)
-    )
-  );
-
- // camera.AttachBehavior(new PanCameraBehavior());
-  this.cameraManager.Add(camera);
-}
-
-function LoadNotificationCenter() {
-  this.notificationCenter = new NotificationCenter();
-}
-
-function LoadInputAndCameraManagers() {
-  //checks for keyboard input
-  this.keyboardManager = new KeyboardManager();
-  //stores the cameras in our game
-  this.cameraManager = new CameraManager("stores and manages cameras");
-}
-
-function LoadAllOtherManagers() {
-  //update objects
-  this.objectManager = new ObjectManager(
-    "game sprites",
-    StatusType.IsUpdated,
-    this.cameraManager,
-    this.notificationCenter
-  );
-
-  //draw objects
-  this.renderManager = new RenderManager(
-    "draws sprites in obj manager",
-    StatusType.IsDrawn,
-    this.objectManager,
-    this.cameraManager,
-    this.notificationCenter);
-
-
-
-  //adds support for storing and responding to changes in game state e.g. player collect all inventory items, or health == 0
-  this.gameStateManager = new MyGameStateManager(
-    "store and manage game state",
-    this.notificationCenter
-  );
-
-  //audio - step 3 - instanciate the sound manager with the array of cues
-  this.soundManager = new SoundManager(audioCueArray, this.notificationCenter);
-
-  //adds support for a menu system
-  this.menuManager = new MyMenuManager(
-    this.notificationCenter,
-    this.keyboardManager
-  );
-
-  //load other managers...
-}
-
-function LoadAssets() {
-  //textures
-  this.spriteSheet = document.getElementById("snailbait_sprite_sheet");
-  //grass
-  this.jungleSpriteSheet = document.getElementById("snailbait_jungle_tileset");
-  //see MyConstants::BACKGROUND_DATA for background sprite sheet load
-}
-
-function LoadSprites() {
- LoadBackground();
- LoadPlatforms();
- LoadPickups();
- LoadEnemies();
- LoadPlayer();
- LoadOnScreenText();
-}
-
-function LoadBackground() {
-  for (let i = 0; i < BACKGROUND_DATA.length; i++) {
-    let spriteArtist = new ScrollingSpriteArtist(
-      BACKGROUND_DATA[i].spriteSheet,
-      BACKGROUND_DATA[i].sourcePosition,
-      BACKGROUND_DATA[i].sourceDimensions,
-      1,
-      cvs.width,
-      cvs.height
-    );
-    let transform = new Transform2D(
-      BACKGROUND_DATA[i].translation,
-      BACKGROUND_DATA[i].rotation,
-      BACKGROUND_DATA[i].scale,
-      BACKGROUND_DATA[i].origin,
-      new Vector2(cvs.clientWidth, cvs.clientHeight)
-    );
-    this.objectManager.Add(
-      new Sprite(
-        BACKGROUND_DATA[i].id,
-        BACKGROUND_DATA[i].actorType,
-        BACKGROUND_DATA[i].collisionType,
-        transform,
-        spriteArtist,
-        StatusType.IsUpdated | StatusType.IsDrawn,
-        BACKGROUND_DATA[i].scrollSpeedMultiplier,
-        BACKGROUND_DATA[i].layerDepth
+    //publish an event to pause the object manager (i.e. no update, no draw) and show the menu
+    NotificationCenter.Notify(
+      new Notification(
+        NotificationType.Menu,
+        NotificationAction.ShowMenuChanged,
+        [StatusType.Off]
       )
     );
   }
 
-  //sort all background sprites by depth 0 (back) -> 1 (front)
-  this.objectManager.Sort(ActorType.Background, function sortAscendingDepth(a, b) {
-      return a.LayerDepth - b.LayerDepth;
-    }
-  );
-}
-
-function LoadPlatforms() {
-  let spriteArtist = new SpriteArtist(
-    PLATFORM_DATA.spriteSheet,
-    PLATFORM_DATA.sourcePosition,
-    PLATFORM_DATA.sourceDimensions,
-    1
-  );
-
-  let transform = new Transform2D(
-    PLATFORM_DATA.translationArray[0],
-    PLATFORM_DATA.rotation,
-    PLATFORM_DATA.scale,
-    PLATFORM_DATA.origin,
-    PLATFORM_DATA.sourceDimensions,
-    PLATFORM_DATA.explodeBoundingBoxInPixels
-  );
-
-  let platformSprite = new Sprite(
-    PLATFORM_DATA.id,
-    PLATFORM_DATA.actorType,
-    PLATFORM_DATA.collisionType, 
-    transform,
-    spriteArtist,
-    StatusType.IsUpdated | StatusType.IsDrawn,
-    PLATFORM_DATA.scrollSpeedMultiplier,
-    PLATFORM_DATA.layerDepth
-  );
-
-  this.objectManager.Add(platformSprite);
-
-  let clone = null;
-
-  for (let i = 1; i < PLATFORM_DATA.translationArray.length; i++) {
-    clone = platformSprite.Clone();
-    clone.Transform2D.Translation = PLATFORM_DATA.translationArray[i];
-    this.objectManager.Add(clone);
+  Start() {
+    //runs in proportion to refresh rate
+    this.gameTime = new GameTime();
+    this.animationTimer = window.requestAnimationFrame(this.Animate.bind(this));
   }
-}
 
-function LoadPickups() {
-  let spriteArtist = new AnimatedSpriteArtist(
-    1,
-    COLLECTIBLES_ANIMATION_DATA
-  );
-  spriteArtist.SetTake("gold_glint");
+  Animate(now) {
+    this.gameTime.Update(now);
+    this.Update(this.gameTime);
+    this.Draw(this.gameTime);
+    window.requestAnimationFrame(this.Animate.bind(this));
+  }
+  // #endregion
 
-  let transform = new Transform2D(
-    new Vector2(530, 250),
-    0,
-    Vector2.One,
-    Vector2.Zero,
-    spriteArtist.GetBoundingBoxByTakeName("gold_glint"),
-    0
-  );
+  // #region Update, Draw
+  Update(gameTime) {
+    //update all the game sprites
+    this.objectManager.Update(gameTime);
 
-  let pickupSprite = new Sprite(
-    "gold",
-    ActorType.Pickup,
-    CollisionType.Collidable,
-    transform,
-    spriteArtist,
-    StatusType.IsUpdated | StatusType.IsDrawn,
-    1,
-    1
-  );
+    //update game state
+    this.gameStateManager.Update(gameTime);
 
-  //your code - does a pickup need behavior?
+    //updates the menu manager to listen for show/hide menu keystroke
+    this.menuManager.Update(gameTime);
 
-  this.objectManager.Add(pickupSprite);
-}
+    //updates the camera manager which in turn updates all cameras
+    this.cameraManager.Update(gameTime);
 
-function LoadEnemies() {
-  let spriteArtist = new AnimatedSpriteArtist(1, ENEMY_ANIMATION_DATA);
-  spriteArtist.SetTake("wasp_fly");
+    //draw the sprites
+    this.renderManager.Update(gameTime);
 
-  let transform = new Transform2D(
-    new Vector2(200, 200),
-    0,
-    new Vector2(1, 1),
-    Vector2.Zero,
-    spriteArtist.GetBoundingBoxByTakeName("wasp_fly"),
-    0
-  );
+    //DEBUG - REMOVE LATER
+    if (this.debugModeOn)
+      this.debugDrawer.Update(gameTime);
+  }
 
-  let enemySprite = new MoveableSprite(
-    "wasp",
-    ActorType.Enemy,
-    CollisionType.Collidable,
-    transform,
-    spriteArtist,
-    StatusType.IsUpdated | StatusType.IsDrawn,
-    1,
-    1
-  );
+  Draw(gameTime) {
+    //clear screen on each draw of ALL sprites (i.e. menu and game sprites)
+    this.ClearScreen(Color.Black);
 
-  //set performance characteristics of the body attached to the moveable sprite
-  enemySprite.Body.MaximumSpeed = 6;
-  enemySprite.Body.Friction = FrictionType.Normal;
-  enemySprite.Body.Gravity = GravityType.Normal;
+    //draw all the game sprites
+    this.renderManager.Draw(gameTime);
 
-  //your code - add bee move behavior here...
+    //DEBUG - REMOVE LATER
+    if (this.debugModeOn)
+      this.debugDrawer.Draw(gameTime);
+  }
 
-  this.objectManager.Add(enemySprite);
-}
+  ClearScreen(color) {
+    this.ctx.save();
+    this.ctx.fillStyle = color;
+    this.ctx.fillRect(0, 0, this.cvs.clientWidth, this.cvs.clientHeight);
+    this.ctx.restore();
+  }
+  // #endregion
 
-function LoadPlayer() {
-  let spriteArtist = new AnimatedSpriteArtist(1, RUNNER_ANIMATION_DATA);
-  spriteArtist.SetTake("run_right");
+  /************************************************************ YOUR GAME SPECIFIC UNDER THIS POINT ************************************************************/
+  // #region Initialize, Load - Debug, Cameras, Managers
+  Initialize(canvasID) {
+    this.LoadCanvases(canvasID);
+    this.LoadAssets();
+    this.LoadNotificationCenter();
+    this.LoadInputAndCameraManagers();
+    this.LoadCameras(); //make at the end as 1+ behaviors in camera may depend on sprite
+    this.LoadAllOtherManagers();
+    this.LoadSprites();
 
-  let transform = new Transform2D(
-    RUNNER_START_POSITION,
-    0,
-    Vector2.One,
-    Vector2.Zero,
-    spriteArtist.GetBoundingBoxByTakeName("run_right"),
-    0
-  );
+    //set game is playing
+    this.isPlaying = false;
 
-  let playerSprite = new MoveableSprite(
-    "player",
-    ActorType.Player,
-    CollisionType.Collidable,
-    transform,
-    spriteArtist,
-    StatusType.IsUpdated | StatusType.IsDrawn,
-    1,
-    1
-  );
+    //DEBUG - REMOVE LATER
+    if (this.debugModeOn)
+      this.LoadDebug();
 
-  // //set performance characteristics of the body attached to the moveable sprite
-  playerSprite.Body.MaximumSpeed = 6;
-  playerSprite.Body.Friction = FrictionType.Normal;
-  playerSprite.Body.Gravity = GravityType.Normal;
+  }
 
-  playerSprite.AttachBehavior(
-    new PlayerBehavior(
-      this.keyboardManager,
+  LoadCanvases(canvasID) {
+    //get a handle to our context
+    this.cvs = document.getElementById(canvasID);
+    this.ctx = this.cvs.getContext("2d");
+  }
+
+  LoadCameras() {
+    let transform = new Transform2D(
+      new Vector2(0, 0),
+      0,
+      new Vector2(1, 1),
+      new Vector2(this.cvs.clientWidth / 2, this.cvs.clientHeight / 2),
+      new Vector2(this.cvs.clientWidth, this.cvs.clientHeight),
+      0
+    );
+
+    let camera = new Camera2D(
+      "intro camera",
+      ActorType.Camera,
+      transform,
+      StatusType.IsUpdated,
+      this.ctx
+    );
+
+    camera.AttachBehavior(
+      new FlightCameraBehavior(
+        this.keyboardManager,
+        [
+          Keys.NumPad4, Keys.NumPad6, Keys.NumPad1, Keys.NumPad9,
+          Keys.NumPad8, Keys.NumPad2, Keys.NumPad5
+        ],
+        new Vector2(3, 0),
+        Math.PI / 180,
+        new Vector2(0.005, 0.005)
+      )
+    );
+
+    // camera.AttachBehavior(new PanCameraBehavior());
+    this.cameraManager.Add(camera);
+  }
+
+  LoadNotificationCenter() {
+    this.notificationCenter = new NotificationCenter();
+  }
+
+  LoadInputAndCameraManagers() {
+    //checks for keyboard input
+    this.keyboardManager = new KeyboardManager();
+    //stores the cameras in our game
+    this.cameraManager = new CameraManager("stores and manages cameras");
+  }
+
+  LoadAllOtherManagers() {
+    //update objects
+    this.objectManager = new ObjectManager(
+      "game sprites",
+      StatusType.IsUpdated,
+      this.cameraManager,
+      this.notificationCenter
+    );
+
+    //draw objects
+    this.renderManager = new RenderManager(
+      "draws sprites in obj manager",
+      StatusType.IsDrawn,
       this.objectManager,
-      RUNNER_MOVE_KEYS,
-      RUNNER_RUN_VELOCITY,
-      RUNNER_JUMP_VELOCITY
-    )
-  );
+      this.cameraManager,
+      this.notificationCenter);
 
-  this.objectManager.Add(playerSprite); //add player sprite
+
+
+    //adds support for storing and responding to changes in game state e.g. player collect all inventory items, or health == 0
+    this.gameStateManager = new MyGameStateManager(
+      "store and manage game state",
+      this.notificationCenter
+    );
+
+    //audio - step 3 - instanciate the sound manager with the array of cues
+    this.soundManager = new SoundManager(audioCueArray, this.notificationCenter);
+
+    //adds support for a menu system
+    this.menuManager = new MyMenuManager(
+      this.notificationCenter,
+      this.keyboardManager
+    );
+
+    //load other managers...
+  }
+
+  LoadDebug() {
+    this.debugDrawer = new DebugDrawer("shows debug info",
+      this.ctx, this.objectManager, this.cameraManager);
+  }
+  //#endregion
+
+  //#region Load - Assets, Sprites
+  LoadAssets() {
+    //textures
+    this.spriteSheet = document.getElementById("snailbait_sprite_sheet");
+    //grass
+    this.jungleSpriteSheet = document.getElementById("snailbait_jungle_tileset");
+    //see MyConstants::BACKGROUND_DATA for background sprite sheet load
+  }
+
+  LoadSprites() {
+    this.LoadBackground();
+    this.LoadPlatforms();
+    this.LoadPickups();
+    this.LoadEnemies();
+    this.LoadPlayer();
+    this.LoadOnScreenText();
+  }
+
+  LoadBackground() {
+    for (let i = 0; i < BACKGROUND_DATA.length; i++) {
+      let spriteArtist = new ScrollingSpriteArtist(
+        BACKGROUND_DATA[i].spriteSheet,
+        BACKGROUND_DATA[i].sourcePosition,
+        BACKGROUND_DATA[i].sourceDimensions,
+        1,
+        this.cvs.width,
+        this.cvs.height
+      );
+      let transform = new Transform2D(
+        BACKGROUND_DATA[i].translation,
+        BACKGROUND_DATA[i].rotation,
+        BACKGROUND_DATA[i].scale,
+        BACKGROUND_DATA[i].origin,
+        new Vector2(this.cvs.clientWidth, this.cvs.clientHeight)
+      );
+      this.objectManager.Add(
+        new Sprite(
+          BACKGROUND_DATA[i].id,
+          BACKGROUND_DATA[i].actorType,
+          BACKGROUND_DATA[i].collisionType,
+          transform,
+          spriteArtist,
+          StatusType.IsUpdated | StatusType.IsDrawn,
+          BACKGROUND_DATA[i].scrollSpeedMultiplier,
+          BACKGROUND_DATA[i].layerDepth
+        )
+      );
+    }
+
+    //sort all background sprites by depth 0 (back) -> 1 (front)
+    this.objectManager.Sort(ActorType.Background, function sortAscendingDepth(a, b) {
+      return a.LayerDepth - b.LayerDepth;
+    });
+  }
+
+  LoadPlatforms() {
+    let spriteArtist = new SpriteArtist(
+      PLATFORM_DATA.spriteSheet,
+      PLATFORM_DATA.sourcePosition,
+      PLATFORM_DATA.sourceDimensions,
+      1
+    );
+
+    let transform = new Transform2D(
+      PLATFORM_DATA.translationArray[0],
+      PLATFORM_DATA.rotation,
+      PLATFORM_DATA.scale,
+      PLATFORM_DATA.origin,
+      PLATFORM_DATA.sourceDimensions,
+      PLATFORM_DATA.explodeBoundingBoxInPixels
+    );
+
+    let platformSprite = new Sprite(
+      PLATFORM_DATA.id,
+      PLATFORM_DATA.actorType,
+      PLATFORM_DATA.collisionType,
+      transform,
+      spriteArtist,
+      StatusType.IsUpdated | StatusType.IsDrawn,
+      PLATFORM_DATA.scrollSpeedMultiplier,
+      PLATFORM_DATA.layerDepth
+    );
+
+    this.objectManager.Add(platformSprite);
+
+    let clone = null;
+
+    for (let i = 1; i < PLATFORM_DATA.translationArray.length; i++) {
+      clone = platformSprite.Clone();
+      clone.Transform2D.Translation = PLATFORM_DATA.translationArray[i];
+      this.objectManager.Add(clone);
+    }
+  }
+
+  LoadPickups() {
+    let spriteArtist = new AnimatedSpriteArtist(
+      1,
+      COLLECTIBLES_ANIMATION_DATA
+    );
+    spriteArtist.SetTake("gold_glint");
+
+    let transform = new Transform2D(
+      new Vector2(530, 250),
+      0,
+      Vector2.One,
+      Vector2.Zero,
+      spriteArtist.GetBoundingBoxByTakeName("gold_glint"),
+      0
+    );
+
+    let pickupSprite = new Sprite(
+      "gold",
+      ActorType.Pickup,
+      CollisionType.Collidable,
+      transform,
+      spriteArtist,
+      StatusType.IsUpdated | StatusType.IsDrawn,
+      1,
+      1
+    );
+
+    //your code - does a pickup need behavior?
+
+    this.objectManager.Add(pickupSprite);
+  }
+
+  LoadEnemies() {
+    let spriteArtist = new AnimatedSpriteArtist(1, ENEMY_ANIMATION_DATA);
+    spriteArtist.SetTake("wasp_fly");
+
+    let transform = new Transform2D(
+      new Vector2(200, 200),
+      0,
+      new Vector2(1, 1),
+      Vector2.Zero,
+      spriteArtist.GetBoundingBoxByTakeName("wasp_fly"),
+      0
+    );
+
+    let enemySprite = new MoveableSprite(
+      "wasp",
+      ActorType.Enemy,
+      CollisionType.Collidable,
+      transform,
+      spriteArtist,
+      StatusType.IsUpdated | StatusType.IsDrawn,
+      1,
+      1
+    );
+
+    //set performance characteristics of the body attached to the moveable sprite
+    enemySprite.Body.MaximumSpeed = 6;
+    enemySprite.Body.Friction = FrictionType.Normal;
+    enemySprite.Body.Gravity = GravityType.Normal;
+
+    //your code - add bee move behavior here...
+
+    this.objectManager.Add(enemySprite);
+  }
+
+  LoadPlayer() {
+    let spriteArtist = new AnimatedSpriteArtist(1, RUNNER_ANIMATION_DATA);
+    spriteArtist.SetTake("run_right");
+
+    let transform = new Transform2D(
+      RUNNER_START_POSITION,
+      0,
+      Vector2.One,
+      Vector2.Zero,
+      spriteArtist.GetBoundingBoxByTakeName("run_right"),
+      0
+    );
+
+    let playerSprite = new MoveableSprite(
+      "player",
+      ActorType.Player,
+      CollisionType.Collidable,
+      transform,
+      spriteArtist,
+      StatusType.IsUpdated | StatusType.IsDrawn,
+      1,
+      1
+    );
+
+    // //set performance characteristics of the body attached to the moveable sprite
+    playerSprite.Body.MaximumSpeed = 6;
+    playerSprite.Body.Friction = FrictionType.Normal;
+    playerSprite.Body.Gravity = GravityType.Normal;
+
+    playerSprite.AttachBehavior(
+      new PlayerBehavior(
+        this.keyboardManager,
+        this.objectManager,
+        RUNNER_MOVE_KEYS,
+        RUNNER_RUN_VELOCITY,
+        RUNNER_JUMP_VELOCITY
+      )
+    );
+
+    this.objectManager.Add(playerSprite); //add player sprite
+  }
+
+  LoadOnScreenText() {
+    let transform = new Transform2D(
+      new Vector2(180, 190),
+      0,
+      Vector2.One,
+      Vector2.Zero,
+      new Vector2(10, 10),
+      0
+    );
+
+    let spriteArtist = new TextSpriteArtist("Wasp[4, 5]",
+      new TextParameters(FontType.UnitInformationMedium,
+        TextAlignType.Left, TextBaselineType.Top),
+      1, 100);
+
+    let sprite = new Sprite(
+      "txt_ui_hello",
+      ActorType.HUD,
+      CollisionType.Collidable,
+      transform,
+      spriteArtist,
+      StatusType.IsUpdated | StatusType.IsDrawn,
+      1,
+      1
+    );
+
+    this.objectManager.Add(sprite);
+  }
+  //#endregion
 }
 
-function LoadOnScreenText() {
-  let transform = new Transform2D(
-    new Vector2(180,190),
-    0,
-    Vector2.One,
-    Vector2.Zero,
-    new Vector2(10, 10),
-    0
-  );
-
-  let spriteArtist = new TextSpriteArtist("Wasp[4, 5]",
-    new TextParameters(FontType.UnitInformationMedium, 
-              TextAlignType.Left, TextBaselineType.Top),
-              1, 100);
-
-  let sprite = new Sprite(
-    "txt_ui_hello",
-    ActorType.HUD,
-    CollisionType.Collidable,
-    transform,
-    spriteArtist,
-    StatusType.IsUpdated | StatusType.IsDrawn,
-    1,
-    1
-  );
-
-  this.objectManager.Add(sprite);
-}
+window.addEventListener("load", event => {
+  let game = new Game(true);
+  game.LoadGame("game-canvas");
+});

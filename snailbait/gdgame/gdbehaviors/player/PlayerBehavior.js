@@ -72,7 +72,7 @@ class PlayerBehavior {
         )
       ) {
         //your code - play sound, remove enemy, add health e.g. you could write code like this...
-       // notificationCenter.Notify(
+        // NotificationCenter.Notify(
         //   new Notification(
         //     NotificationType.GameState,
         //     NotificationAction.Pickup,
@@ -81,28 +81,29 @@ class PlayerBehavior {
         // );
 
         //removes coin!
-        notificationCenter.Notify(
+        NotificationCenter.Notify(
           new Notification(
             NotificationType.Sprite,
             NotificationAction.RemoveFirst,
             [sprite]));
 
-        // notificationCenter.Notify(new Notification(
+        // NotificationCenter.Notify(new Notification(
         //   NotificationType.Sprite,  //Who is registered?
         //   NotificationAction.RemoveAllByType, //how does it the listener handle case?
         //   [ActorType.Platform]));  //params?
 
         let dist = Vector2.Distance(parent.Transform2D.Translation,
-                    sprite.Transform2D.Translation);
+          sprite.Transform2D.Translation);
 
-        notificationCenter.Notify(
+        NotificationCenter.Notify(
           new Notification(
             NotificationType.Sprite, NotificationAction.RemoveFirstBy,
-            [ActorType.Platform, 
-          sprite => 
-          sprite.Transform2D.Translation.X > 400
-            || (sprite.Transform2D.Scale.X > 0.5
-            && sprite.Transform2D.Scale.X < 1)]
+            [ActorType.Platform,
+              sprite =>
+              sprite.Transform2D.Translation.X > 400 ||
+              (sprite.Transform2D.Scale.X > 0.5 &&
+                sprite.Transform2D.Scale.X < 1)
+            ]
           )
         );
 
@@ -127,21 +128,21 @@ class PlayerBehavior {
       ) {
 
         //your code - play sound, remove enemy, add health e.g. you could write code like this...
-        notificationCenter.Notify(
+        NotificationCenter.Notify(
           new Notification(
             NotificationType.GameState,
             NotificationAction.Health,
             [5]
           )
         );
-        notificationCenter.Notify(
+        NotificationCenter.Notify(
           new Notification(
             NotificationType.Sprite,
             NotificationAction.RemoveFirst,
             [sprite]
           )
         );
-        notificationCenter.Notify(
+        NotificationCenter.Notify(
           new Notification(NotificationType.Sound, NotificationAction.Play, [
             "background"
           ])
@@ -170,7 +171,8 @@ class PlayerBehavior {
       parent.Body.IsJumping = true;
       parent.Body.IsOnGround = false;
       parent.Body.SetVelocityY(-this.jumpVelocity * gameTime.ElapsedTimeInMs);
-      notificationCenter.Notify(
+
+      NotificationCenter.Notify(
         new Notification(NotificationType.Sound, NotificationAction.Play, [
           "jump"
         ])

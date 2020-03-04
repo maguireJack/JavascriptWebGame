@@ -52,12 +52,14 @@ class MyMenuManager {
         $('.wrapper').show();
 
         //click handlers for the different menu screens
-        $('.play').click(function () {
-            $('#menu').hide();
-            //send a notification to update and draw the game
-            //nmcg - bug fix - 11.2.20 - this.notificationCenter did not exist in the context of this event handler
-            notificationCenter.Notify(new Notification(NotificationType.Menu, NotificationAction.ShowMenuChanged, [StatusType.IsUpdated | StatusType.IsDrawn]));
-        });
+        $('.play').click(this.HideMenu.bind(this));
+    }
+
+    HideMenu(){
+        //hide the main menu;
+        $('#menu').hide();
+        //send a notification to update and draw the game
+        NotificationCenter.Notify(new Notification(NotificationType.Menu, NotificationAction.ShowMenuChanged, [StatusType.IsUpdated | StatusType.IsDrawn]));
     }
 
     Update(gameTime) {

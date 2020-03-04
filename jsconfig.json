@@ -5,8 +5,6 @@
     "include": [
         "engine/**/*", 
         "temp_dev_support/*",
-        "spaceinvaders/gdgame/**/*", 
         "snailbait/gdgame/**/*", 
-        "splitscreensam/gdgame/**/*",
         ] /*added to support Intellisense for JS files outside current file*/
 }

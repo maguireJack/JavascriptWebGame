@@ -49,6 +49,9 @@ class Rect {
     this.y = this.originalY = y;
     this.width = this.originalWidth = width;
     this.height = this.originalHeight = height;
+
+    this.originalWidth = width;
+    this.originalHeight = height;
   }
 
   Move(vector) {
@@ -59,8 +62,12 @@ class Rect {
   Transform(transform2D) {
     this.x = transform2D.Translation.X;
     this.y = transform2D.Translation.Y;
+    console.log(this.originalWidth + "," + transform2D.Scale.X + "," + transform2D.Dimensions.X);
     this.width = this.originalWidth * transform2D.Scale.X * transform2D.Dimensions.X;
+    console.log("\t" + this.originalHeight + "," + transform2D.Scale.Y + "," + transform2D.Dimensions.Y);
     this.height = this.originalHeight * transform2D.Scale.Y * transform2D.Dimensions.Y;
+
+
 }
 
   Explode(explodeBy) {
@@ -190,6 +197,11 @@ class Rect {
     let clone = rect.Clone();
     clone.Transform(transform2D);
     return clone;
+  }
+
+  static Round(r, precision){
+    return new Rect(GDMath.ToFixed(r.x, precision, 10), GDMath.ToFixed(r.y, precision, 10), 
+    GDMath.ToFixed(r.width, precision, 10), GDMath.ToFixed(r.height, precision, 10));
   }
   //#endregion
 }

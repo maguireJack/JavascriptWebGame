@@ -81,10 +81,10 @@ class Notification {
 
 class NotificationCenter {
   //stores what observer wants to be notified for a particular Notification type
-  notificationTypeToObserversMap;
+  static notificationTypeToObserversMap;
 
   constructor() {
-    this.notificationTypeToObserversMap = new Array();
+    Notification.notificationTypeToObserversMap = new Array();
   }
 
   //nmcg - bug fix - 11.2.20 - was not allowing map to contain more than one callback entity for the same type (e.g. MyObjectManager and MyMenuManager both registering for Menu)
@@ -92,18 +92,18 @@ class NotificationCenter {
 
     let bSuccess = true;
     //already a notificationType in the map (maybe for another entity)
-    if (this.notificationTypeToObserversMap[notificationType])
+    if (Notification.notificationTypeToObserversMap[notificationType])
     {
       //if we are not trying to add a duplicate observer then add
       if (this.IndexOf(notificationType, observer) == -1)
-        this.notificationTypeToObserversMap[notificationType].push({observer: observer, callback: callback });
+        Notification.notificationTypeToObserversMap[notificationType].push({observer: observer, callback: callback });
       else
         bSuccess = false;
     }
     else //not present
     {
-      this.notificationTypeToObserversMap[notificationType] = new Array();
-      this.notificationTypeToObserversMap[notificationType].push({observer: observer, callback: callback });
+      Notification.notificationTypeToObserversMap[notificationType] = new Array();
+      Notification.notificationTypeToObserversMap[notificationType].push({observer: observer, callback: callback });
     }
     return bSuccess;
   }
@@ -111,7 +111,7 @@ class NotificationCenter {
   Deregister(notificationType, observer, callback) {
     let index = this.IndexOf(notificationType, observer);
     if (index != -1) {
-      this.notificationTypeToObserversMap[notificationType].splice(index, 1);
+      Notification.notificationTypeToObserversMap[notificationType].splice(index, 1);
       return true;
     } else {
       console.log(
@@ -122,8 +122,8 @@ class NotificationCenter {
   }
 
   IndexOf(notificationType, observer) {
-    if (this.notificationTypeToObserversMap[notificationType]) {
-      let observers = this.notificationTypeToObserversMap[notificationType];
+    if (Notification.notificationTypeToObserversMap[notificationType]) {
+      let observers = Notification.notificationTypeToObserversMap[notificationType];
       for (let i = observers.length - 1; i >= 0; i--) {
         if (observers[i].observer === observer) 
           return i;
@@ -132,9 +132,9 @@ class NotificationCenter {
     return -1;
   }
 
-  Notify(notification) {
-    if (this.notificationTypeToObserversMap[notification.NotificationType]) {
-      let observers = this.notificationTypeToObserversMap[notification.NotificationType];
+  static Notify(notification) {
+    if (Notification.notificationTypeToObserversMap[notification.NotificationType]) {
+      let observers = Notification.notificationTypeToObserversMap[notification.NotificationType];
       for (let i = observers.length - 1; i >= 0; i--)
       {
         Reflect.apply(observers[i].callback, observers[i].observer, [notification]);

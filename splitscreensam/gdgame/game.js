@@ -78,7 +78,7 @@ function LoadGame() {
   Start();
 
   //publish an event to pause the object manager (i.e. no update, no draw) and show the menu
-  this.notificationCenter.Notify(
+  NotificationCenter.Notify(
     new Notification(
       NotificationType.Menu,
       NotificationAction.ShowMenuChanged,

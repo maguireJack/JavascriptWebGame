@@ -81,7 +81,7 @@ class MyCollisionManager{
                     this.objectManager.EnemySprites.splice(j, 1);
                     this.objectManager.BulletSprites.splice(i, 1);
                     //play sound!
-                    notificationCenter.Notify(new Notification(NotificationType.Sound, 
+                    NotificationCenter.Notify(new Notification(NotificationType.Sound, 
                         NotificationAction.Play,  ["sound_shoot"]));
 
                 }

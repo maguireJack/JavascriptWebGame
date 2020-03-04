@@ -46,10 +46,10 @@ class PlayerFireBehavior
             this.objectManager.Add(bulletClone);
            
             //play fire sound!
-            notificationCenter.Notify(new Notification(NotificationType.Sound, NotificationAction.Play,  ["sound_shoot"]));
+            NotificationCenter.Notify(new Notification(NotificationType.Sound, NotificationAction.Play,  ["sound_shoot"]));
 
             //if we wanted to set sound volume on all audio clips we could publish this type of event...
-            //notificationCenter.Notify(new Notification(NotificationType.Sound, NotificationAction.SetVolumeAll,  [1]));
+            //NotificationCenter.Notify(new Notification(NotificationType.Sound, NotificationAction.SetVolumeAll,  [1]));
           
             //reset
             this.timeSinceLastInMs = 0;

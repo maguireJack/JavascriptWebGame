@@ -21,6 +21,8 @@ class GDMath {
         let pow = Math.pow(base||10, precision);
         return Math.round(number*pow) / pow;
     }
+
+    
 }
 
 /**

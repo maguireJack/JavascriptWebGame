@@ -44,12 +44,28 @@ class DebugDrawer {
 
   DrawDebugText(gameTime, drawCount) {
     let x = 10, y = 10;
-    let yOffset = 10;
+    let yOffset = 15;
 
-    this.DrawText("Debug Info", x, y + yOffset, "white");
-    this.DrawText("--------------------------", x, y + 2 * yOffset,  "white");
-    this.DrawText("Draw Count:" + drawCount, x, y + 3 * yOffset, "white");
-    this.DrawText("FPS:" + gameTime.FPS + " ms", x, y + 4 * yOffset,  "white");
+    let offsetMultiplier = 1;
+    this.DrawText("Debug Info", x, y + offsetMultiplier * yOffset, "white");
+    offsetMultiplier++;
+
+    this.DrawText("--------------------------", x, y + offsetMultiplier * yOffset,  "white");
+    offsetMultiplier++;
+    
+    this.DrawText("Draw Count:" + drawCount, x,  y + offsetMultiplier * yOffset, "white");
+    offsetMultiplier++;
+    
+    this.DrawText("FPS:" + gameTime.FPS + " ms", x,  y + offsetMultiplier * yOffset,  "white");
+    offsetMultiplier++;
+
+    this.DrawText("Camera(origin):" + Vector2.Round(this.cameraManager.ActiveCamera.Transform2D.Origin, 2).ToString(), x,  y + offsetMultiplier * yOffset,  "white");
+    offsetMultiplier++;
+
+    this.DrawText("Camera(scale):" + Vector2.Round(this.cameraManager.ActiveCamera.Transform2D.Scale, 2).ToString(), x, y + 6 * yOffset,  "white");
+    offsetMultiplier++;
+
+    this.DrawText("Camera(BB):" + Rect.Round(this.cameraManager.ActiveCamera.Transform2D.BoundingBox, 2).ToString(), x,  y + offsetMultiplier * yOffset,  "white");
   }
 
   DrawText(text, x, y, color){
@@ -65,6 +81,8 @@ class DebugDrawer {
     this.context.fillText(text, x, y, DebugDrawer.DEBUG_TEXT_MAXWIDTH);
     this.context.restore();
   }
+
+ 
 
   DrawActiveCameraBoundingBoxes(boundingBoxColor) {
     this.DrawBoundingBox(this.cameraManager.ActiveCamera.Transform2D, boundingBoxColor);
