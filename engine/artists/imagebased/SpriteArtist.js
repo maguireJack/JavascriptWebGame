@@ -63,6 +63,10 @@ class SpriteArtist extends Artist {
         activeCamera.Context.save();
         //apply the camera transformations to the scene (i.e. to enable camera zoom, pan, rotate)
         activeCamera.SetContext();
+
+        //apply the sprite transformations to the sprite 
+        parent.SetContext(activeCamera.Context);
+
         //access the transform for the parent that this artist is attached to
         let transform = parent.Transform2D;
 
@@ -70,7 +74,7 @@ class SpriteArtist extends Artist {
             this.sourcePosition.X, this.sourcePosition.Y,
             this.sourceDimensions.X, this.sourceDimensions.Y,
             transform.Translation.X, transform.Translation.Y,
-            transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
+            transform.Dimensions.X, transform.Dimensions.Y);
 
         activeCamera.Context.restore();
     }

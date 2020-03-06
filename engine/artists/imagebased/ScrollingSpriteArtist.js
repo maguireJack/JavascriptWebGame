@@ -74,7 +74,7 @@ class ScrollingSpriteArtist extends Artist {
 
         //if we have moved across one complete canvas width, either left or right, then reset the offset to initial position
         if (parentTranslationOffsetX >= resetScreenWidth)
-            parent.Transform2D.Translation = new Vector2(0,0);
+            parent.Transform2D.Translation = new Vector2(0, 0);
     }
 
     /**
@@ -99,8 +99,13 @@ class ScrollingSpriteArtist extends Artist {
     Draw(gameTime, parent, activeCamera) {
         //save whatever context settings were used before this (color, line, text styles)
         activeCamera.Context.save();
+        
         //apply the camera transformations to the scene (i.e. to enable camera zoom, pan, rotate)
         activeCamera.SetContext();
+
+        //apply the sprite transformations to the sprite 
+        parent.SetContext(activeCamera.Context);
+
         //access the transform for the parent that this artist is attached to
         let transform = parent.Transform2D;
 
@@ -114,13 +119,13 @@ class ScrollingSpriteArtist extends Artist {
             this.sourceDimensions.X, this.sourceDimensions.Y,
             transform.Translation.X - transform.Dimensions.X,
             transform.Translation.Y,
-            transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
+            transform.Dimensions.X, transform.Dimensions.Y);
 
         activeCamera.Context.drawImage(this.spritesheet,
             this.sourcePosition.X, this.sourcePosition.Y,
             this.sourceDimensions.X, this.sourceDimensions.Y,
             transform.Translation.X, transform.Translation.Y,
-            transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
+            transform.Dimensions.X, transform.Dimensions.Y);
 
         //allows us to run right
         activeCamera.Context.drawImage(this.spritesheet,
@@ -128,7 +133,7 @@ class ScrollingSpriteArtist extends Artist {
             this.sourceDimensions.X, this.sourceDimensions.Y,
             transform.Translation.X + transform.Dimensions.X,
             transform.Translation.Y,
-            transform.Dimensions.X * transform.Scale.X, transform.Dimensions.Y * transform.Scale.Y);
+            transform.Dimensions.X, transform.Dimensions.Y);
 
         activeCamera.Context.restore();
     }

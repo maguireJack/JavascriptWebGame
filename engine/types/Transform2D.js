@@ -165,6 +165,11 @@ class Transform2D {
     this.isDirty = true;
   }
 
+  SetOrigin(origin) {
+    this.origin = origin;
+    this.isDirty = true;
+  }
+
   //#region Equals, Clone, ToString
   Equals(other) {
     return GDUtility.IsSameTypeAsTarget(this, other) && (

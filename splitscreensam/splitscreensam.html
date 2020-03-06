@@ -10,18 +10,14 @@
 
 <body>
     <div id="game-window" class="wrapper">
-        <div id="menu">
-            <div id="main">
-                <h1>Game Title Here</h1>
-                <ul>
-                    <li><a href="javascript:void(0)" class="button play">Start Game</a></li>
-                </ul>
-            </div>
+        <div id="main">
+            <h1>Game Title Here</h1>
+            <ul>
+                <li><a href="javascript:void(0)" class="button play">Start Game</a></li>
+            </ul>
         </div>
         <canvas id='game-canvas' width='864' height='468'></canvas>
-        
     </div>
-    <canvas id='game-canvas2' width='864' height='468'></canvas>
 
     <!--------------------------------------------CORE ENGINE CODE----------------------------------------------------->
 
@@ -56,6 +52,7 @@
     <script src="../engine/actors/Camera2D.js"></script>
 
     <script src="../engine/managers/ObjectManager.js"></script>
+    <script src="../engine/managers/RenderManager.js"></script>
     <script src="../engine/managers/KeyboardManager.js"></script>
     <script src="../engine/managers/SoundManager.js"></script>
     <script src="../engine/managers/GameStateManager.js"></script>
@@ -63,35 +60,20 @@
 
     <script src="../engine/parameters/ContextParameters.js"></script>
 
-    <!--------------------------------------------GAME SPECIFIC ASSETS----------------------------------------------------->
-    <img id="snailbait_background_1" src="assets/images/background/plx-1.png" style="display:none;" />
-    <img id="snailbait_background_2" src="assets/images/background/plx-2.png" style="display:none;" />
-    <img id="snailbait_background_3" src="assets/images/background/plx-3.png" style="display:none;" />
-    <img id="snailbait_background_4" src="assets/images/background/plx-4.png" style="display:none;" />
-    <img id="snailbait_background_5" src="assets/images/background/plx-5.png" style="display:none;" />
-
-    <img id="snailbait_jungle_tileset" src="assets/images/platform/jungle tileset.png" style="display:none;" />
-    <img id="snailbait_sprite_sheet" src="assets/images/spritesheet.png" style="display:none;" />
-
-    <!-- audio - step 1 - load resources and assign unique IDs... -->
-    <audio preload="auto" id="background" src="assets/sound/background/bg.mp3"></audio>
-    <audio preload="auto" id="jump" src="assets/sound/effects/jump.mp3"></audio>
-    <audio preload="auto" id="gameOver" src="assets/sound/effects/gameOver.mp3"></audio>
-
-    <!--------------------------------------------GAME SPECIFIC CODE----------------------------------------------------->
-
-    <script src="gdgame/gdconstants/MyConstants.js"></script>
-    
-    <script src="gdgame/gdbehaviors/camera/PanCameraBehavior.js"></script>
-    <script src="gdgame/gdbehaviors/player/PlayerBehavior.js"></script>
-    <script src="gdgame/gdbehaviors/camera/FlightCameraBehavior.js"></script>
-
-    <script src="gdgame/gdmanagers/MyGameStateManager.js"></script>
-    <script src="gdgame/gdmanagers/MyMenuManager.js"></script>
-
     <!-- //DEBUG - REMOVE LATER -->
     <script src="../engine/debug/DebugDrawer.js"></script>
 
+    <!--------------------------------------------GAME SPECIFIC ASSETS----------------------------------------------------->
+
+    <!-- Add sound and image assets here -->
+    <img id="guard_walk" src="assets/images/guard1_walk.png" style="display:none;" />
+
+    <!--------------------------------------------GAME SPECIFIC CODE----------------------------------------------------->
+    <script src="gdgame/gdconstants/MyConstants.js"></script>
+    
+    <script src="gdgame/gdbehaviors/camera/FlightCameraBehavior.js"></script>
+    <script src="gdgame/gdbehaviors/player/GuardBehavior.js"></script>
+    <script src="../engine/behaviors/camera/ThirdPersonCameraBehavior.js"></script>
     <script src="gdgame/game.js"></script>
 
 </body>

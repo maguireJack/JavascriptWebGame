@@ -83,6 +83,22 @@ class Sprite extends Actor2D {
       this.artist.Draw(gameTime, this, activeCamera);
   }
 
+  /**
+   * Allows the sprite to be transformed (i.e. translation, rotation, scale) based on its transform values.
+   * 
+   * @param {context} context
+   * @see SpriteArtist::Draw()
+   * @memberof Sprite
+   */
+  SetContext(context) {
+    context.translate(this.transform2D.Translation.X + this.transform2D.Origin.X,
+      this.transform2D.Translation.Y + this.transform2D.Origin.Y);
+    context.scale(this.transform2D.Scale.X, this.transform2D.Scale.Y);
+    context.rotate(this.transform2D.RotationInRadians);
+    context.translate(-1 * (this.transform2D.Translation.X + this.transform2D.Origin.X),
+      -1 * (this.transform2D.Translation.Y + this.transform2D.Origin.Y));
+
+  }
   //#region Equals, Clone, ToString
   Equals(other) {
     if (other == null || other == undefined || !other instanceof Sprite)

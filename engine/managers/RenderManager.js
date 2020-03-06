@@ -52,7 +52,7 @@ class RenderManager {
 
     Draw(gameTime) {
         //if update enabled for the object manager?
-        if ((this.statusType & StatusType.IsDrawn) != 0) {
+  //      if ((this.statusType & StatusType.IsDrawn) != 0) {
           //for each of the keys in the sprites array (e.g. keys could be...ActorType.Enemy, ActorType.Player)
           for (let key of Object.keys(this.sprites)) {
             //for the sprites inside the array for the current key call update
@@ -64,7 +64,7 @@ class RenderManager {
                 sprite.Draw(gameTime,this.cameraManager.ActiveCamera);
             }
           }
-        }
+  //      }
       }
 
     //#region Equals, Clone, ToString 

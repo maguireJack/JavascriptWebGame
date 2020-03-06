@@ -9,9 +9,9 @@ class DebugDrawer {
   //#region Fields
   id = "";
   static SPRITE_BOUNDING_BOX_COLOR = "red";
-  static CAMERA_BOUNDING_BOX_COLOR  = "yellow";
-  static DEBUG_TEXT_FONT = "8px Comic Sans MS";
-  static DEBUD_TEXT_MAXWIDTH = 200;
+  static CAMERA_BOUNDING_BOX_COLOR = "yellow";
+  static DEBUG_TEXT_FONT = "10px Arial";
+  static DEBUG_TEXT_MAXWIDTH = 200;
 
   //#endregion
 
@@ -34,7 +34,7 @@ class DebugDrawer {
 
     //draw the bounfing boxes for the in-view (i.e. inside the bounding box of the active camera) sprites
     let drawCount = this.DrawCollidableSpriteBoundingBoxes(DebugDrawer.SPRITE_BOUNDING_BOX_COLOR);
-   
+
     //draws the collision surface (i.e. Transform2D.BoundingBox) around the active camera
     this.DrawActiveCameraBoundingBoxes(DebugDrawer.CAMERA_BOUNDING_BOX_COLOR);
 
@@ -43,46 +43,50 @@ class DebugDrawer {
   }
 
   DrawDebugText(gameTime, drawCount) {
-    let x = 10, y = 10;
+    let x = 10,
+      y = 10;
     let yOffset = 15;
 
-    let offsetMultiplier = 1;
-    this.DrawText("Debug Info", x, y + offsetMultiplier * yOffset, "white");
+    let offsetMultiplier = 1; //used to move each text line down 1x yOffset from the previous line
+    this.DrawText("Debug Information", x, y + offsetMultiplier * yOffset, "white");
     offsetMultiplier++;
 
-    this.DrawText("--------------------------", x, y + offsetMultiplier * yOffset,  "white");
-    offsetMultiplier++;
-    
-    this.DrawText("Draw Count:" + drawCount, x,  y + offsetMultiplier * yOffset, "white");
-    offsetMultiplier++;
-    
-    this.DrawText("FPS:" + gameTime.FPS + " ms", x,  y + offsetMultiplier * yOffset,  "white");
+    this.DrawText("-------------------------------", x, y + offsetMultiplier * yOffset, "white");
     offsetMultiplier++;
 
-    this.DrawText("Camera(origin):" + Vector2.Round(this.cameraManager.ActiveCamera.Transform2D.Origin, 2).ToString(), x,  y + offsetMultiplier * yOffset,  "white");
+    this.DrawText("FPS: " + gameTime.FPS + " ms", x, y + offsetMultiplier * yOffset, "white");
     offsetMultiplier++;
 
-    this.DrawText("Camera(scale):" + Vector2.Round(this.cameraManager.ActiveCamera.Transform2D.Scale, 2).ToString(), x, y + 6 * yOffset,  "white");
+    this.DrawText("Draw Count: " + drawCount, x, y + offsetMultiplier * yOffset, "white");
     offsetMultiplier++;
 
-    this.DrawText("Camera(BB):" + Rect.Round(this.cameraManager.ActiveCamera.Transform2D.BoundingBox, 2).ToString(), x,  y + offsetMultiplier * yOffset,  "white");
+    this.DrawText("Camera(origin): " + Vector2.Round(this.cameraManager.ActiveCamera.Transform2D.Origin, 2).ToString(), x, y + offsetMultiplier * yOffset, "white");
+    offsetMultiplier++;
+
+    this.DrawText("Camera(scale): " + Vector2.Round(this.cameraManager.ActiveCamera.Transform2D.Scale, 2).ToString(), x, y + offsetMultiplier * yOffset, "white");
+    offsetMultiplier++;
+
+    this.DrawText("Camera(BB): " + Rect.Round(this.cameraManager.ActiveCamera.Transform2D.BoundingBox, 2).ToString(), x, y + offsetMultiplier * yOffset, "white");
+    offsetMultiplier++;
+
+    //add more debug info here...
   }
 
-  DrawText(text, x, y, color){
+  DrawText(text, x, y, color) {
     this.context.save();
 
     //uncomment this line and see what happens to the debug text when you move camera using numpad 4 - 6
     //this.cameraManager.ActiveCamera.SetContext(this.context);
 
     this.context.font = DebugDrawer.DEBUG_TEXT_FONT;
-    this.context.fillStyle = color; 
+    this.context.fillStyle = color;
     this.context.textBaseline = "top";
     this.context.globalAlpha = DebugDrawer.DEBUG_TEXT_ALPHA;
     this.context.fillText(text, x, y, DebugDrawer.DEBUG_TEXT_MAXWIDTH);
     this.context.restore();
   }
 
- 
+
 
   DrawActiveCameraBoundingBoxes(boundingBoxColor) {
     this.DrawBoundingBox(this.cameraManager.ActiveCamera.Transform2D, boundingBoxColor);
@@ -104,12 +108,21 @@ class DebugDrawer {
     }
     return drawCount;
   }
-  //#endregion
 
-  //#region Debug
+  SetContext(transform) {
+    this.context.translate(transform.Translation.X + transform.Origin.X,
+      transform.Translation.Y + transform.Origin.Y);
+    this.context.scale(transform.Scale.X, transform.Scale.Y);
+    this.context.rotate(transform.RotationInRadians);
+    this.context.translate(-1 * (transform.Translation.X + transform.Origin.X),
+      -1 * (transform.Translation.Y + transform.Origin.Y));
+
+  }
+
   DrawBoundingBox(transform, color) {
     this.context.save();
     this.cameraManager.ActiveCamera.SetContext();
+    this.SetContext(transform);
     this.context.globalAlpha = 1;
     this.context.lineWidth = 2;
     this.context.strokeStyle = color;

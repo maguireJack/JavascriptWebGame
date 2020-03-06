@@ -46,8 +46,13 @@ class TextSpriteArtist extends Artist{
         activeCamera.Context.save();
         //apply the camera transformations to the scene (i.e. to enable camera zoom, pan, rotate)
         activeCamera.SetContext();
+
+        //apply the sprite transformations to the sprite 
+        parent.SetContext(activeCamera.Context);
+
         //access the transform for the parent that this artist is attached to
         let transform = parent.Transform2D;
+        
         activeCamera.Context.fillStyle = this.fillStyle;  //ColorParameters?
         this.textParameters.Draw(activeCamera.Context);
         activeCamera.Context.globalAlpha = this.Alpha; //ColorParameters?

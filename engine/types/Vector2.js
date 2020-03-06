@@ -172,6 +172,7 @@ class Vector2 {
     return new Vector2(x, y);
   }
 
+
   static Round(v, precision){
     return new Vector2(GDMath.ToFixed(v.x, precision, 10), GDMath.ToFixed(v.y, precision, 10));
   }

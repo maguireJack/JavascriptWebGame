@@ -3,15 +3,12 @@
 
 Week 7 
 ------
-Comments: 
+Notes:
 - GDUtility.IsSameTypeAsTarget() and its impact on Equals() methods in classes.
 
 Exercises: 
 - Re-factor CameraManager to align with ObjectManager use of predicates etc.
 - Use ContextParameter classes in the appropriate artist.
-
-Notes:
-- None
 
 To Do:
 - Wrap MyConstants.js and Constants.js in a class to set scope and no longer pollute global project space.

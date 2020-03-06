@@ -41,8 +41,7 @@ class ObjectManager {
     this.notificationCenter.Register(
       NotificationType.Sprite,
       this,
-      //nmcg - bug fix - 11.2.20 - there was no function (i.e. no notification handler called HandleSpriteNotification)
-      this.HandleNotification //formerly this.HandleSpriteNotification
+      this.HandleNotification 
     );
 
     this.notificationCenter.Register(
@@ -182,14 +181,14 @@ class ObjectManager {
   //#region Update
   Update(gameTime) {
     //if update enabled for the object manager?
-    if ((this.statusType & StatusType.IsUpdated) != 0) {
+//    if ((this.statusType & StatusType.IsUpdated) != 0) {
       //for each of the keys in the sprites array (e.g. keys could be...ActorType.Enemy, ActorType.Player)
       for (let key of Object.keys(this.sprites)) {
         //for the sprites inside the array for the current key call update
         for (let sprite of this.sprites[key])
           sprite.Update(gameTime,this.cameraManager.ActiveCamera);
       }
-    }
+ //   }
   }
   //#endregion
 

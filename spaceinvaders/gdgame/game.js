@@ -218,7 +218,6 @@ function Initialize() {
   LoadNotificationCenter();
   LoadAllOtherManagers();
   LoadSprites();
-  this.isPlaying = false;
 }
 
 function InitializeScreenRectangle()
