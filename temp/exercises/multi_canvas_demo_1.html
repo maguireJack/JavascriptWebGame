@@ -1,33 +1,52 @@
 <html>
 
 <head>
-    <title>Multi-Canvas</title>
+    <title>Multi-Canvas - Draw Primitives</title>
     <style>
         #game-canvas-left,
         #game-canvas-right {
-            position: fixed;
-            width: 432px;
-            height: 468px;
+            position: absolute;
+            width: 400px;
+            height: 400px;
             border: 1px solid blue;
         }
 
         #game-canvas-left {
-            background-color:  rgb(248, 190, 190);
+            background-color:  rgb(253, 236, 236);
             z-index: 1;
         }
 
         #game-canvas-right {
-            left: 452; 
-            background-color:rgb(220, 251, 217);
+            left: 400;  /*comment this line out to see what happens to the RHS canvas*/
+            background-color:rgb(237, 250, 236);
             z-index: 2;
         }
     </style>
-
+</head>
 <body>
-    <canvas id='game-canvas-left' width='864' height='468'></canvas>
-    <canvas id='game-canvas-right' width='864' height='468'></canvas>
+    <h2><u>Draw Primitives</u></h2>
+    <h3>The canvas on the left has a rectangle drawn at (200, 200)</h3>
+    <h3>The canvas on the right has a rectangle drawn at (70, 70)</h3>
+
+
+    <canvas id='game-canvas-left' width='400' height='400'></canvas>
+    <canvas id='game-canvas-right' width='400' height='400'></canvas>
 
     <script>
+        var ctx_left = document.getElementById("game-canvas-left").getContext("2d");
+        var ctx_right = document.getElementById("game-canvas-right").getContext("2d");
+
+        //lets do a simple draw of a rectangle at centre of rectangle with origin at (0, 0)
+        ctx_left.beginPath();
+        ctx_left.lineWidth = 1;
+        ctx_left.strokeStyle = "rgb(0, 255, 0)";
+        ctx_left.strokeRect(200, 200, 50, 50);
+
+        //lets add a function and draw the rectangle at (70, 70)
+        drawRect(ctx_right, 70, 70, 80, 50, 2, "#ff0000");
+
+        /*********************************** Functions ***********************************/       
+  
         function drawRect(ctx, x, y, w, h, lineWidth, strokeStyle)
         {
             ctx.beginPath();
@@ -36,12 +55,6 @@
             ctx.rect(x, y, w, h);
             ctx.stroke();
         }
-
-        var ctx_left = document.getElementById("game-canvas-left").getContext("2d");
-        var ctx_right = document.getElementById("game-canvas-right").getContext("2d");
-
-        drawRect(ctx_left, 30, 30, 80, 50, 2, "red");
-        drawRect(ctx_right, 70, 70, 80, 50, 2, "blue");
 
     </script> 
 </body>
