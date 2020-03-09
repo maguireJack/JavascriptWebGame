@@ -5,6 +5,6 @@
     "include": [
         "engine/**/*", 
         "splitscreensam/gdgame/**/*", 
-        "scratch/templates/ClassTemplate.js", 
+        "temp/**/**/*", 
         ] /*added to support Intellisense for JS files outside current file*/
 }
