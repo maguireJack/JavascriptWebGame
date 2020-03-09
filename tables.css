@@ -1,0 +1,21 @@
+/* styling taken from https://www.w3schools.com/html/html_tables.asp */
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th {
+  border: 1px solid #3d6b37;
+  text-align: left;
+  padding: 12px;
+}
+
+tr:nth-child(odd) {
+  background-color: #c7e7c2;
+}
+
+th {
+  background-color: #5fa856;
+}

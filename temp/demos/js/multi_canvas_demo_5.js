@@ -1,9 +1,9 @@
 /************************************* Useful Classes *************************************/
 /*
-* Notice that we had to manually move (or hoist) the class to the top of the file so 
-* that it would be defined BEFORE its use in the code. We only have to manually HOIST 
-* classes and not objects or functions.
-*/
+ * Notice that we had to manually move (or hoist) the class to the top of the file so 
+ * that it would be defined BEFORE its use in the code. We only have to manually HOIST 
+ * classes and not objects or functions.
+ */
 class GDRect {
   constructor(x, y, width, height, originX, originY, rotationInDegrees, color) {
     this.x = x;
@@ -16,18 +16,18 @@ class GDRect {
     this.color = color;
   }
 
-  GetRotationInRadians(){
-    return this.rotationInDegrees * Math.PI/180;
+  GetRotationInRadians() {
+    return this.rotationInDegrees * Math.PI / 180;
   }
 }
 
 /************************************* Core Functions *************************************/
- /*
-* I've moved these functions above where they are called not because it's necessary, 
-* since they will be automatically moved, or hoisted by the interpreter.
-* They were moved simply to make the code more readable.
-*/
- function DrawRect(context, rect) {
+/*
+ * I've moved these functions above where they are called not because it's necessary, 
+ * since they will be automatically moved, or hoisted by the interpreter.
+ * They were moved simply to make the code more readable.
+ */
+function DrawRect(context, rect) {
   context.save();
   context.translate(rect.x + rect.originX, rect.y + rect.originY);
   context.rotate(rect.GetRotationInRadians());
@@ -49,8 +49,8 @@ function Animate() {
   DrawRect(ctx_right, rectA);
   DrawRect(ctx_right, rectB);
 
-  rectA.rotationInDegrees+=5;
-  rectB.rotationInDegrees-=10;
+  rectA.rotationInDegrees += 5;
+  rectB.rotationInDegrees -= 10;
 
 }
 
@@ -63,14 +63,10 @@ let cvs_right = document.getElementById("game-canvas-right");
 let ctx_right = cvs_right.getContext("2d");
 
 //rectangles
-let rectA = new GDRect(100,200, 40, 40, 20, 20, 
-                              0, "rgb(0, 255, 0)");
-let rectB = new GDRect(200, 200, 60, 30, 30, 15, 
-                              0, "rgb(255, 0, 0)");
+let rectA = new GDRect(100, 200, 40, 40, 20, 20,
+  0, "rgb(0, 255, 0)");
+let rectB = new GDRect(200, 200, 60, 30, 30, 15,
+  0, "rgb(255, 0, 0)");
 
 //start loop
 let loop = setInterval(Animate, 100);
-
-
-
-

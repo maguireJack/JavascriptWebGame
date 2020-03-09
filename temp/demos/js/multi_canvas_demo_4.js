@@ -7,7 +7,7 @@ var ctx_right = cvs_right.getContext("2d");
 
 /************************************* Get Rotation *************************************/
 
-let rotationInDegrees = GetInteger("Enter rotation angle in degrees", "45"); 
+let rotationInDegrees = GetInteger("Enter rotation angle in degrees", "45");
 
 /************************************* Left Canvas *************************************/
 
@@ -38,7 +38,7 @@ ctx_right.strokeRect(200, 0, 50, 100);
 
 /************************************* Useful Functions *************************************/
 
-function GetInteger(strPrompt, defaultValue){
+function GetInteger(strPrompt, defaultValue) {
     let value = prompt(strPrompt, defaultValue);
     if (isNaN(value) || value == null || value == undefined)
         value = defaultValue;
@@ -47,4 +47,3 @@ function GetInteger(strPrompt, defaultValue){
 
     return value;
 }
-
