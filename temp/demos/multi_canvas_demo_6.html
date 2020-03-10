@@ -1,0 +1,21 @@
+<html>
+
+<head>
+    <title>Moving a rectangle between non-overlapping (coordinate space) canvases</title>
+    <!-- Reduce the size of this file by moving the CSS out into an external file -->
+    <link rel="stylesheet" type="text/css" href="../css/rect_styles.css">
+</head>
+<body>
+    <!-- Info header -->
+    <h2><u>Moving a rectangle between non-overlapping (coordinate space) canvases</u></h2>
+    <h3>The canvas on the left and right are setup to represent non-overlapping coordinate space (e.g. different bases in Command & Conquer, Warhammer, Rise of Nations). </h3>
+    <h3>The canvas on the right has been translated by a canvas width (i.e. 400 pixels) to the right. </h3>
+    <h3>Use the 'wasd' keys to drive the rectangle between the two canvases and the 'r' key to reset. </h3>
+    <!-- Canvases -->
+    <canvas id='game-canvas-left' width='400' height='400'></canvas>
+    <canvas id='game-canvas-right' width='400' height='400'></canvas>
+
+    <!-- JS Script block -->
+    <script src="js/multi_canvas_demo_6.js"></script>
+    </body>
+</html>

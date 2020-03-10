@@ -7,7 +7,8 @@ var ctx_right = cvs_right.getContext("2d");
 
 /************************************* Get Rotation *************************************/
 
-let rotationInDegrees = GetInteger("Enter rotation angle in degrees", "45");
+//get the preferred angle from the user
+let rotationInDegrees = GetInteger("Enter rotation angle in degrees", "0");
 
 /************************************* Left Canvas *************************************/
 

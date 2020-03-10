@@ -1,8 +1,6 @@
 #game-canvas-left,
-#game-canvas-right {
-    position: absolute;
-    width: 400px;
-    height: 400px;
+#game-canvas-right{
+    position: fixed;
     border: 1px solid blue;
 }
 
@@ -12,7 +10,7 @@
 }
 
 #game-canvas-right {
-    left: 400;  /*comment this line out to see what happens to the RHS canvas*/
+    left: 450;  /*comment this line out to see what happens to the RHS canvas*/
     background-color:rgb(237, 250, 236);
-    z-index: 2;
+    z-index: 1; /*an integer value which allows us to draw one component on top of another with a lower z-index value */
 }

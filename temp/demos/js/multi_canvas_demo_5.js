@@ -29,28 +29,40 @@ class GDRect {
  */
 function DrawRect(context, rect) {
   context.save();
-  context.translate(rect.x + rect.originX, rect.y + rect.originY);
-  context.rotate(rect.GetRotationInRadians());
-  context.translate(-1 * (rect.x + rect.originX), -1 * (rect.y + rect.originY));
-
+  //perform rotation around the rect's origin in co-ordinate space (i.e. the position relative to TLHC of canvas)
+  context.translate(rect.x + rect.originX, rect.y + rect.originY);  //set canvas origin at rect origin
+  context.rotate(rect.GetRotationInRadians());                      //rotate 
+  context.translate(-1 * (rect.x + rect.originX), -1 * (rect.y + rect.originY));  //set canvas origin back to its start position (e.g. (0,0))
+ 
   context.lineWidth = 1;
   context.strokeStyle = rect.color;
   context.strokeRect(rect.x, rect.y, rect.width, rect.height);
-
   context.restore();
 }
 
 function Animate() {
+  //clear left
   ctx_left.clearRect(0, 0, cvs_left.width, cvs_left.height);
+  //draw both rectangles in left
   DrawRect(ctx_left, rectA);
   DrawRect(ctx_left, rectB);
 
+  //clear right
   ctx_right.clearRect(0, 0, cvs_right.width, cvs_right.height);
+  //draw both rectangles in right
   DrawRect(ctx_right, rectA);
   DrawRect(ctx_right, rectB);
 
+  //update rotation of rectangles to make them rotate over time
   rectA.rotationInDegrees += 5;
+  //wrap angle when <360 or < -360 - prevents error if running for a VERY long time (i.e. > MAX_SAFE_INTEGER or < MIN_SAFE_INTEGER)
+  rectA.rotationInDegrees%=360; 
+
   rectB.rotationInDegrees -= 10;
+  //wrap angle when <360 or < -360 - prevents error if running for a VERY long time (i.e. > MAX_SAFE_INTEGER or < MIN_SAFE_INTEGER)
+  rectA.rotationInDegrees%=360; 
+
+
 
 }
 

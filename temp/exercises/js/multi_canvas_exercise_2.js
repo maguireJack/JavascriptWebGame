@@ -1,3 +1,14 @@
+/*
+Exercise: 
+a) Changes the dimensions of the canvas from 400x400 to 600x600
+b) Use the Earth and Moon images provided to create a simple model of the Moon orbiting around the Earth on a single canvas.
+c) Improve your model by adding planetary rotation to the Earth and the Moon.
+
+Note:
+1) You will need to add HTML code and JS code in the respective files to load the source image(s).
+2) Your orbit does not need to be elliptical.
+*/
+
 /************************************* Useful Classes *************************************/
 /*
  * Notice that we had to manually move (or hoist) the class to the top of the file so 
@@ -10,6 +21,31 @@ class GDRect {
         this.y = y;
         this.width = width;
         this.height = height;
+        this.originX = originX;
+        this.originY = originY;
+        this.rotationInDegrees = rotationInDegrees;
+        this.color = color;
+    }
+
+    GetRotationInRadians() {
+        return this.rotationInDegrees * Math.PI / 180;
+    }
+}
+
+class GDImage {
+    constructor(spritesheet, x, y, width, height, sX, sY, sWidth, sHeight, 
+                                    originX, originY, rotationInDegrees, color) {
+        this.spritesheet = spritesheet;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+
+        this.sX = sX;
+        this.sY = sY;
+        this.sWidth = sWidth;
+        this.sHeight = sHeight;
+
         this.originX = originX;
         this.originY = originY;
         this.rotationInDegrees = rotationInDegrees;
@@ -40,18 +76,20 @@ function DrawRect(context, rect) {
     context.restore();
 }
 
+function DrawImage(context, image) {
+    context.save();
+    context.translate(image.x + image.originX, image.y + image.originY);
+    context.rotate(image.GetRotationInRadians());
+    context.translate(-1 * (image.x + image.originX), -1 * (image.y + image.originY));
+
+    context.drawImage(image.spritesheet,image.sX, image.sY, image.sWidth, image.sHeight,
+                                    image.x, image.y, image.width, image.height);
+
+    context.restore();
+}
+
 function Animate() {
-    ctx_left.clearRect(0, 0, cvs_left.width, cvs_left.height);
-    DrawRect(ctx_left, rectA);
-    DrawRect(ctx_left, rectB);
-
-    ctx_right.clearRect(0, 0, cvs_right.width, cvs_right.height);
-    DrawRect(ctx_right, rectA);
-    DrawRect(ctx_right, rectB);
-
-    rectA.rotationInDegrees += 5;
-    rectB.rotationInDegrees -= 10;
-
+  //add code to draw the earth and moon here...
 }
 
 /************************************* Core Code *************************************/
@@ -62,11 +100,6 @@ let ctx_left = cvs_left.getContext("2d");
 let cvs_right = document.getElementById("game-canvas-right");
 let ctx_right = cvs_right.getContext("2d");
 
-//rectangles
-let rectA = new GDRect(100, 200, 40, 40, 20, 20,
-    0, "rgb(0, 255, 0)");
-let rectB = new GDRect(200, 200, 60, 30, 30, 15,
-    0, "rgb(255, 0, 0)");
 
 //start loop
 let loop = setInterval(Animate, 100);

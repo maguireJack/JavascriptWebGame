@@ -27,8 +27,7 @@
     <h2><u>Draw Primitives</u></h2>
     <h3>The canvas on the left has a rectangle drawn at (200, 200)</h3>
     <h3>The canvas on the right has a rectangle drawn at (70, 70)</h3>
-
-
+    
     <canvas id='game-canvas-left' width='400' height='400'></canvas>
     <canvas id='game-canvas-right' width='400' height='400'></canvas>
 
@@ -43,11 +42,11 @@
         ctx_left.strokeRect(200, 200, 50, 50);
 
         //lets add a function and draw the rectangle at (70, 70)
-        drawRect(ctx_right, 70, 70, 80, 50, 2, "#ff0000");
+        DrawRect(ctx_right, 70, 70, 80, 50, 2, "#ff0000");
 
         /*********************************** Functions ***********************************/       
   
-        function drawRect(ctx, x, y, w, h, lineWidth, strokeStyle)
+        function DrawRect(ctx, x, y, w, h, lineWidth, strokeStyle)
         {
             ctx.beginPath();
             ctx.lineWidth = lineWidth;
