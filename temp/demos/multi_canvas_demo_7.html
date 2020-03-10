@@ -1,0 +1,54 @@
+<html>
+
+<head>
+    <title>Getting mouse position for each canvas</title>
+    <!-- Reduce the size of this file by moving the CSS out into an external file -->
+    <link rel="stylesheet" type="text/css" href="../css/rect_styles.css">
+</head>
+
+<body>
+    <h2><u>Getting mouse position for each canvas</u></h2>
+    <h3>Open the Console output to see the Screen, Client, and Canvas coordinates</h3>
+    <h3>Move the mouse around each canvas to see its coordinate space values for that canvas in the console.log() output</h3>
+
+    <canvas id='game-canvas-left' width='400' height='400'></canvas>
+    <canvas id='game-canvas-right' width='400' height='400'></canvas>
+
+    <script>
+        var cvs_left = document.getElementById("game-canvas-left");
+        var ctx_left = cvs_left.getContext("2d");
+        var cvs_right = document.getElementById("game-canvas-right");
+        var ctx_right = cvs_right.getContext("2d");
+
+        window.addEventListener("mousemove", function (event) {
+
+            //get the horizontal coordinate inside the client browser window
+            let x1 = event.clientX;
+            let y1 = event.clientY;
+            
+
+            //get the horizontal coordinate inside the screen
+            let x2 = event.screenX;
+            let y2 = event.screenY;
+           
+            //get position on left canvas
+            let cvs_left_rect = cvs_left.getBoundingClientRect();
+            let x3 = Math.round(event.clientX - cvs_left_rect.left);
+            let y3 =  Math.round(event.clientY - cvs_left_rect.top);
+
+            //get position on right canvas
+            let cvs_right_rect = cvs_right.getBoundingClientRect();
+            let x4 = Math.round(event.clientX - cvs_right_rect.left);
+            let y4 =  Math.round(event.clientY - cvs_right_rect.top);
+
+            console.log("Client: [" + x1 + "," + y1 + "], Screen: [" + x2 + "," + y2 + "]");
+            console.log("Left Canvas: [" + x3 + "," + y3 + "]");
+            console.log("Right Canvas: [" + x4 + "," + y4 + "]");
+
+
+        });
+    </script>
+</body>
+
+
+</html>

@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>Multi-Canvas - Draw Primitives</title>
+    <title>Draw Primitives</title>
     <style>
         #game-canvas-left,
         #game-canvas-right {
@@ -27,13 +27,15 @@
     <h2><u>Draw Primitives</u></h2>
     <h3>The canvas on the left has a rectangle drawn at (200, 200)</h3>
     <h3>The canvas on the right has a rectangle drawn at (70, 70)</h3>
-    
+
     <canvas id='game-canvas-left' width='400' height='400'></canvas>
     <canvas id='game-canvas-right' width='400' height='400'></canvas>
 
     <script>
-        var ctx_left = document.getElementById("game-canvas-left").getContext("2d");
-        var ctx_right = document.getElementById("game-canvas-right").getContext("2d");
+        var cvs_left = document.getElementById("game-canvas-left");
+        var ctx_left = cvs_left.getContext("2d");
+        var cvs_right = document.getElementById("game-canvas-right");
+        var ctx_right = cvs_right.getContext("2d");
 
         //lets do a simple draw of a rectangle at centre of rectangle with origin at (0, 0)
         ctx_left.beginPath();
