@@ -7,15 +7,30 @@ table {
 
 td,
 th {
-  border: 1px solid #3d6b37;
   text-align: left;
   padding: 12px;
 }
 
-tr:nth-child(odd) {
-  background-color: #c7e7c2;
+th {
+  background-color: #F5B7B1;
 }
 
-th {
-  background-color: #5fa856;
+tr:nth-child(odd) {
+  background-color: #FDEDEC;
+}
+
+th.demo{
+  background-color: #A2D9CE;
+}
+
+tr.demo:nth-child(odd) {
+  background-color: #D0ECE7;
+}
+
+th.exercise{
+  background-color: #AED6F1;
+}
+
+tr.exercise:nth-child(odd) {
+  background-color: #D6EAF8;
 }
