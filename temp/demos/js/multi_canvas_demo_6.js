@@ -47,7 +47,7 @@ function Animate() {
     DrawRect(ctx_left, rectA);
 
     //clear right - why do we clear 2x the width?
-    ctx_right.clearRect(0, 0, 2*cvs_right.width, cvs_right.height);
+    ctx_right.clearRect(cvs_right.width, 0, cvs_right.width, cvs_right.height);
     //draw both rectangles in right
     DrawRect(ctx_right, rectA);
 

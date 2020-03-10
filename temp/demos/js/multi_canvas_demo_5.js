@@ -48,21 +48,14 @@ function Animate() {
   DrawRect(ctx_left, rectB);
 
   //clear right
-  ctx_right.clearRect(0, 0, cvs_right.width, cvs_right.height);
-  //draw both rectangles in right
-  DrawRect(ctx_right, rectA);
-  DrawRect(ctx_right, rectB);
+  // ctx_right.clearRect(0, 0, cvs_right.width, cvs_right.height);
+  // //draw both rectangles in right
+  // DrawRect(ctx_right, rectA);
+  // DrawRect(ctx_right, rectB);
 
   //update rotation of rectangles to make them rotate over time
-  rectA.rotationInDegrees += 5;
-  //wrap angle when <360 or < -360 - prevents error if running for a VERY long time (i.e. > MAX_SAFE_INTEGER or < MIN_SAFE_INTEGER)
-  rectA.rotationInDegrees%=360; 
-
-  rectB.rotationInDegrees -= 10;
-  //wrap angle when <360 or < -360 - prevents error if running for a VERY long time (i.e. > MAX_SAFE_INTEGER or < MIN_SAFE_INTEGER)
-  rectA.rotationInDegrees%=360; 
-
-
+  rectA.rotationInDegrees += 1.44;
+  rectB.rotationInDegrees -= 2.4;
 
 }
 
@@ -75,10 +68,12 @@ let cvs_right = document.getElementById("game-canvas-right");
 let ctx_right = cvs_right.getContext("2d");
 
 //rectangles
-let rectA = new GDRect(100, 200, 40, 40, 20, 20,
+let rectA = new GDRect(100, 200, 40, 40, 
+  20, 20,
   0, "rgb(0, 255, 0)");
-let rectB = new GDRect(200, 200, 60, 30, 30, 15,
+let rectB = new GDRect(200, 200, 60, 30, 
+  30,15,
   0, "rgb(255, 0, 0)");
 
 //start loop
-let loop = setInterval(Animate, 100);
+let loop = setInterval(Animate, 20); //20ms
