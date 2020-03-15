@@ -1,55 +1,16 @@
-/************************************* Useful Classes *************************************/
-/*
- * Notice that we had to manually move (or hoist) the class to the top of the file so 
- * that it would be defined BEFORE its use in the code. We only have to manually HOIST 
- * classes and not objects or functions.
- */
-class GDRect {
-    constructor(x, y, width, height, originX, originY, rotationInDegrees, color) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.originX = originX;
-        this.originY = originY;
-        this.rotationInDegrees = rotationInDegrees;
-        this.color = color;
-    }
-
-    GetRotationInRadians() {
-        return this.rotationInDegrees * Math.PI / 180;
-    }
-}
 
 /************************************* Core Functions *************************************/
-/*
- * I've moved these functions above where they are called not because it's necessary, 
- * since they will be automatically moved, or hoisted by the interpreter.
- * They were moved simply to make the code more readable.
- */
-function DrawRect(context, rect) {
-    context.save();
-    //perform rotation around the rect's origin in co-ordinate space (i.e. the position relative to TLHC of canvas)
-    context.translate(rect.x + rect.originX, rect.y + rect.originY); //set canvas origin at rect origin
-    context.rotate(rect.GetRotationInRadians()); //rotate 
-    context.translate(-1 * (rect.x + rect.originX), -1 * (rect.y + rect.originY)); //set canvas origin back to its start position (e.g. (0,0))
-
-    context.lineWidth = 1;
-    context.strokeStyle = rect.color;
-    context.strokeRect(rect.x, rect.y, rect.width, rect.height);
-    context.restore();
-}
 
 function Animate() {
     //clear left
     ctx_left.clearRect(0, 0, cvs_left.width, cvs_left.height);
     //draw both rectangles in left
-    DrawRect(ctx_left, rectA);
+    rectA.Draw(ctx_left);
 
     //clear right - why do we clear 2x the width?
     ctx_right.clearRect(cvs_right.width, 0, cvs_right.width, cvs_right.height);
     //draw both rectangles in right
-    DrawRect(ctx_right, rectA);
+    rectA.Draw(ctx_right);
 
     //uncomment this to add a rotation to the moving rect
     rectA.rotationInDegrees += 5;
@@ -91,8 +52,10 @@ let ctx_right = cvs_right.getContext("2d");
 ctx_right.translate(-cvs_right.width, 0);
 
 //rectangles
-let rectA = new GDRect(100, 200, 40, 40, 20, 20,
-    0, "rgb(0, 255, 0)");
+let rectA = new GDRect(100, 200, 80, 80, 40, 40,
+    0, "rgb(0, 0, 0)", 1);
   
 //start loop
-let loop = setInterval(Animate, 100);
+let timeBetweenAnimateInMs = 100;
+let fps = 1/timeBetweenAnimateInMs;  //may we might want to display FPS at some point
+let loop = setInterval(Animate, timeBetweenAnimateInMs);

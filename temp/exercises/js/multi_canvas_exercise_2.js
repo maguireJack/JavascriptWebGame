@@ -2,104 +2,76 @@
 Exercise: 
 a) Changes the dimensions of the canvas from 400x400 to 600x600
 b) Use the Earth and Moon images provided to create a simple model of the Moon orbiting around the Earth on a single canvas.
-c) Improve your model by adding planetary rotation to the Earth and the Moon.
 
 Note:
 1) You will need to add HTML code and JS code in the respective files to load the source image(s).
 2) Your orbit does not need to be elliptical.
 */
 
-/************************************* Useful Classes *************************************/
-/*
- * Notice that we had to manually move (or hoist) the class to the top of the file so 
- * that it would be defined BEFORE its use in the code. We only have to manually HOIST 
- * classes and not objects or functions.
- */
-class GDRect {
-    constructor(x, y, width, height, originX, originY, rotationInDegrees, color) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.originX = originX;
-        this.originY = originY;
-        this.rotationInDegrees = rotationInDegrees;
-        this.color = color;
-    }
-
-    GetRotationInRadians() {
-        return this.rotationInDegrees * Math.PI / 180;
-    }
-}
-
-class GDImage {
-    constructor(spritesheet, x, y, width, height, sX, sY, sWidth, sHeight, 
-                                    originX, originY, rotationInDegrees, color) {
-        this.spritesheet = spritesheet;
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-
-        this.sX = sX;
-        this.sY = sY;
-        this.sWidth = sWidth;
-        this.sHeight = sHeight;
-
-        this.originX = originX;
-        this.originY = originY;
-        this.rotationInDegrees = rotationInDegrees;
-        this.color = color;
-    }
-
-    GetRotationInRadians() {
-        return this.rotationInDegrees * Math.PI / 180;
-    }
-}
 
 /************************************* Core Functions *************************************/
-/*
- * I've moved these functions above where they are called not because it's necessary, 
- * since they will be automatically moved, or hoisted by the interpreter.
- * They were moved simply to make the code more readable.
- */
-function DrawRect(context, rect) {
-    context.save();
-    context.translate(rect.x + rect.originX, rect.y + rect.originY);
-    context.rotate(rect.GetRotationInRadians());
-    context.translate(-1 * (rect.x + rect.originX), -1 * (rect.y + rect.originY));
-
-    context.lineWidth = 1;
-    context.strokeStyle = rect.color;
-    context.strokeRect(rect.x, rect.y, rect.width, rect.height);
-
-    context.restore();
-}
-
-function DrawImage(context, image) {
-    context.save();
-    context.translate(image.x + image.originX, image.y + image.originY);
-    context.rotate(image.GetRotationInRadians());
-    context.translate(-1 * (image.x + image.originX), -1 * (image.y + image.originY));
-
-    context.drawImage(image.spritesheet,image.sX, image.sY, image.sWidth, image.sHeight,
-                                    image.x, image.y, image.width, image.height);
-
-    context.restore();
-}
 
 function Animate() {
-  //add code to draw the earth and moon here...
+
+  //clear the screen after each draw
+  ctx_left.fillStyle = "black";
+  ctx_left.fillRect(0, 0, cvs_left.width, cvs_left.height);
+
+  //draw the sprites
+  this.sunSprite.Draw(ctx_left);
+  this.earthSprite.Draw(ctx_left);
+
+  //update individual rotation values so they rotate around their individual origins
+  this.sunSprite.rotationInDegrees += 0.25;
+  this.earthSprite.rotationInDegrees += 1;
 }
+
+function InstanciateImages(){
+    let earth = document.getElementById("sprite_earth");
+    let sun = document.getElementById("sprite_sun");
+
+    let scaleX = 0.25, scaleY = 0.25;
+    let width = scaleX * earth.width;
+    let height = scaleY * earth.height;
+    let originX = width/2;
+    let originY = height/2;
+    let distanceFromSun = 300;
+    this.earthSprite = new GDSprite(earth, 
+        cvs_left.width/2 - originX, cvs_left.height/2 - originY - distanceFromSun,                                  //drawn position 
+        width, height,                          //drawn width, height
+        0, 0, earth.width, earth.height,        //source rectangle (i.e. position and width, height in source image)
+        originX, originY,                       //origin for point of rotation - note we need to take into account original dimensions and any scale
+        0, 1                                    //rotation, opacity
+        );
+
+
+
+    scaleX = 0.5, scaleY = 0.5;
+    width = scaleX * sun.width;
+    height = scaleY * sun.height;
+    originX = width/2;
+    originY = height/2;
+    this.sunSprite = new GDSprite(sun, 
+        cvs_left.width/2 - originX, cvs_left.height/2 - originY,    //drawn position 
+        width, height,                          //drawn width, height
+        0, 0, sun.width, sun.height,            //source rectangle (i.e. position and width, height in source image)
+        originX, originY,                       //origin for point of rotation - note we need to take into account original dimensions and any scale
+        0, 1                                    //rotation, opacity
+        );
+
+}
+
 
 /************************************* Core Code *************************************/
 
 //canvas and context
 let cvs_left = document.getElementById("game-canvas-left");
 let ctx_left = cvs_left.getContext("2d");
-let cvs_right = document.getElementById("game-canvas-right");
-let ctx_right = cvs_right.getContext("2d");
 
+//create the two GDSprite primitives representing the sun and earth
+InstanciateImages();
 
 //start loop
-let loop = setInterval(Animate, 100);
+let timeBetweenAnimateInMs = 100;
+let fps = 1/timeBetweenAnimateInMs;  //may we might want to display FPS at some point
+let loop = setInterval(Animate, timeBetweenAnimateInMs);

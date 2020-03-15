@@ -107,7 +107,7 @@
     <td><a href="temp/demos/multi_canvas_demo_5.html">Multi-canvas - Individual rotation of more than 1 primitive on same canvas and drawing same rectangles on two canvases</a></td>
     <td>5</td>
     <td>1.0</td>
-    <td>10/3/20</td>
+    <td>15/3/20</td>
     <td>multiple canvas; animation; rotating around an origin by moving the canvas origin</td>
     <td>Demonstrates how we can individually rotate primitives on the same canvas and how we can draw the same primitives across two canvases.</td>
     <td>N/A</td>
@@ -117,7 +117,7 @@
     <td><a href="temp/demos/multi_canvas_demo_6.html">Multi-canvas - Moving a rectangle between non-overlapping (coordinate space) canvases</a></td>
     <td>6</td>
     <td>1.0</td>
-    <td>10/3/20</td>
+    <td>15/3/20</td>
     <td>multiple canvas; animation; non-overlapping canvases using a pre-translate</td>
     <td>Demonstrates how we can setup two canvases to represent non-overlapping coordinate space in a game and drive a primitive between them.</td>
     <td>N/A</td>
@@ -125,7 +125,7 @@
   </tr>
   <tr class="demo">
     <td><a href="temp/demos/multi_canvas_demo_7.html">Mouse Input - Getting mouse position for each canvas</a></td>
-    <td>6</td>
+    <td>7</td>
     <td>1.0</td>
     <td>10/3/20</td>
     <td>multiple canvas; mouse position in coordinate space</td>
@@ -142,25 +142,43 @@
   <tr>
     <th class="exercise">Link</th>
     <th class="exercise">Exercise Number</th>
+    <th class="exercise">Key Concept(s)</th>
     <th class="exercise">Instructions</th>
     <th class="exercise">Last Updated</th>
   </tr>
   <tr class="exercise">
     <td><a href="temp/exercises/multi_canvas_exercise_1.html">Exercise: Create a 2x2 canvas setup and drive the rectangle across all 4 canvases.</a></td>
     <td>1</td>
+    <td>Pay attention to lines SETTING OVERLAP region in the JS file for this exercise</td>
     <td>See <a href="temp/exercises/js/multi_canvas_exercise_1.js">multi_canvas_exercise_1.js</a> for exercise details</td>
     <td>N/A</td>
   </tr>
   <tr class="exercise">
-    <td><a href="temp/exercises/multi_canvas_exercise_2.html">Exercise: A simple model of the Moon orbiting around the Earth on a single canvas.</a></td>
+    <td><a href="temp/exercises/multi_canvas_exercise_2.html">Exercise: A simple model of the Earth and Sun rotating around their individual axes.</a></td>
     <td>2</td>
+    <td>Pay attention to how we increment the rotationInDegrees value for each GDSprite in Animate()</td>
     <td>See <a href="temp/exercises/js/multi_canvas_exercise_2.js">multi_canvas_exercise_2.js</a> for exercise details</td>
     <td>N/A</td>
   </tr>
   <tr class="exercise">
-    <td><a href="temp/exercises/multi_canvas_exercise_3.html">Exercise: Draw a tank with a separate turret and rotate the turret to face the mouse position.</a></td>
+    <td><a href="temp/exercises/multi_canvas_exercise_3.html">Exercise: A more complex model of the Earth rotating around the Sun and each planet is also rotating around its own individual axis.</a></td>
     <td>3</td>
+    <td>Pay attention to how we need a custom CustomOrbitalDraw() method because the Earth rotates around two separate axes</td>
     <td>See <a href="temp/exercises/js/multi_canvas_exercise_3.js">multi_canvas_exercise_3.js</a> for exercise details</td>
+    <td>N/A</td>
+  </tr>
+  <tr class="exercise">
+    <td><a href="temp/exercises/multi_canvas_exercise_4.html">Exercise: Draw a tank with a separate turret and rotate the turret at fixed rate for each frame.</a></td>
+    <td>4</td>
+    <td>Pay attention to how we draw the tank as a set of component parts and how we need to specify the origin of the gun so that it rotates correctly.</td>
+    <td>See <a href="temp/exercises/js/multi_canvas_exercise_4.js">multi_canvas_exercise_4.js</a> for exercise details</td>
+    <td>N/A</td>
+  </tr>
+  <tr class="exercise">
+    <td><a href="temp/exercises/multi_canvas_exercise_5.html">Exercise: Draw a tank with a separate turret and rotate the turret to face the mouse position.</a></td>
+    <td>5</td>
+    <td>Pay attention to how we read the mouse position and get the angle between its position, the gun origin and the x-axis (i.e. (1, 0)</td>
+    <td>See <a href="temp/exercises/js/multi_canvas_exercise_5.js">multi_canvas_exercise_5.js</a> for exercise details</td>
     <td>N/A</td>
   </tr>
 </table>
