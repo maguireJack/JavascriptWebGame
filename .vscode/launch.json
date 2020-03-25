@@ -9,7 +9,8 @@
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
-            "file": "${workspaceFolder}/index.html"
+            //"file": "${workspaceFolder}/temp/demos/promises/promises_demo_1.html"
+             "file": "${workspaceFolder}/index.html"
         }
     ]
 }

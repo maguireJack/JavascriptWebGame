@@ -6,7 +6,7 @@
  */
 
 class Actor2D {
-  //#region  Fields
+  //#region Fields
   //#endregion
 
   //#region  Properties
@@ -49,7 +49,6 @@ class Actor2D {
     this.collisionType = collisionType;
     this.transform2D = transform2D;
     this.statusType = statusType;
-    this.behaviors = [];
   }
 
   /**
@@ -59,6 +58,9 @@ class Actor2D {
    * @memberof Actor2D
    */
   AttachBehavior(behavior) {
+    if(this.behaviors == undefined)
+      this.behaviors = [];
+
     this.behaviors.push(behavior);
   }
 
@@ -85,8 +87,11 @@ class Actor2D {
    * @memberof Actor2D
    */
   Update(gameTime) {
-    for (let i = 0; i < this.behaviors.length; i++)
-      this.behaviors[i].Execute(gameTime, this);
+    if(this.behaviors != undefined)
+    {
+      for (let i = 0; i < this.behaviors.length; i++)
+        this.behaviors[i].Execute(gameTime, this);
+    }
   }
 
   //#region Equals, Clone, ToString

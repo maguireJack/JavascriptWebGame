@@ -1,8 +1,51 @@
 //#region Development Diary
 /*
+Week 10
+------
+Notes:
+- None
 
+Exercises: 
+- None
+
+To Do (Split Screen Sam):
+- Add UIManager
+- Rotate BB
+- Update children position apart from passing reference to parent translation?
+- Add toggleMenuKey functionality to MyMenuManager
 - Rotate, NON-AABB, BSP, Camera, Dynamic canvas, draw across canvas, multi-player menu
 
+To Do (Snailbait):
+- Wrap MyConstants.js and Constants.js in a class to set scope and no longer pollute global project space.
+- Add booleans to DebugDrawer to enable/disable drawing of BBs for objects and camera, and drawing of debug text.
+- Improve SoundManager to block load until all sound resources have loaded.
+- Add pause/unpause to SoundManager when we lose/gain window focus.
+- Add code to calculate TextSpriteArtist bounding box size based on text used.
+- Fix background UpdateHorizontalScrolling().
+- Add countdown toast when we gain window focus.
+- Add check for "P" key in MyMenuManager::Update() to show/hide menu
+- Improve KeyboardManager to add IsFirstKeyPress() method.
+- Complete menu demo.
+- Continue adding documentation to all classes and methods.
+
+Done:
+- Replaced get/set with direct access in high frequency draw code
+- Package canvas data
+
+Bugs (Split Screen Sam):
+- Skew on gun rotation
+- Camera culling has been disabled
+- Camera bounding boxes are incorrect
+- DebugDrawer text in bottom window (ctx.translate()) is not in the correct location
+
+Bugs (Snailbait):
+- Camera bounding box is not updating on camera scale, rotate.
+- When we scroll too far L/R then scrolling stops - see ScrollingSpriteArtist.
+- When we use background scroll <- and -> then collisions are not tested and responded to
+- When player and platform above are separated by only player height?
+*/
+
+/*
 Week 7 
 ------
 Notes:
@@ -42,8 +85,8 @@ class Game {
 
   //#region Fields
   //canvas and context
-  cvs;
-  ctx;
+  screenBottom;
+  screenTop;
 
   //game resources
   spriteSheet;
@@ -59,6 +102,10 @@ class Game {
   gameStateManager;
   cameraManager;
 
+  //multi-player count and ready test
+  readyPlayers = 0;
+  maxPlayers = 2;
+
   //debug
   debugModeOn;
   //#endregion
@@ -71,28 +118,22 @@ class Game {
   //#endregion
 
   // #region LoadGame, Start, Animate
-  LoadGame(canvasID) {
-
-    let m = Matrix.CreateRotation(GDMath.ToRadians(45));
-    let look = new Vector2(1, 0);
-    look.Transform(m);
-
-
+  LoadGame() {
 
     //load content
-    this.Initialize(canvasID);
+    this.Initialize();
 
-    //start timer - notice that it is called only after we loaded all the game content
-    this.Start();
-
-    //publish an event to pause the object manager (i.e. no update, no draw) and show the menu
+    //publish an event to pause the object manager (i.e. no update) and render manager (i.e. no draw) and show the menu
     NotificationCenter.Notify(
       new Notification(
         NotificationType.Menu,
         NotificationAction.ShowMenuChanged,
-        [StatusType.Off]
+        [StatusType.Off, "menu-top", "menu-bottom"]
       )
     );
+
+    //start timer - notice that it is called only after we loaded all the game content
+    this.Start();
   }
 
   Start() {
@@ -114,20 +155,19 @@ class Game {
     //update all the game sprites
     this.objectManager.Update(this.gameTime);
 
-    //draw the sprites
-    this.renderManager.Update(gameTime);
-
     //updates the camera manager which in turn updates all cameras
     this.cameraManager.Update(gameTime);
 
     //DEBUG - REMOVE LATER
     if (this.debugModeOn)
       this.debugDrawer.Update(gameTime);
+
   }
 
   Draw(gameTime) {
     //clear screen on each draw of ALL sprites (i.e. menu and game sprites)
-    this.ClearScreen(Color.Grey);
+    this.ClearScreen(this.screenTop.clearScreenColor, this.screenTop.cvs, this.screenTop.ctx, this.screenTop.topLeft);
+    this.ClearScreen(this.screenBottom.clearScreenColor, this.screenBottom.cvs, this.screenBottom.ctx, this.screenBottom.topLeft);
 
     //draw all the game sprites
     this.renderManager.Draw(gameTime);
@@ -137,18 +177,19 @@ class Game {
       this.debugDrawer.Draw(gameTime);
   }
 
-  ClearScreen(color) {
-    this.ctx.save();
-    this.ctx.fillStyle = color;
-    this.ctx.fillRect(0, 0, this.cvs.clientWidth, this.cvs.clientHeight);
-    this.ctx.restore();
+  ClearScreen(color, canvasObject, context, topLeft) {
+    context.save();
+    context.fillStyle = color;
+    context.fillRect(topLeft.x, topLeft.y, canvasObject.clientWidth, canvasObject.clientHeight);
+    context.restore();
   }
   // #endregion
 
   /************************************************************ YOUR GAME SPECIFIC UNDER THIS POINT ************************************************************/
   // #region Initialize, Load(Debug, Cameras, Managers)
-  Initialize(canvasID) {
-    this.LoadCanvases(canvasID);
+  Initialize() {
+    this.SetGraphics();
+    this.LoadCanvases();
     this.LoadAssets();
     this.LoadNotificationCenter();
     this.LoadInputAndCameraManagers();
@@ -162,46 +203,69 @@ class Game {
 
   }
 
-  LoadCanvases(canvasID) {
+  SetGraphics(){
+    //to do - use this later to add and set canvas dimensions dynamically...
+    /*
+    //Cross-browser code to obtain browser width and height
+    var width = window.innerWidth
+      || document.documentElement.clientWidth
+      || document.body.clientWidth;
+
+      var height = window.innerHeight
+      || document.documentElement.clientHeight
+      || document.body.clientHeight;
+      */
+  }
+
+  LoadCanvases() {
     //get a handle to our context
-    this.cvs = document.getElementById(canvasID);
-    this.ctx = this.cvs.getContext("2d");
+    this.screenTop = GDGraphics.GetScreenObject("parent-top", "canvas-top", "draws top game screen", new Vector2(0,0), Color.LightGreen);
+    this.screenBottom = GDGraphics.GetScreenObject("parent-bottom", "canvas-bottom", "draws top game screen", new Vector2(50,50), Color.DarkGreen);
   }
 
   LoadCameras() {
+//#region Camera 1    
     let transform = new Transform2D(
       new Vector2(0, 0),
       0,
       new Vector2(1, 1),
-      new Vector2(this.cvs.clientWidth / 2, this.cvs.clientHeight / 2),
-      new Vector2(this.cvs.clientWidth, this.cvs.clientHeight),
+      new Vector2(this.screenTop.width/2, this.screenTop.height/2),
+      new Vector2(this.screenTop.width, this.screenTop.height),
       0
     );
 
-    let camera = new Camera2D(
-      "intro camera",
+    let cameraTop = new Camera2D(
+      "camera top",
       ActorType.Camera,
       transform,
       StatusType.IsUpdated,
-      this.ctx
+      this.screenTop.ctx
     );
 
-    camera.AttachBehavior(
-      new FlightCameraBehavior(
-        this.keyboardManager,
-        [
-          Keys.NumPad4, Keys.NumPad6, Keys.NumPad1, Keys.NumPad9,
-          Keys.NumPad8, Keys.NumPad2, Keys.NumPad5
-        ],
-        new Vector2(3, 0),
-        Math.PI / 180,
-        new Vector2(0.005, 0.005)
-      )
+    this.cameraManager.Add(cameraTop);
+//#endregion
+
+//#region Camera 2
+    transform = new Transform2D(
+      new Vector2(0, 0),
+      0,
+      new Vector2(1, 1),
+      new Vector2(0,0),
+      new Vector2(this.screenBottom.width, this.screenBottom.height),
+      0
     );
 
-   // camera.AttachBehavior(new ThirdPersonCameraBehavior(this));
+    let cameraBottom = new Camera2D(
+      "camera bottom",
+      ActorType.Camera,
+      transform,
+      StatusType.IsUpdated,
+      this.screenBottom.ctx
+    );
 
-    this.cameraManager.Add(camera);
+    this.cameraManager.Add(cameraBottom);
+//#endregion
+
   }
 
   LoadNotificationCenter() {
@@ -232,12 +296,17 @@ class Game {
       this.cameraManager,
       this.notificationCenter);
 
-    //load other managers...
+    //load a menu managers for each screen since they need to function independently
+    this.menuManagerTop = new MyMenuManager("menu-top", this.notificationCenter, this.keyboardManager, 
+                            this.screenTop.parentDivID, this.screenTop.id);
+    this.menuManagerBottom = new MyMenuManager("menu-bottom", this.notificationCenter, this.keyboardManager, 
+                            this.screenBottom.parentDivID, this.screenBottom.id);
   }
 
+
   LoadDebug() {
-    this.debugDrawer = new DebugDrawer("shows debug info",
-      this.ctx, this.objectManager, this.cameraManager);
+    this.debugDrawer = new DebugDrawer("shows debug info", StatusType.IsDrawn,
+      this.objectManager, this.cameraManager, this.notificationCenter);
   }
   //#endregion
 
@@ -246,55 +315,104 @@ class Game {
   }
 
   LoadSprites() {
-    this.LoadPlayer();
+    this.LoadTanks();
   }
 
-  GetTarget()
-  {
-    return this.playerSprite;
-  }
-
-  LoadPlayer() {
-    let spriteArtist = new AnimatedSpriteArtist(1, GUARD_ANIMATION_DATA);
-    spriteArtist.SetTake("walk");
-
+  LoadTanks(){
+    let sprite = document.getElementById("sprite_tank_body");
+   
+    //#region Body
     let transform = new Transform2D(
-      GUARD_START_POSITION,
+      new Vector2(150, 150),
       0,
-      new Vector2(1, 1),
-      new Vector2(64, 64),
-      spriteArtist.GetBoundingBoxByTakeName("walk"),
-      -20
+      new Vector2(0.5, 0.5),
+      new Vector2(sprite.width/2, sprite.height/2),
+      new Vector2(sprite.width, sprite.height),
+      0
     );
 
-    this.playerSprite = new Sprite(
-      "guard1",
+    this.tankSprite = new ComponentSprite(
+      "tank_body_1",
       ActorType.Player,
       CollisionType.Collidable,
       transform,
-      spriteArtist,
+      new SpriteArtist(sprite, new Vector2(0, 0), new Vector2(sprite.width, sprite.height)),
       StatusType.IsUpdated | StatusType.IsDrawn,
       1,
       1
     );
 
-    this.playerSprite.AttachBehavior(
-      new GuardBehavior(
-        this.keyboardManager,
-        this.objectManager,
-        GUARD_MOVE_KEYS,
-        GUARD_MOVE_SPEED,
-        GUARD_INITIAL_LOOK_DIRECTION,
-        GUARD_ROTATE_RATE
-      )
+    this.tankSprite.AttachBehavior(new TankBehavior(this.keyboardManager, 
+      this.objectManager, [Keys.A, Keys.D, Keys.W, Keys.S], GUARD_MOVE_SPEED, 
+      GUARD_INITIAL_LOOK_DIRECTION, GUARD_ROTATE_RATE));
+
+    //#endregion
+
+    //#region Gun
+    sprite = document.getElementById("sprite_tank_gun");
+
+    transform = new Transform2D(
+      this.tankSprite.Transform2D.Translation,
+      0,
+      new Vector2(0.5, 0.5),
+      new Vector2(38, 124),
+      new Vector2(sprite.width, sprite.height),
+      0
     );
 
-    this.objectManager.Add(this.playerSprite); //add player sprite
+    let gunSprite = new Sprite(
+      "tank_gun",
+      ActorType.Player,
+      CollisionType.Collidable,
+      transform,
+      new SpriteArtist(sprite, new Vector2(0, 0), 
+      new Vector2(sprite.width, sprite.height)),
+      StatusType.IsUpdated | StatusType.IsDrawn,
+      1,
+      1
+    );
+
+    gunSprite.AttachBehavior(new GunBehavior(this.keyboardManager, 
+      this.objectManager, [Keys.Q,Keys.E], GUARD_ROTATE_RATE));
+    this.tankSprite.AttachChild(gunSprite);
+
+    //#endregion
+
+    //#region Tracks
+    // sprite = document.getElementById("sprite_tank_track");
+
+    // transform = new Transform2D(
+    //   this.tankSprite.Transform2D.Translation,
+    //   0,
+    //   new Vector2(1, 1),
+    //   new Vector2(sprite.width/2, sprite.height/2),
+    //   new Vector2(sprite.width, sprite.height),
+    //   0
+    // );
+
+    // this.tankSprite.AttachChild(new Sprite(
+    //   "tank_gun",
+    //   ActorType.Player,
+    //   CollisionType.Collidable,
+    //   transform,
+    //   new SpriteArtist(sprite, new Vector2(0, 0), 
+    //   new Vector2(sprite.width, sprite.height)),
+    //   StatusType.IsUpdated | StatusType.IsDrawn,
+    //   1,
+    //   1
+    // ));
+    //#endregion
+    this.objectManager.Add(this.tankSprite); //add tank body
   }
-  //#endregion
 }
 
+//instead of "load" we could use "DOMContentLoaded" but this would indicate load complete when the HTML and DOM is loaded and NOT when all styling, scripts and images have been downloaded
 window.addEventListener("load", event => {
-  let game = new Game(true);
-  game.LoadGame("game-canvas");
+  let bDebugMode = true;
+  let game = new Game(bDebugMode);
+  game.LoadGame();
 });
+
+
+
+

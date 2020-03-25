@@ -77,9 +77,42 @@ class RectangleSpriteArtist extends Artist {
         activeCamera.Context.lineWidth = this.lineWidth;
         activeCamera.Context.strokeStyle = this.strokeStyle;
         activeCamera.Context.fillStyle = this.fillStyle;
-        activeCamera.Context.strokeRect(transform.Translation.X, transform.Translation.Y,
+        activeCamera.Context.strokeRect(
+            transform.Translation.X - transform.Origin.X, 
+            transform.Translation.Y - transform.Origin.Y, 
             transform.Dimensions.X, transform.Dimensions.Y);
-        activeCamera.Context.fillRect(transform.Translation.X, transform.Translation.Y,
+        activeCamera.Context.fillRect(
+            transform.Translation.X - transform.Origin.X, 
+            transform.Translation.Y - transform.Origin.Y, 
+            transform.Dimensions.X, transform.Dimensions.Y);
+        activeCamera.Context.restore();
+    }
+
+    DrawParented(gameTime, attached, parent, activeCamera) {
+        //save whatever context settings were used before this (color, line, text styles)
+        activeCamera.Context.save();
+        //apply the camera transformations to the scene (i.e. to enable camera zoom, pan, rotate)
+        activeCamera.SetContext();
+
+        //apply the transformations coming from the attached parent
+        attached.SetContext(activeCamera.Context);
+
+        //apply the sprite transformations to the sprite 
+        parent.SetContext(activeCamera.Context);
+
+        //access the transform for the parent that this artist is attached to
+        let transform = parent.Transform2D;
+
+        activeCamera.Context.lineWidth = this.lineWidth;
+        activeCamera.Context.strokeStyle = this.strokeStyle;
+        activeCamera.Context.fillStyle = this.fillStyle;
+        activeCamera.Context.strokeRect(
+            transform.Translation.X - transform.Origin.X, 
+            transform.Translation.Y - transform.Origin.Y, 
+            transform.Dimensions.X, transform.Dimensions.Y);
+        activeCamera.Context.fillRect(
+            transform.Translation.X - transform.Origin.X, 
+            transform.Translation.Y - transform.Origin.Y, 
             transform.Dimensions.X, transform.Dimensions.Y);
         activeCamera.Context.restore();
     }

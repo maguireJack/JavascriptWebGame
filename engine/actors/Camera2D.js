@@ -35,11 +35,11 @@ class Camera2D extends Actor2D {
      */
     SetContext() {
         let transform = this.Transform2D;
-        this.context.translate(transform.Origin.X, transform.Origin.Y);
-        this.context.scale(transform.Scale.X, transform.Scale.Y);
-        this.context.rotate(transform.RotationInRadians);
-        this.context.translate(-transform.Origin.X, -transform.Origin.Y);
-        this.context.translate(-transform.Translation.X, -transform.Translation.Y);
+        this.context.translate(transform.origin.x, transform.origin.y);
+        this.context.scale(transform.scale.x, transform.scale.y);
+        this.context.rotate(transform.rotationInRadians);
+        this.context.translate(-transform.origin.x, -transform.origin.y);
+        this.context.translate(-transform.translation.x, -transform.translation.y);
     }
 
     //#region Equals, Clone, ToString 

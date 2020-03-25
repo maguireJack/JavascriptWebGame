@@ -23,9 +23,9 @@ const ActorType = Object.freeze({
 });
 
 const StatusType = Object.freeze({
-  Off: 1,
-  IsDrawn: 2,
-  IsUpdated: 4
+  Off: 0,
+  IsDrawn: 1,
+  IsUpdated: 2
   //add more here as required but ENSURE they are 2^N values
   //its important that the values are powers of two because we combine them using a bitwise-OR
   //e.g. StatusType.IsUpdated | StatusType.IsDrawn
@@ -78,7 +78,11 @@ const Color = Object.freeze({
   Black: "#000000",
   White: "#FFFFFF",
   Grey: "#8b8680",
-  CornFlowerBlue: "#6495ed"
+  CornFlowerBlue: "#6495ed",
+  LightGreen: "#CACB63",
+  DarkGreen: "#688318"
+  //add more colors that you use often here
+  //Use https://html-color-codes.info/colors-from-image/ to determine hex codes for colors that you use in free 3rd party images/sprites that you find online
 });
 
 //used by any entity which listens for key input

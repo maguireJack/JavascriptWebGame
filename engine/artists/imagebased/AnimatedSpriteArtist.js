@@ -126,10 +126,33 @@ class AnimatedSpriteArtist extends Artist {
         activeCamera.Context.drawImage(this.animationData.spriteSheet,
             cell.X, cell.Y,
             cell.Width, cell.Height,
-            parent.Transform2D.Translation.X, parent.Transform2D.Translation.Y, 
+            parent.Transform2D.Translation.X - parent.Transform2D.Origin.X, 
+            parent.Transform2D.Translation.Y - parent.Transform2D.Origin.Y,  
             cell.Width, cell.Height);
         activeCamera.Context.restore();
 
+    }
+
+    DrawParented(gameTime, attached, parent, activeCamera) {
+        //save whatever context settings were used before this (color, line, text styles)
+        activeCamera.Context.save();
+        //apply the camera transformations to the scene (i.e. to enable camera zoom, pan, rotate)
+        activeCamera.SetContext();
+
+        //apply the transformations coming from the attached parent
+        attached.SetContext(activeCamera.Context);
+
+        //apply the sprite transformations to the sprite 
+        parent.SetContext(activeCamera.Context);
+
+        let cell = this.cells[this.currentCellIndex];
+        activeCamera.Context.drawImage(this.animationData.spriteSheet,
+            cell.x, cell.y,
+            cell.width, cell.height,
+            parent.transform2D.translation.x - parent.transform2D.origin.x, 
+            parent.transform2D.translation.y - parent.transform2D.origin.y,  
+            cell.width, cell.height);
+        activeCamera.Context.restore();
     }
 
     /**

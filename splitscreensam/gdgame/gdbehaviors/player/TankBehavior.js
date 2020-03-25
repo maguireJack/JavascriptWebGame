@@ -1,14 +1,14 @@
 /**
- * Move guard sprite, test for collisions etc.
+ * Move tank sprite, test for collisions etc.
  * @author
  * @version 1.0
- * @class GuardBehavior
+ * @class TankBehavior
  */
-class GuardBehavior {
-    constructor(keyboardManager, objectManager, moveKeys, moveSpeed, initialLookDirection, rotateRate) {
+class TankBehavior {
+    constructor(keyboardManager, objectManager, actionKeys, moveSpeed, initialLookDirection, rotateRate) {
         this.keyboardManager = keyboardManager;
         this.objectManager = objectManager;
-        this.moveKeys = moveKeys;
+        this.actionKeys = actionKeys;
         this.moveSpeed = moveSpeed;
         this.initialLookDirection = initialLookDirection;
         this.rotateRate = rotateRate;
@@ -27,32 +27,27 @@ class GuardBehavior {
 
     HandleMove(gameTime, parent) {
         //forward
-        if (this.keyboardManager.IsKeyDown(this.moveKeys[0])) {
-            parent.Transform2D.TranslateBy(Vector2.MultiplyScalar(this.initialLookDirection, this.moveSpeed * gameTime.ElapsedTimeInMs));
+        if (this.keyboardManager.IsKeyDown(this.actionKeys[0])) {
+            parent.Transform2D.TranslateBy(Vector2.MultiplyScalar(this.initialLookDirection, -1*this.moveSpeed * gameTime.ElapsedTimeInMs));
         }
         //backward
-        else if (this.keyboardManager.IsKeyDown(this.moveKeys[1])) {
-            parent.Transform2D.TranslateBy(Vector2.MultiplyScalar(this.initialLookDirection, -1*this.moveSpeed * gameTime.ElapsedTimeInMs));
+        else if (this.keyboardManager.IsKeyDown(this.actionKeys[1])) {
+            parent.Transform2D.TranslateBy(Vector2.MultiplyScalar(this.initialLookDirection, this.moveSpeed * gameTime.ElapsedTimeInMs));
         }
 
         //turn left
-        if (this.keyboardManager.IsKeyDown(this.moveKeys[2])) {
+        if (this.keyboardManager.IsKeyDown(this.actionKeys[2])) {
             parent.Transform2D.RotateBy(-this.rotateRate * gameTime.ElapsedTimeInMs);
         }
         //turn right
-        else if (this.keyboardManager.IsKeyDown(this.moveKeys[3])) {
+        else if (this.keyboardManager.IsKeyDown(this.actionKeys[3])) {
             parent.Transform2D.RotateBy(this.rotateRate * gameTime.ElapsedTimeInMs);
         }
     }
 
     CheckCollisions(parent) {
-        this.HandleEnemyCollision(parent);
-        this.HandlePickupCollision(parent);
+        //add code here...
     }
-
-    HandlePickupCollision(parent) {}
-
-    HandleEnemyCollision(parent) {}
 
     ApplyInput(parent) {}
 

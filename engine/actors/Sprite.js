@@ -37,6 +37,7 @@ class Sprite extends Actor2D {
   }
   //#endregion
 
+
   constructor(
     id,
     actorType,
@@ -60,12 +61,12 @@ class Sprite extends Actor2D {
    * @see ObjectManager::Update()
    * @memberof Sprite
    */
-  Update(gameTime, camera) {
+  Update(gameTime) {
     //if we have an attached artist and we are supposed to update the sprite then update the artist
-    if (this.artist != null && (this.StatusType & StatusType.IsUpdated) != 0) {
-      this.artist.Update(gameTime, this, camera);
+    if (this.artist != null && (this.statusType & StatusType.IsUpdated) != 0) {
+      this.artist.Update(gameTime, this);
       //call Actor2D::Update() to update any attached behaviors
-      super.Update(gameTime, camera);
+      super.Update(gameTime);
     }
   }
 
@@ -79,7 +80,7 @@ class Sprite extends Actor2D {
    */
   Draw(gameTime, activeCamera) {
     //if we have an attached artist and we are supposed to draw the sprite then draw
-    if (this.artist != null && (this.StatusType & StatusType.IsDrawn) != 0)
+    if (this.artist != null && (this.statusType & StatusType.IsDrawn) != 0)
       this.artist.Draw(gameTime, this, activeCamera);
   }
 
@@ -91,14 +92,12 @@ class Sprite extends Actor2D {
    * @memberof Sprite
    */
   SetContext(context) {
-    context.translate(this.transform2D.Translation.X + this.transform2D.Origin.X,
-      this.transform2D.Translation.Y + this.transform2D.Origin.Y);
-    context.scale(this.transform2D.Scale.X, this.transform2D.Scale.Y);
-    context.rotate(this.transform2D.RotationInRadians);
-    context.translate(-1 * (this.transform2D.Translation.X + this.transform2D.Origin.X),
-      -1 * (this.transform2D.Translation.Y + this.transform2D.Origin.Y));
-
+    context.translate(this.transform2D.translation.x, this.transform2D.translation.y);
+    context.scale(this.transform2D.scale.x, this.transform2D.scale.y);
+    context.rotate(this.transform2D.rotationInRadians);
+    context.translate(-this.transform2D.translation.x, -this.transform2D.translation.y);
   }
+
   //#region Equals, Clone, ToString
   Equals(other) {
     if (other == null || other == undefined || !other instanceof Sprite)
@@ -129,7 +128,11 @@ class Sprite extends Actor2D {
     );
 
     //now clone all the actors attached behaviors
-    for (let behavior of this.behaviors) clone.AttachBehavior(behavior.Clone());
+    if(this.behaviors != null)
+    {
+      for (let behavior of this.behaviors) 
+        clone.AttachBehavior(behavior.Clone());
+    }
 
     //lastly return the actor
     return clone;

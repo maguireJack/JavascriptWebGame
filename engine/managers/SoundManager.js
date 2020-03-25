@@ -142,7 +142,6 @@ class SoundManager {
   AssetLoaded(name)
   {
     this.count++;
-    console.log(name);
   }
 
   FindIndex(name) {

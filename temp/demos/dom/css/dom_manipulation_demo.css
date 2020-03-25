@@ -1,0 +1,26 @@
+a {
+    text-decoration: none;
+}
+
+.button {
+    display: block;
+    width: 180px;
+    height: 40px;
+    line-height: 40px;
+    border: 1px solid rgb(255, 255, 255);
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #000;
+    background-color: rgb(251, 77, 24);
+    background-image: linear-gradient(to bottom,
+            rgb(87, 63, 40) 0%,
+            rgb(13, 113, 179) 100%);
+    border-radius: 10px;
+}
+
+.button:hover {
+    background-color: rgb(185, 160, 0);
+    background-image: linear-gradient(to bottom,
+            rgb(185, 160, 0) 0%,
+            #fddc00 100%);
+}

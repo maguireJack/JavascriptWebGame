@@ -33,7 +33,7 @@ class MyMenuManager {
     HandleShowMenu(argArray) {
         this.statusType = argArray[0];
         //if we created an event to tell the objectmanager to draw and update then it means we want the game to run i.e. hide the menu
-        if (this.statusType != 1) //hide menu
+        if (this.statusType != StatusType.Off) //hide menu
         {
             $('#main').hide();
             $('#menu').removeClass('main');

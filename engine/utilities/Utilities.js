@@ -21,8 +21,6 @@ class GDMath {
         let pow = Math.pow(base||10, precision);
         return Math.round(number*pow) / pow;
     }
-
-    
 }
 
 /**
@@ -55,3 +53,39 @@ class GDUtility{
     }
 }
 
+class GDGraphics{
+
+
+    /**
+     * Returns an object representing all the information related to a game canvas (e.g. cvs, ctx, width, height, parent enclosing DIV).
+     *
+     * @static
+     * @param {String} parentDivID ID of the parent DIV which encloses the canvas in the HTML file (e.g. <div id="parent-top">...<canvas id=...></div>) or when creating the div and enclosed canvas using DOM manipulation
+     * @param {String} canvasID ID used when adding the canvas to the HTML file (e.g. <canvas id=...>) or when creat using DOM manipulation
+     * @param {String} description Friendly description of the object (e.g. used to draw left/top/bottom game screen)
+     * @param {Vector2} topLeft A Vector2 representing the screen-space coordinates of the top left corner of the canvas
+     * @returns Object of canvas related data.
+     * @memberof GDGraphics
+     */
+    static GetScreenObject(parentDivID, canvasID, description, topLeft, clearScreenColor){
+        //get handles
+        let cvs_ref = document.getElementById(canvasID);
+        let ctx_ref = cvs_ref.getContext("2d");
+
+        //move the context because the top-left of the canvas is not always (0,0) (e.g. a second screen located to the right of the first screen with topLeft of (640, 0))
+        ctx_ref.translate(-topLeft.x, -topLeft.y);
+    
+        return {
+          id:            canvasID,
+          //attrib name: variable name (dont confuse the two, or change attribute name to something like "parent")
+          parentDivID:   parentDivID,
+          description:   description,
+          cvs:           cvs_ref,
+          ctx:           ctx_ref,
+          width:         cvs_ref.clientWidth,
+          height:        cvs_ref.clientHeight,
+          topLeft:       topLeft,
+          clearScreenColor: clearScreenColor
+        };
+      }
+}

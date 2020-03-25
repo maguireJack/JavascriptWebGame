@@ -3,7 +3,7 @@
 //#endregion
 
 //#region Sprite Data
-const GUARD_START_POSITION = new Vector2(80, 250);
+const GUARD_START_POSITION = new Vector2(100, 200);
 const GUARD_MOVE_KEYS = [Keys.W, Keys.S, Keys.A, Keys.D];
 const GUARD_MOVE_SPEED = 0.15;
 const GUARD_INITIAL_LOOK_DIRECTION = new Vector2(1, 0);

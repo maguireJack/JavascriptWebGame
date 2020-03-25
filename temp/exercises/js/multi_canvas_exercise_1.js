@@ -28,9 +28,9 @@ let cvs_left = document.getElementById("game-canvas-left");
 let ctx_left = cvs_left.getContext("2d");
 let cvs_right = document.getElementById("game-canvas-right");
 let ctx_right = cvs_right.getContext("2d");
-let cvs_bottom_left = document.getElementById("game-canvas-bottomleft");
+let cvs_bottom_left = document.getElementById("canvas-bottomleft");
 let ctx_bottom_left = cvs_bottom_left.getContext("2d");
-let cvs_bottom_right = document.getElementById("game-canvas-bottomright");
+let cvs_bottom_right = document.getElementById("canvas-bottomright");
 let ctx_bottom_right = cvs_bottom_right.getContext("2d");
 //#endregion
 

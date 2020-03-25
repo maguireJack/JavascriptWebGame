@@ -1,5 +1,5 @@
 /**
- * Represents a 2D vector within our game engine.
+ * Represents a 2D vector within the game engine.
  * @author
  * @version 1.0
  * @class Vector2
@@ -167,8 +167,8 @@ class Vector2 {
   }
 
   static Transform(v, m){
-    let x = v.x * m.a11 + v.y * m.a21;
-    let y = v.x * m.a12 + v.y * m.a22;
+    let x = v.x * m.a11 + v.y * m.a21 + m.a31;
+    let y = v.x * m.a12 + v.y * m.a22 + m.a32;
     return new Vector2(x, y);
   }
 

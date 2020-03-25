@@ -253,9 +253,6 @@ class Game {
     //updates the camera manager which in turn updates all cameras
     this.cameraManager.Update(gameTime);
 
-    //draw the sprites
-    this.renderManager.Update(gameTime);
-
     //DEBUG - REMOVE LATER
     if (this.debugModeOn)
       this.debugDrawer.Update(gameTime);

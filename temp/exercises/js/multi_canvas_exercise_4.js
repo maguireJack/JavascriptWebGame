@@ -18,17 +18,20 @@ function Animate() {
 
 
   //draw the tracks
-  this.leftTrackSprite.Draw(ctx_left);
-  this.rightTrackSprite.Draw(ctx_left);
+  this.leftTrackSprite.Draw(ctx_left, this.bodySprite.rotationInDegrees, 
+    new Vector2(this.bodySprite.x, this.bodySprite.y));
+  this.rightTrackSprite.Draw(ctx_left, this.bodySprite.rotationInDegrees, 
+    new Vector2(this.bodySprite.x, this.bodySprite.y));
 
   //draw body
-  this.bodySprite.Draw(ctx_left);
+  this.bodySprite.Draw(ctx_left, 0, Vector2.Zero);
 
   //draw gun
-  this.gunSprite.Draw(ctx_left);
+  this.gunSprite.Draw(ctx_left, this.bodySprite.rotationInDegrees, 
+          new Vector2(this.bodySprite.x, this.bodySprite.y));
 
   //rotate the turret - just for fun
-  this.gunSprite.rotationInDegrees += 1;
+  //this.gunSprite.rotationInDegrees += 1;
 }
 
 function InstanciateImages(){
@@ -36,6 +39,7 @@ function InstanciateImages(){
   let tracks = document.getElementById("sprite_tank_tracks");
   let body = document.getElementById("sprite_tank_body");
   let gun = document.getElementById("sprite_tank_gun");
+
 
 //#region Tracks
   this.leftTrackSprite = new GDSprite(tracks, 
@@ -54,7 +58,7 @@ function InstanciateImages(){
 
 //#region Body
 this.bodySprite = new GDSprite(body, 
-  120, 200, //eyeballed value
+  225, 220, //eyeballed value
   body.width, body.height, 
   0, 0, body.width, body.height, 
   body.width/2, body.height/2, //origin
@@ -64,7 +68,7 @@ this.bodySprite = new GDSprite(body,
 
 //#region Gun
 this.gunSprite = new GDSprite(gun, 
-  210, 220, //eyeballed value
+  225, 220, //eyeballed value
   gun.width, gun.height, 
   0, 0, gun.width, gun.height, 
   38, 124, //origin calculated by opening image in Paint and roughly determining desired centre of rotation
@@ -72,9 +76,38 @@ this.gunSprite = new GDSprite(gun,
 
 
 //#endregion
-
-
 }
+
+window.addEventListener("keypress", function (event) {
+
+  if(event.key === "q")
+  {
+    this.gunSprite.rotationInDegrees -= 1; 
+  }
+  else if(event.key === "e")
+  {
+    this.gunSprite.rotationInDegrees += 1; 
+  }
+
+  if(event.key === "a")
+  {
+    this.bodySprite.rotationInDegrees -= 1; 
+  }
+  else if(event.key === "d")
+  {
+    this.bodySprite.rotationInDegrees += 1; 
+  }
+
+  if(event.key === "z")
+  {
+    this.bodySprite.x -= 1; 
+  }
+  else if(event.key === "c")
+  {
+    this.bodySprite.x += 1; 
+  }
+});
+
 /************************************* Core Code *************************************/
 
 //canvas and context
@@ -83,6 +116,15 @@ let ctx_left = cvs_left.getContext("2d");
 
 //create the GDSprite primitives representing the tank parts
 InstanciateImages();
+
+window.addEventListener("mousedown", function (event) {
+
+  let cvs_rect = cvs_left.getBoundingClientRect();
+  let x = Math.round(event.clientX - cvs_rect.left);
+  let y =  Math.round(event.clientY - cvs_rect.top);
+  console.log("Mouse (" + x + "," + y + ")");
+
+});
 
 //start loop
 let timeBetweenAnimateInMs = 16;

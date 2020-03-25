@@ -128,15 +128,22 @@ class GDSprite extends GDPrimitive{
         this.sHeight = sHeight;
     }
 
-    Draw(context) {
+    Draw(context, rotateParent, translateParent) {
         context.save();
-        context.translate(this.x + this.originX, this.y + this.originY);
+
+        context.translate(translateParent.x, translateParent.y);
+        context.rotate(GDMath.ToRadians(rotateParent));
+        context.translate(-translateParent.x, -translateParent.y);
+
+        context.translate(this.x, this.y);
         context.rotate(this.GetRotationInRadians());
-        context.translate(-1 * (this.x + this.originX), -1 * (this.y + this.originY));
+        context.translate(-1 * this.x, -1 * this.y);
+
         context.globalAlpha = this.alpha;
         context.drawImage(this.spritesheet,this.sX, this.sY, 
             this.sWidth, this.sHeight,
-            this.x, this.y, 
+            this.x - this.originX, 
+            this.y - this.originY, 
             this.width, this.height);
     
         context.restore();

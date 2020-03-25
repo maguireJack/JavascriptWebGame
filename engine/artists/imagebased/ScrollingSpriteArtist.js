@@ -138,6 +138,7 @@ class ScrollingSpriteArtist extends Artist {
         activeCamera.Context.restore();
     }
 
+
     //#region Equals, Clone, ToString 
 
     Equals(other) {

@@ -18,12 +18,36 @@ class DebugDrawer {
   //#region Properties
   //#endregion
 
-  constructor(id, context, objectManager, cameraManager) {
+  constructor(id, statusType, objectManager, cameraManager, notificationCenter) {
     this.id = id;
-    this.context = context;
+    this.statusType = statusType;
     this.objectManager = objectManager;
     this.cameraManager = cameraManager;
+    this.notificationCenter = notificationCenter;
   }
+
+  //#region Notification Handling
+  //handle all GameState type events - see PlayerBehavior::HandleEnemyCollision()
+  RegisterForNotifications() {
+    this.notificationCenter.Register(
+      NotificationType.Menu,
+      this,
+      this.HandleNotification
+    );
+  }
+
+  HandleNotification(...argArray) {
+    let notification = argArray[0];
+    switch (notification.NotificationAction) {
+      case NotificationAction.ShowMenuChanged:
+        this.statusType = notification.NotificationArguments[0];
+        break;
+
+      default:
+        break;
+    }
+  }
+  //#endregion
 
   //#region Draw, Update
   Update(gameTime) {
@@ -31,109 +55,107 @@ class DebugDrawer {
   }
 
   Draw(gameTime) {
+    if ((this.statusType & StatusType.IsDrawn) != 0) {
 
-    //draw the bounfing boxes for the in-view (i.e. inside the bounding box of the active camera) sprites
-    let drawCount = this.DrawCollidableSpriteBoundingBoxes(DebugDrawer.SPRITE_BOUNDING_BOX_COLOR);
+      //draw the bounfing boxes for the in-view (i.e. inside the bounding box of the active camera) sprites
+      this.DrawCollidableSpriteBoundingBoxes(DebugDrawer.SPRITE_BOUNDING_BOX_COLOR);
+      for (let i = 0; i < this.cameraManager.Cameras.length; i++) {
+        //draws the collision surface (i.e. Transform2D.BoundingBox) around the active camera
+        this.DrawActiveCameraBoundingBoxes(DebugDrawer.CAMERA_BOUNDING_BOX_COLOR, this.cameraManager.Cameras[i]);
 
-    //draws the collision surface (i.e. Transform2D.BoundingBox) around the active camera
-    this.DrawActiveCameraBoundingBoxes(DebugDrawer.CAMERA_BOUNDING_BOX_COLOR);
-
-    //draws any additional information to screen
-    this.DrawDebugText(gameTime, drawCount);
+        //draws any additional information to screen
+        this.DrawDebugText(gameTime, this.cameraManager.Cameras[i]);
+      }
+    }
   }
 
-  DrawDebugText(gameTime, drawCount) {
+  DrawDebugText(gameTime, activeCamera) {
     let x = 10,
       y = 10;
     let yOffset = 15;
 
     let offsetMultiplier = 1; //used to move each text line down 1x yOffset from the previous line
-    this.DrawText("Debug Information", x, y + offsetMultiplier * yOffset, "white");
+    this.DrawText(activeCamera.context, "Debug Information", x, y + offsetMultiplier * yOffset, "white");
     offsetMultiplier++;
 
-    this.DrawText("-------------------------------", x, y + offsetMultiplier * yOffset, "white");
+    this.DrawText(activeCamera.context, "-------------------------------", x, y + offsetMultiplier * yOffset, "white");
     offsetMultiplier++;
 
-    this.DrawText("FPS: " + gameTime.FPS + " ms", x, y + offsetMultiplier * yOffset, "white");
+    this.DrawText(activeCamera.context, "FPS: " + gameTime.FPS + " ms", x, y + offsetMultiplier * yOffset, "white");
     offsetMultiplier++;
 
-    this.DrawText("Draw Count: " + drawCount, x, y + offsetMultiplier * yOffset, "white");
+    this.DrawText(activeCamera.context, "Camera(ID): " + activeCamera.ID, x, y + offsetMultiplier * yOffset, "white");
     offsetMultiplier++;
 
-    this.DrawText("Camera(origin): " + Vector2.Round(this.cameraManager.ActiveCamera.Transform2D.Origin, 2).ToString(), x, y + offsetMultiplier * yOffset, "white");
+    this.DrawText(activeCamera.context, "Camera(origin): " + Vector2.Round(activeCamera.Transform2D.Origin, 2).ToString(), x, y + offsetMultiplier * yOffset, "white");
     offsetMultiplier++;
 
-    this.DrawText("Camera(scale): " + Vector2.Round(this.cameraManager.ActiveCamera.Transform2D.Scale, 2).ToString(), x, y + offsetMultiplier * yOffset, "white");
+    this.DrawText(activeCamera.context, "Camera(scale): " + Vector2.Round(activeCamera.Transform2D.Scale, 2).ToString(), x, y + offsetMultiplier * yOffset, "white");
     offsetMultiplier++;
 
-    this.DrawText("Camera(BB): " + Rect.Round(this.cameraManager.ActiveCamera.Transform2D.BoundingBox, 2).ToString(), x, y + offsetMultiplier * yOffset, "white");
+    this.DrawText(activeCamera.context, "Camera(BB): " + Rect.Round(activeCamera.Transform2D.BoundingBox, 2).ToString(), x, y + offsetMultiplier * yOffset, "red");
     offsetMultiplier++;
 
     //add more debug info here...
   }
 
-  DrawText(text, x, y, color) {
-    this.context.save();
-
-    //uncomment this line and see what happens to the debug text when you move camera using numpad 4 - 6
-    //this.cameraManager.ActiveCamera.SetContext(this.context);
-
-    this.context.font = DebugDrawer.DEBUG_TEXT_FONT;
-    this.context.fillStyle = color;
-    this.context.textBaseline = "top";
-    this.context.globalAlpha = DebugDrawer.DEBUG_TEXT_ALPHA;
-    this.context.fillText(text, x, y, DebugDrawer.DEBUG_TEXT_MAXWIDTH);
-    this.context.restore();
+  DrawText(context, text, x, y, color) {
+    context.save();
+    context.font = DebugDrawer.DEBUG_TEXT_FONT;
+    context.fillStyle = color;
+    context.textBaseline = "top";
+    context.globalAlpha = DebugDrawer.DEBUG_TEXT_ALPHA;
+    context.fillText(text, x, y, DebugDrawer.DEBUG_TEXT_MAXWIDTH);
+    context.restore();
   }
 
-
-
-  DrawActiveCameraBoundingBoxes(boundingBoxColor) {
-    this.DrawBoundingBox(this.cameraManager.ActiveCamera.Transform2D, boundingBoxColor);
+  DrawActiveCameraBoundingBoxes(boundingBoxColor, activeCamera) {
+    this.DrawBoundingBox(activeCamera, activeCamera.Transform2D, boundingBoxColor);
   }
 
   DrawCollidableSpriteBoundingBoxes(boundingBoxColor) {
-    let drawCount = 0;
     let sprites = this.objectManager.Sprites;
     //for each of the keys in the sprites array (e.g. keys could be...ActorType.Enemy, ActorType.Player)
     for (let key of Object.keys(sprites)) {
       //for the sprites inside the array for the current key call update
       for (let sprite of sprites[key]) {
-        if (sprite.Transform2D.BoundingBox.Intersects(this.cameraManager.ActiveCamera.Transform2D.BoundingBox) &&
-          sprite.CollisionType === CollisionType.Collidable) {
-          drawCount++;
-          this.DrawBoundingBox(sprite.Transform2D, boundingBoxColor);
+        if (sprite.CollisionType === CollisionType.Collidable) //is it collidable?
+        {
+          for (let i = 0; i < this.cameraManager.Cameras.length; i++) //get the first camera
+          {
+            //BUG - disable temporarily - see ObjectManager::Draw() for same commented out if()
+         //   if (sprite.Transform2D.BoundingBox.Intersects(this.cameraManager.Cameras[i].Transform2D.BoundingBox)) //can the camera see it?
+            {
+              this.DrawBoundingBox(this.cameraManager.Cameras[i], sprite.Transform2D, boundingBoxColor); //draw its bounding box
+            }
+          }
         }
       }
     }
-    return drawCount;
   }
 
-  SetContext(transform) {
-    this.context.translate(transform.Translation.X + transform.Origin.X,
-      transform.Translation.Y + transform.Origin.Y);
-    this.context.scale(transform.Scale.X, transform.Scale.Y);
-    this.context.rotate(transform.RotationInRadians);
-    this.context.translate(-1 * (transform.Translation.X + transform.Origin.X),
-      -1 * (transform.Translation.Y + transform.Origin.Y));
-
+  SetContext(context, transform) {
+    context.translate(transform.translation.x, transform.translation.y);
+    context.scale(transform.scale.x, transform.scale.y);
+    context.rotate(transform.rotationInRadians);
+    context.translate(-transform.translation.x, -transform.translation.y);
   }
 
-  DrawBoundingBox(transform, color) {
-    this.context.save();
-    this.cameraManager.ActiveCamera.SetContext();
-    this.SetContext(transform);
-    this.context.globalAlpha = 1;
-    this.context.lineWidth = 2;
-    this.context.strokeStyle = color;
+  DrawBoundingBox(activeCamera, transform, color) {
+    activeCamera.context.save();
+    activeCamera.SetContext();
+    this.SetContext(activeCamera.context, transform);
+    activeCamera.context.globalAlpha = 1;
+    activeCamera.context.lineWidth = 2;
+    activeCamera.context.strokeStyle = color;
     let bb = transform.BoundingBox;
-    this.context.strokeRect(
-      bb.X,
-      bb.Y,
+    activeCamera.context.strokeRect(
+      bb.X - transform.Origin.X,
+      bb.Y - transform.Origin.Y,
       bb.Width,
       bb.Height
     );
-    this.context.restore();
+    activeCamera.context.restore();
   }
   //#endregion
 }

@@ -1,92 +1,200 @@
+*,
+*:before,
+*:after {
+  box-sizing: content-box;
+}
+
 body {
-    font-family: arial, sans-serif;
-    font-size: 16px;
-    user-select: none;
-    cursor: default;
+  font-family: arial, sans-serif;
+  font-size: 18px;
+  background-color: rgb(64, 143, 103);
 }
 
-.wrapper {
-    position: absolute;   
+/***************************************** Canvases and Parent Div Positioning *****************************************/
+
+#parent-top,
+#parent-bottom,
+#canvas-top,
+#canvas-bottom {
+  /*See https://thoughtbot.com/blog/positioning for a discussion on centering with absolute positioning*/
+  position: fixed;
+  left: 50%;
+  margin-left: -432;
+  /* CANVAS SPECIFIC SIZE - SEE <CANVAS> TAG IN HTML */
+  /*notice this is half the width of the canvas*/
 }
 
-.wrapper, #game-canvas, #menu {
-    width: 864px;
-    height: 468px;
+#parent-top,
+#parent-bottom,
+#canvas-top,
+#canvas-bottom,
+.menu {
+  width: 864px;
+  /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
+  height: 468px;
+  /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
 }
 
-#game-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
+#canvas-top,
+#canvas-bottom {
+  z-index: 1;
 }
 
-ul {
-    list-style: none;
-    padding: 0;
-    margin: 0; 
+#parent-top,
+#canvas-top {
+  top: 10px;
 }
 
-li {
-    padding: 10px 0;
+#parent-bottom,
+canvas-bottom {
+  top: 508px;
+  /* CANVAS SPECIFIC SIZE - SEE <CANVAS> TAG IN HTML */
+  /*10 above top canvas + 10 space between canvases + 468 for top canvas height*/
+}
 
+#canvas-top,
+#canvas-bottom {
+  display: none;
+  border: 1px solid black;
+  background-color: #cacb63;
+}
+
+/***************************************** Menu *****************************************/
+
+.submenu {
+  display: none;
+}
+
+.menu {
+  border: 1px solid black;
+  text-align: center;
+  z-index: 3;
+}
+
+.menu {
+  background-image: url("assets/images/backgrounds/menu_background.png");
+  background-color: #1fac26;
+  /* Used if the image is unavailable */
+  height: 468px;
+  /* CANVAS SPECIFIC SIZE - You must set a specified height */
+  background-position: center;
+  /* Center the image */
+  background-repeat: no-repeat;
+  /* Do not repeat the image */
+  background-size: cover;
+  /* Resize the background image to cover the entire container */
+}
+
+.menu h1 {
+  color: white;
+  text-shadow: -1px -1px 0 #000;
+  margin-top: 140px;
+  /* CANVAS SPECIFIC MARGIN - SEE <CANVAS> TAG IN HTML */
 }
 
 a {
-    text-decoration: none;
-    color: inherit;
-    text-shadow: -1px -1px 0 rgb(0, 0, 0);
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  padding: 5px 0px 5px 0px;
 }
 
 .button {
-    display: block;
-    width: 150px;
-    margin: 0 auto;
-    height: 30px;
-    line-height: 30px;
-    border: 1px solid #AA2666;
-    color: white;
-    font-weight: bold;
-    text-shadow: 1px 1px 0 #000;
-    background-color: rgb(251, 77, 24);
-    background-image: linear-gradient(to bottom, rgb(40, 87, 58) 0%, rgb(13, 179, 143) 100%);
-    border-radius: 10px;
+  display: block;
+  width: 180px;
+  height: 40px;
+  margin: auto;
+  line-height: 40px;
+  border: 1px solid rgb(255, 255, 255);
+  color: white;
+  font-weight: bold;
+  text-shadow: 1px 1px 0 #000;
+  background-color: rgb(251, 77, 24);
+  background-image: linear-gradient(
+    to bottom,
+    rgb(87, 63, 40) 0%,
+    rgb(13, 113, 179) 100%
+  );
+  border-radius: 10px;
 }
 
 .button:hover {
-    background-color: #B30D5D;
-    background-image: linear-gradient(to bottom, #B30D5D 0%, #FB1886 100%);
+  background-color: rgb(185, 160, 0);
+  background-image: linear-gradient(
+    to bottom,
+    rgb(185, 160, 0) 0%,
+    #fddc00 100%
+  );
 }
 
-#main {
-    display: none;
-    height: 60%;
-    overflow: auto;
-    margin: auto;
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
+/***************************************** UI *****************************************/
+
+.ui_player {
+  font-family: arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fddc00;
+  margin: 5px 0px 5px 5px;
+  animation: blink 2s linear infinite;
 }
 
-#main h1 {
-    color: white;
-    text-shadow: -1px -1px 0 #000;
-    margin-top: 100px;
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
-#menu {
-    position: absolute;
-    border: 1px solid black;
-    z-index: 2;
-    text-align: center;
-    background-color: grey;
+/***************************************** Loader *****************************************/
+/* to do...add loader screen after main menu */
+/*See https://www.w3schools.com/howto/howto_css_loader.asp*/
+.loader {
+  display: none;
+  position: absolute;
+  margin: auto;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid blue;
+  border-right: 16px solid green;
+  border-bottom: 16px solid red;
+  border-left: 16px solid pink;
+  width: 80px;
+  height: 80px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  z-index: 2;
 }
 
-#menu.main {
-    background-image: url('assets/images/ui/menu-bg.png');
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
 }
 
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
 
-
+  100% {
+    transform: rotate(360deg);
+  }
+}
