@@ -15,7 +15,10 @@ body {
 #parent-top,
 #parent-bottom,
 #canvas-top,
-#canvas-bottom {
+#canvas-bottom,
+#player-top.ui_player_name,
+#player-bottom.ui_player_name
+ {
   /*See https://thoughtbot.com/blog/positioning for a discussion on centering with absolute positioning*/
   position: fixed;
   left: 50%;
@@ -41,17 +44,42 @@ body {
   z-index: 1;
 }
 
+#player-top.ui_player_name,
+#player-bottom.ui_player_name
+{
+  z-index: 2;
+}
+
+
 #parent-top,
-#canvas-top{
+#canvas-top,
+#player-top.ui_player_name
+{
   top: 10px;
 }
 
+#player-top.ui_player_name,
+#player-bottom.ui_player_name
+{
+  display: none;
+}
+
 #parent-bottom,
-canvas-bottom{
+canvas-bottom,
+#player-bottom.ui_player_name
+{
   top: 508px;
   /* CANVAS SPECIFIC SIZE - SEE <CANVAS> TAG IN HTML */
   /*10 above top canvas + 10 space between canvases + 468 for top canvas height*/
 }
+
+/*
+#player-top.ui_player_name,
+#player-bottom.ui_player_name
+{
+  left: 200;
+}
+*/
 
 #canvas-top,
 #canvas-bottom {
@@ -141,7 +169,7 @@ li {
   font-family: arial, sans-serif;
   font-size: 14px;
   font-weight: bold;
-  color: #fddc00;
+  color: #000000;
   margin: 5px 0px 5px 5px;
   animation: blink 2s linear infinite;
 }

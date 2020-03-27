@@ -201,32 +201,82 @@ function RunExercises() {
 }
 
 //1
-//Exercise: Create a set of buttons using the createElement and cloneNode functions. Style your menu to mirror the sample image (clonenode.jpg) stored in the "screenshots" folder.
+//Exercise: Create a set of buttons using the createElement and cloneNode functions. 
+//Style your menu to mirror the sample image (clonenode.jpg) stored in the "screenshots" folder.
+function doSomething(){
+
+}
 function CloneNodeExercise(){
 
     //to do...
+    let btnTextArray = ["Play","Options","Leaderboard"];
+    let parentDiv = document.querySelector("#clonenode.exercise");
 
-    /*
-    * "Play","Options","Leaderboard"
-    */
+    let archetypeBtn = document.createElement("a");
+    archetypeBtn.setAttribute("class", "button");
+    archetypeBtn.setAttribute("href", "javascript:void(0)");
+    archetypeBtn.setAttribute("style", "margin: auto; text-align: center;");
+    archetypeBtn.setAttribute("style", "margin: auto; text-align: center;");
+    archetypeBtn.addEventListener("click", doSomething);
+
+    for(let i = 0; i < btnTextArray.length; i++)
+    {
+        let clone = archetypeBtn.cloneNode(true);
+        clone.removeEventListener("click", doSomething); 
+        clone.innerText = btnTextArray[i];
+        parentDiv.appendChild(clone);
+    }
+
 }
 
 //2
-//Exercise: Create a simple game menu consisting of the items shown in the comment block below. Style your menu to mirror the sample image (onscreenmenu.jpg) stored in the "screenshots" folder.
+//Exercise: Create a simple game menu consisting of the items shown in the comment block below. 
+//Style your menu to mirror the sample image (onscreenmenu.jpg) stored in the "screenshots" folder.
 function HeadingAndListExercise(){
 
     //to do...
+
+    let onscreenMenuHeadings = ["Inventory","Skills","Quests"];
+    let onscreenSubmenuHeadings = [ ["helmet","braces","shield"],
+                                    ["Sixth Sense","Shield Breaker","Spartan Kick"],
+                                    ["The Serpent's Lair","The Wolf's Fate","First Do No Harm"]];
     
+    console.log(onscreenSubmenuHeadings[0][0]);
+
+    let parentDiv = document.querySelector("#tasks.exercise");
+    parentDiv.setAttribute("style", "background-color:azure;");
+    
+    for(let i = 0; i < onscreenMenuHeadings.length; i++)
+    {
+        let heading = document.createElement("b");
+        heading.innerHTML = "<u>" + onscreenMenuHeadings[i] + "</u>";
+        heading.setAttribute("style", "background-color:grey;");
+        parentDiv.appendChild(heading);
+
+        for(let j = 0; j < onscreenSubmenuHeadings.length; j++)
+        {
+            let ul = document.createElement("ul");
+            let li = document.createElement("li");
+            li.innerText = onscreenSubmenuHeadings[i][j];
+            ul.appendChild(li);
+            parentDiv.appendChild(ul);
+        }
+    }
+
     /*
-    "Inventory","Skills","Quests";
-    "helmet","braces","shield",
-    "Sixth Sense","Shield Breaker","Spartan Kick"
-    "The Serpent's Lair","The Wolf's Fate","First Do No Harm"
+    querySelector
+    setAttribute
+    cloneNode
+    <ul><li>
     */
+
+
+
 }
 
 //3
-//Exercise: Modify the code written in the previous exercise (2) to hide each submenu when the user clicks on the respective heading
+//Exercise: Modify the code written in the previous exercise (2) to hide each submenu when the 
+//user clicks on the respective heading
 function CollapsibleDisplayExercise(){
 
     //to do...
