@@ -87,6 +87,7 @@ class MyMenuManager {
         document.querySelector("#" + this.menuID + " #play_btn.button").addEventListener("click", event => {
             this.StartGame();
 
+            //wakes up object and render manager
             NotificationCenter.Notify(
                 new Notification(
                   NotificationType.Menu,
@@ -136,10 +137,10 @@ class MyMenuManager {
     }
 
     Show(cssSelector) {
-        document.querySelector(cssSelector).style.display = 'block';
+        document.querySelector(cssSelector).style.display = 'block'; //visible
     }
 
     Hide(cssSelector) {
-        document.querySelector(cssSelector).style.display = 'none';
+        document.querySelector(cssSelector).style.display = 'none';  //hide
     }
 }

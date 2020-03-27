@@ -36,17 +36,18 @@ body {
 }
 
 #canvas-top,
-#canvas-bottom {
+#canvas-bottom
+{
   z-index: 1;
 }
 
 #parent-top,
-#canvas-top {
+#canvas-top{
   top: 10px;
 }
 
 #parent-bottom,
-canvas-bottom {
+canvas-bottom{
   top: 508px;
   /* CANVAS SPECIFIC SIZE - SEE <CANVAS> TAG IN HTML */
   /*10 above top canvas + 10 space between canvases + 468 for top canvas height*/
@@ -136,7 +137,7 @@ li {
 
 /***************************************** UI *****************************************/
 
-.ui_player {
+.ui_player_name {
   font-family: arial, sans-serif;
   font-size: 14px;
   font-weight: bold;

@@ -297,9 +297,10 @@ class Game {
       this.notificationCenter);
 
     //load a menu managers for each screen since they need to function independently
-    this.menuManagerTop = new MyMenuManager("menu-top", this.notificationCenter, this.keyboardManager, 
+    this.menuManagerTop = new MyMenuManager("sdsdfsds", this.notificationCenter, this.keyboardManager, 
                             this.screenTop.parentDivID, this.screenTop.id);
-    this.menuManagerBottom = new MyMenuManager("menu-bottom", this.notificationCenter, this.keyboardManager, 
+
+    this.menuManagerBottom = new MyMenuManager("sdfsdferggr", this.notificationCenter, this.keyboardManager, 
                             this.screenBottom.parentDivID, this.screenBottom.id);
   }
 
