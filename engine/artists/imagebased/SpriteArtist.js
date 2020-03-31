@@ -70,6 +70,7 @@ class SpriteArtist extends Artist {
         //access the transform for the parent that this artist is attached to
         let transform = parent.transform2D;
 
+        activeCamera.context.globalAlpha = this.alpha;
         activeCamera.context.drawImage(this.spritesheet,
             this.sourcePosition.x, this.sourcePosition.y,
             this.sourceDimensions.x, this.sourceDimensions.y,
@@ -86,18 +87,11 @@ class SpriteArtist extends Artist {
         //apply the camera transformations to the scene (i.e. to enable camera zoom, pan, rotate)
         activeCamera.SetContext();
 
-        //apply the transformations coming from the attached parent
-        //attached.SetContext(activeCamera.context);
-
         activeCamera.context.translate(attached.transform2D.translation.x, attached.transform2D.translation.y);
         activeCamera.context.scale(attached.transform2D.scale.x * parent.transform2D.scale.x, 
             attached.transform2D.scale.y * parent.transform2D.scale.y);
-       // activeCamera.context.scale(, parent.transform2D.scale.y);
         activeCamera.context.rotate(attached.transform2D.rotationInRadians);
         activeCamera.context.translate(-attached.transform2D.translation.x, -attached.transform2D.translation.y);
-
-        //apply the sprite transformations to the sprite 
-       // parent.SetContext(activeCamera.context);
 
         activeCamera.context.translate(parent.transform2D.translation.x, parent.transform2D.translation.y);
         activeCamera.context.rotate(parent.transform2D.rotationInRadians);
@@ -105,7 +99,7 @@ class SpriteArtist extends Artist {
 
         //access the transform for the parent that this artist is attached to
         let transform = parent.transform2D;
-
+        activeCamera.context.globalAlpha = this.alpha;
         activeCamera.Context.drawImage(this.spritesheet,
             this.sourcePosition.X, this.sourcePosition.Y,
             this.sourceDimensions.X, this.sourceDimensions.Y,

@@ -75,38 +75,39 @@ class DebugDrawer {
     let yOffset = 15;
 
     let offsetMultiplier = 1; //used to move each text line down 1x yOffset from the previous line
-    this.DrawText(activeCamera.context, "Debug Information", x, y + offsetMultiplier * yOffset, "white");
+    this.DrawText(activeCamera, "Debug Information", x, y + offsetMultiplier * yOffset, "white");
     offsetMultiplier++;
 
-    this.DrawText(activeCamera.context, "-------------------------------", x, y + offsetMultiplier * yOffset, "white");
+    this.DrawText(activeCamera, "-------------------------------", x, y + offsetMultiplier * yOffset, "white");
     offsetMultiplier++;
 
-    this.DrawText(activeCamera.context, "FPS: " + gameTime.FPS + " ms", x, y + offsetMultiplier * yOffset, "white");
+    this.DrawText(activeCamera, "FPS: " + gameTime.FPS + " ms", x, y + offsetMultiplier * yOffset, "white");
     offsetMultiplier++;
 
-    this.DrawText(activeCamera.context, "Camera(ID): " + activeCamera.ID, x, y + offsetMultiplier * yOffset, "white");
+    this.DrawText(activeCamera, "Camera(ID): " + activeCamera.ID, x, y + offsetMultiplier * yOffset, "white");
     offsetMultiplier++;
 
-    this.DrawText(activeCamera.context, "Camera(origin): " + Vector2.Round(activeCamera.Transform2D.Origin, 2).ToString(), x, y + offsetMultiplier * yOffset, "white");
+    this.DrawText(activeCamera, "Camera(origin): " + Vector2.Round(activeCamera.Transform2D.Origin, 2).ToString(), x, y + offsetMultiplier * yOffset, "white");
     offsetMultiplier++;
 
-    this.DrawText(activeCamera.context, "Camera(scale): " + Vector2.Round(activeCamera.Transform2D.Scale, 2).ToString(), x, y + offsetMultiplier * yOffset, "white");
+    this.DrawText(activeCamera, "Camera(scale): " + Vector2.Round(activeCamera.Transform2D.Scale, 2).ToString(), x, y + offsetMultiplier * yOffset, "white");
     offsetMultiplier++;
 
-    this.DrawText(activeCamera.context, "Camera(BB): " + Rect.Round(activeCamera.Transform2D.BoundingBox, 2).ToString(), x, y + offsetMultiplier * yOffset, "red");
+    this.DrawText(activeCamera, "Camera(BB): " + Rect.Round(activeCamera.Transform2D.BoundingBox, 2).ToString(), x, y + offsetMultiplier * yOffset, "red");
     offsetMultiplier++;
 
     //add more debug info here...
   }
 
-  DrawText(context, text, x, y, color) {
-    context.save();
-    context.font = DebugDrawer.DEBUG_TEXT_FONT;
-    context.fillStyle = color;
-    context.textBaseline = "top";
-    context.globalAlpha = DebugDrawer.DEBUG_TEXT_ALPHA;
-    context.fillText(text, x, y, DebugDrawer.DEBUG_TEXT_MAXWIDTH);
-    context.restore();
+  DrawText(activeCamera, text, x, y, color) {
+    activeCamera.context.save();
+    activeCamera.SetContext();
+    activeCamera.context.font = DebugDrawer.DEBUG_TEXT_FONT;
+    activeCamera.context.fillStyle = color;
+    activeCamera.context.textBaseline = "top";
+    activeCamera.context.globalAlpha = DebugDrawer.DEBUG_TEXT_ALPHA;
+    activeCamera.context.fillText(text, x, y, DebugDrawer.DEBUG_TEXT_MAXWIDTH);
+    activeCamera.context.restore();
   }
 
   DrawActiveCameraBoundingBoxes(boundingBoxColor, activeCamera) {

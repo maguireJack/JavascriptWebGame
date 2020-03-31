@@ -11,14 +11,15 @@ const ActorType = Object.freeze({
   Background: 0,
   Platform: 1,
   Decorator: 2,
-  Pickup: 3,
-  Interactable: 4,
-  Bullet: 5,
-  Enemy: 6,
-  NPC: 7,
-  Player: 8,
-  Camera: 9,
-  HUD: 10
+  Architecture: 3,
+  Pickup: 4,
+  Interactable: 5,
+  Bullet: 6,
+  Enemy: 7,
+  NPC: 8,
+  Player: 9,
+  Camera: 10,
+  HUD: 11
   //add as many actor types as your game needs here BUT remember that the assigned number will determine drawn sort order...
 });
 

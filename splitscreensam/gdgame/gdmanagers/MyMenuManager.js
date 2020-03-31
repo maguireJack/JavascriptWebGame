@@ -60,8 +60,6 @@ class MyMenuManager {
         this.Hide("#" + this.menuID + " .menu");
         //show canvas where actual game is drawn
         this.Show("#" + this.menuID + " #" + this.canvasID);
-
-        this.Show("#player-top.ui_player_name");
     }
 
     ShowMain() {

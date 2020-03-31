@@ -489,7 +489,6 @@ class Game {
 
   LoadPickups() {
     let spriteArtist = new AnimatedSpriteArtist(
-      1,
       COLLECTIBLES_ANIMATION_DATA
     );
     spriteArtist.SetTake("gold_glint");
@@ -499,7 +498,7 @@ class Game {
       0,
       Vector2.One,
       Vector2.Zero,
-      spriteArtist.GetBoundingBoxByTakeName("gold_glint"),
+      spriteArtist.GetBoundingBoxDimensionsByTakeName("gold_glint"),
       0
     );
 
@@ -520,7 +519,7 @@ class Game {
   }
 
   LoadEnemies() {
-    let spriteArtist = new AnimatedSpriteArtist(1, ENEMY_ANIMATION_DATA);
+    let spriteArtist = new AnimatedSpriteArtist(ENEMY_ANIMATION_DATA);
     spriteArtist.SetTake("wasp_fly");
 
     let transform = new Transform2D(
@@ -528,7 +527,7 @@ class Game {
       0,
       new Vector2(1, 1),
       Vector2.Zero,
-      spriteArtist.GetBoundingBoxByTakeName("wasp_fly"),
+      spriteArtist.GetBoundingBoxDimensionsByTakeName("wasp_fly"),
       0
     );
 
@@ -554,7 +553,7 @@ class Game {
   }
 
   LoadPlayer() {
-    let spriteArtist = new AnimatedSpriteArtist(1, RUNNER_ANIMATION_DATA);
+    let spriteArtist = new AnimatedSpriteArtist(RUNNER_ANIMATION_DATA);
     spriteArtist.SetTake("run_right");
 
     let transform = new Transform2D(
@@ -562,7 +561,7 @@ class Game {
       0,
       Vector2.One,
       Vector2.Zero,
-      spriteArtist.GetBoundingBoxByTakeName("run_right"),
+      spriteArtist.GetBoundingBoxDimensionsByTakeName("run_right"),
       0
     );
 

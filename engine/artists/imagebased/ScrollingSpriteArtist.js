@@ -54,11 +54,8 @@ class ScrollingSpriteArtist extends Artist {
      * @param {Sprite} parent 
      * @memberof ScrollingSpriteArtist
      */
-    Update(gameTime, parent, activeCamera) {
-        this.UpdateHorizontalScrolling(parent, activeCamera);
-
-        //if we have also include vertical scrolling then we need to complete the method below
-        //this.UpdateVerticalScrolling(parent);
+    Update(gameTime, parent) {
+      
     }
 
     /**
@@ -97,6 +94,9 @@ class ScrollingSpriteArtist extends Artist {
      * @memberof ScrollingSpriteArtist
      */
     Draw(gameTime, parent, activeCamera) {
+
+        this.UpdateHorizontalScrolling(parent, activeCamera);
+
         //save whatever context settings were used before this (color, line, text styles)
         activeCamera.Context.save();
         
@@ -108,7 +108,7 @@ class ScrollingSpriteArtist extends Artist {
 
         //access the transform for the parent that this artist is attached to
         let transform = parent.Transform2D;
-
+        activeCamera.Context.globalAlpha = this.Alpha;  
         //add additional translation to create parallax effect across background layers (hint: use scroll speed multiplier from 0.01 - 0.2 - see MyConstants::BACKGROUND_DATA)
         activeCamera.Context.translate(-activeCamera.Transform2D.Translation.X * parent.ScrollSpeedMultiplier,
             -activeCamera.Transform2D.Translation.Y * parent.ScrollSpeedMultiplier);

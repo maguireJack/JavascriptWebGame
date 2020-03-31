@@ -219,8 +219,10 @@ class Game {
 
   LoadCanvases() {
     //get a handle to our context
-    this.screenTop = GDGraphics.GetScreenObject("parent-top", "canvas-top", "draws top game screen", new Vector2(0,0), Color.LightGreen);
-    this.screenBottom = GDGraphics.GetScreenObject("parent-bottom", "canvas-bottom", "draws top game screen", new Vector2(50,50), Color.DarkGreen);
+    this.screenTop = GDGraphics.GetScreenObject("parent-top", "canvas-top", "player-ui-top",
+                            new Vector2(0,0), Color.LightGreen);
+    this.screenBottom = GDGraphics.GetScreenObject("parent-bottom", "canvas-bottom", "player-ui-bottom",
+                            new Vector2(0, 1040), Color.LightGreen);
   }
 
   LoadCameras() {
@@ -313,12 +315,124 @@ class Game {
 
   //#region Load(Assets, Sprites)
   LoadAssets() {
+    //what could we use this for?
   }
 
   LoadSprites() {
-    this.LoadTanks();
+    //load the level walls etc
+    this.LoadMultipleSpritesFrom2DArray(LEVEL_ARCHITECTURE_DATA);
+
+    //load all the pickups
+    this.LoadMultipleSpritesFrom2DArray(LEVEL_PICKUPS_DATA);
+
+    //load players
+    this.LoadAnimatedSprite(PICKUP_COIN_ANIMATION_DATA, "spin");
+
+    //load players
+    this.LoadAnimatedPlayerSprite(PLAYER_ONE_ANIMATION_DATA, "walk");
+
+    //load players
+    this.LoadAnimatedPlayerSprite(PLAYER_TWO_ANIMATION_DATA, "walk");
   }
 
+  LoadAnimatedPlayerSprite(animatedObject, defaultTakeName){
+
+    let artist = new AnimatedSpriteArtist(animatedObject);
+    artist.SetTake(defaultTakeName);
+
+    let transform = new Transform2D(animatedObject.translation, 
+        animatedObject.rotation,
+          animatedObject.scale,
+            animatedObject.origin,
+              artist.GetBoundingBoxDimensionsByTakeName(defaultTakeName),
+                animatedObject.explodeBoundingBoxInPixels);
+
+    let sprite = new Sprite(animatedObject.id, 
+              animatedObject.actorType, 
+                animatedObject.collisionType, 
+                transform, artist, 
+                  animatedObject.statusType, 
+                    animatedObject.scrollSpeedMultiplier, 
+                      animatedObject.layerDepth);
+
+  /**************** NEED TO ADD A BEHAVIOR TO MAKE THIS A CONTROLLABLE CHARACTER ***********/
+  this.objectManager.Add(sprite); //add animated sprite                  
+
+  }
+
+  LoadAnimatedSprite(animatedObject, defaultTakeName){
+
+    let artist = new AnimatedSpriteArtist(animatedObject);
+    artist.SetTake(defaultTakeName);
+
+    let transform = new Transform2D(animatedObject.translation, 
+        animatedObject.rotation,
+          animatedObject.scale,
+            animatedObject.origin,
+              artist.GetBoundingBoxDimensionsByTakeName(defaultTakeName),
+                animatedObject.explodeBoundingBoxInPixels);
+
+    let sprite = new Sprite(animatedObject.id, 
+              animatedObject.actorType, 
+                animatedObject.collisionType, 
+                transform, artist, 
+                  animatedObject.statusType, 
+                    animatedObject.scrollSpeedMultiplier, 
+                      animatedObject.layerDepth);
+
+  this.objectManager.Add(sprite); //add animated sprite                  
+
+  }
+
+  LoadMultipleSpritesFrom2DArray(levelObject){
+    let maxRows = levelObject.levelLayoutArray.length;
+    let maxCols = levelObject.levelLayoutArray[0].length;
+    let blockWidth = levelObject.maxBlockWidth;
+    let blockHeight = levelObject.maxBlockHeight;
+    let transform = null;
+    let artist = null;
+    let sprite = null;
+
+    for(let row = 0; row < maxRows; row++)
+    {
+      for(let col = 0; col < maxCols; col++)
+      {
+          //we read a number from the array (and subtract 1 because 0 is our draw nothing value)
+          let levelSpritesNumber = levelObject.levelLayoutArray[row][col];
+
+          //if we get a value of 0 from the  we have nothing to draw
+          if(levelSpritesNumber != 0) 
+          {
+            transform = new Transform2D(new Vector2(col*blockWidth, row*blockHeight),
+              levelObject.levelSprites[levelSpritesNumber].rotation,
+                levelObject.levelSprites[levelSpritesNumber].scale,
+                  levelObject.levelSprites[levelSpritesNumber].origin,
+                    levelObject.levelSprites[levelSpritesNumber].sourceDimensions,
+                      levelObject.levelSprites[levelSpritesNumber].explodeBoundingBoxInPixels);
+
+            //remember we can also add an animated artist instead
+            artist = new SpriteArtist(levelObject.levelSprites[levelSpritesNumber].spriteSheet,
+              levelObject.levelSprites[levelSpritesNumber].sourcePosition, 
+                      levelObject.levelSprites[levelSpritesNumber].sourceDimensions, 
+                      levelObject.levelSprites[levelSpritesNumber].alpha);
+
+            sprite = new Sprite("block[" + row + "," + col + "]", 
+                        levelObject.levelSprites[levelSpritesNumber].actorType,
+                          levelObject.levelSprites[levelSpritesNumber].collisionType,
+                          transform, artist, 
+                          levelObject.levelSprites[levelSpritesNumber].statusType,
+                          levelObject.levelSprites[levelSpritesNumber].scrollSpeedMultiplier,
+                          levelObject.levelSprites[levelSpritesNumber].layerDepth);
+
+            //do we want to add behaviors?
+
+            this.objectManager.Add(sprite);
+          }
+      }
+    }
+  }
+
+  /*
   LoadTanks(){
     let sprite = document.getElementById("sprite_tank_body");
    
@@ -405,7 +519,9 @@ class Game {
     //#endregion
     this.objectManager.Add(this.tankSprite); //add tank body
   }
+  */
 }
+
 
 //instead of "load" we could use "DOMContentLoaded" but this would indicate load complete when the HTML and DOM is loaded and NOT when all styling, scripts and images have been downloaded
 window.addEventListener("load", event => {

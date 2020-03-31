@@ -20,9 +20,8 @@ class AnimatedSpriteArtist extends Artist {
     }
     //#endregion
 
-    constructor(alpha = 1, animationData) {
-        super(alpha);
-
+    constructor(animationData) {
+        super(animationData.alpha);
         this.animationData = animationData;
         this.frameRatePerSec = 0;
         this.frameIntervalInMs = 0;
@@ -46,12 +45,36 @@ class AnimatedSpriteArtist extends Artist {
                 this.endCellIndex = take.endCellIndex;
                 this.maxLoopCount = take.maxLoopCount;
                 this.currentCellIndex = this.startCellIndex;
+
+                if(this.animationData.takes[takeName].cellData.length == 0)
+                    throw "Error: TakeName(" + takeName + ") contains no animation cell data! Check the array set in constants file.";
+                
+                if(this.startCellIndex < 0)
+                    throw "Error: startCellIndex for takeName(" + takeName + ") is invalid! Check the value set in constants file.";
+                
+                if(this.endCellIndex < 0)
+                    throw "Error: endCellIndex for takeName(" + takeName + ") is invalid! Check the value set in constants file.";
+     
+                if(this.endCellIndex < this.startCellIndex)
+                    throw "Error: endCellIndex for takeName(" + takeName + ") cannot be less than startCellIndex! Check the values set in constants file.";
+               
+                if(this.endCellIndex - this.startCellIndex > this.animationData.takes[takeName].cellData.length)
+                    throw "Error: Either startCellIndex and/or endCellIndex for takeName(" + takeName + ") are invalid! Check the values set in constants file.";
+        
             }
         } else
-            throw takeName + " does not exist!";
+            throw "Error: " + takeName + " does not exist!";
     }
 
-    GetBoundingBoxByTakeName(takeName) {
+    /**
+     * Used to get the bounding box size for a user-specifed take name (e.g. walk).
+     * This method is normally called when we create the transform2D for the animated sprite
+     *
+     * @param {String} takeName
+     * @returns Vector2 representing the bounding box dimensions for the current take
+     * @memberof AnimatedSpriteArtist
+     */
+    GetBoundingBoxDimensionsByTakeName(takeName) {
         if (this.animationData.takes[takeName]) {
             return this.animationData.takes[takeName].boundingBoxDimensions;
         } else
@@ -95,7 +118,7 @@ class AnimatedSpriteArtist extends Artist {
      * @param {Sprite} parent
      * @memberof AnimatedSpriteArtist
      */
-    Update(gameTime, parent, camera) {
+    Update(gameTime, parent) {
         if (!this.paused) {
             this.timeSinceLastFrameInMs += Math.round(gameTime.ElapsedTimeInMs);
             if (this.timeSinceLastFrameInMs > this.frameIntervalInMs) {
@@ -121,7 +144,7 @@ class AnimatedSpriteArtist extends Artist {
 
         //apply the sprite transformations to the sprite 
         parent.SetContext(activeCamera.Context);
-  
+        activeCamera.Context.globalAlpha = this.Alpha;   
         let cell = this.cells[this.currentCellIndex];
         activeCamera.Context.drawImage(this.animationData.spriteSheet,
             cell.X, cell.Y,
@@ -178,8 +201,7 @@ class AnimatedSpriteArtist extends Artist {
     }
 
     Clone() {
-        return new AnimatedSpriteArtist(this.Alpha,
-            this.animationData); //a shallow copy is fine, since obj contains no sprite specific data (e.g. velocity, keys)
+        return new AnimatedSpriteArtist(this.animationData); //a shallow copy is fine, since obj contains no sprite specific data (e.g. velocity, keys)
     }
 
     ToString() {

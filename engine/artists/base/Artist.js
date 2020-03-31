@@ -28,7 +28,7 @@ class Artist {
      * @param {Sprite} parent (unused)
      * @memberof Artist
      */
-    Update(gameTime, parent, camera) {
+    Update(gameTime, parent) {
 
     }
 

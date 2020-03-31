@@ -17,13 +17,10 @@
             <div id="main" class="submenu" style="display: block;">
                 <h1>Split Screen Sam</h1>
                 <ul>
-                    <li><a href="javascript:void(0)" id="play_btn" class="button">Play!!!</a></li>
+                    <li><a href="javascript:void(0)" id="play_btn" class="button">Play</a></li>
                 </ul>
                 <ul>
                     <li><a href="javascript:void(0)" id="leaderboard_btn" class="button">Leaderboard</a></li>
-                </ul>
-                <ul>
-                    <li><a href="javascript:void(0)" id="shazam_btn" class="button">Shazam</a></li>
                 </ul>
                 <ul>
                     <li><a href="javascript:void(0)" id="options_btn" class="button">Options</a></li>
@@ -49,8 +46,8 @@
                 </ul>
             </div>
         </div> 
-        <canvas id='canvas-top'  width='864' height='468' style="display: none;"></canvas>
-        <div id="player-top" class="ui_player_name">Player 1</div>
+        <canvas id='canvas-top' class="game-canvas" width='840' height='346' style="display: none;"></canvas>
+        <div id="player-ui-top" class="ui-player">Player 1</div>
     </div>
 
      <!-- the enclosing div for the game menu and the canvas -->
@@ -90,8 +87,8 @@
                 </ul>
             </div>
         </div> 
-        <canvas id='canvas-bottom'  width='864' height='468' style="display: none;"></canvas>
-        <div id="player-bottom" class="ui_player_name">Player 2</div>
+        <canvas id='canvas-bottom' class="game-canvas" width='840' height='346' style="display: none;"></canvas>
+        <div id="player-ui-bottom" class="ui-player">Player 2</div>
     </div>
 
 
@@ -145,11 +142,22 @@
     <!--------------------------------------------GAME SPECIFIC ASSETS----------------------------------------------------->
 
     <!-- Add sound and image assets here -->
-    <!-- <img id="guard_walk" src="assets/images/guard1_walk.png" style="display:none;" /> -->
-    <!-- Images -->
+    <!-- 
+    <img id="guard_walk" src="assets/images/guard1_walk.png" style="display:none;" />
     <img id="sprite_tank_track" src="assets/images/Track_1_A.png" style="display:none;" />
     <img id="sprite_tank_body" src="assets/images/Hull_01.png" style="display:none;" />
     <img id="sprite_tank_gun" src="assets/images/Gun_01.png" style="display:none;" />
+    -->
+
+    <!-- Images -->
+    <img id="wall_architecture_green" src="assets/images/walls/wall_architecture_green.png" style="display:none;" />
+    <img id="pickups" src="assets/images/pickup/pickups.png" style="display:none;" />
+    <img id="spinning_coin_pickup" src="assets/images/pickup/spinning_coin_pickup.png" style="display:none;" />
+ 
+
+    <img id="player_one_animations" src="assets/images/characters/player_one_animations.png" style="display:none;" />
+    <img id="player_two_animations" src="assets/images/characters/player_two_animations.png" style="display:none;" />
+
 
 
     <!--------------------------------------------GAME SPECIFIC CODE----------------------------------------------------->

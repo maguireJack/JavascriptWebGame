@@ -67,7 +67,7 @@ class GDGraphics{
      * @returns Object of canvas related data.
      * @memberof GDGraphics
      */
-    static GetScreenObject(parentDivID, canvasID, description, topLeft, clearScreenColor){
+    static GetScreenObject(parentDivID, canvasID, uiID, topLeft, clearScreenColor){
         //get handles
         let cvs_ref = document.getElementById(canvasID);
         let ctx_ref = cvs_ref.getContext("2d");
@@ -79,7 +79,7 @@ class GDGraphics{
           id:            canvasID,
           //attrib name: variable name (dont confuse the two, or change attribute name to something like "parent")
           parentDivID:   parentDivID,
-          description:   description,
+          uiID:          uiID,
           cvs:           cvs_ref,
           ctx:           ctx_ref,
           width:         cvs_ref.clientWidth,

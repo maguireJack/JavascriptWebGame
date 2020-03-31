@@ -101,8 +101,7 @@ class Sprite extends Actor2D {
   //#region Equals, Clone, ToString
   Equals(other) {
     if (other == null || other == undefined || !other instanceof Sprite)
-      throw "Error: One or more objects is null, undefined, or not type " +
-        this.constructor.name;
+      throw "Error: One or more objects is null, undefined, or not type " + this.constructor.name;
 
     //both point to the same object in RAM i.e. a shallow copy
     if (this == other) return true;

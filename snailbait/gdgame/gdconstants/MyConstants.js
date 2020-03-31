@@ -16,6 +16,7 @@ const RUNNER_JUMP_VELOCITY = 0.6;
 const RUNNER_ANIMATION_DATA = Object.freeze({
   id: "runner_animation_data",
   spriteSheet: document.getElementById("snailbait_sprite_sheet"),
+  alpha: 1,
   takes: {  
     "run_right" :  {
       fps: 12,
@@ -63,6 +64,7 @@ const RUNNER_ANIMATION_DATA = Object.freeze({
 const ENEMY_ANIMATION_DATA = Object.freeze({
   id: "enemy_animation_data",
   spriteSheet: document.getElementById("snailbait_sprite_sheet"),
+  alpha: 1,
   takes: {  
     "wasp_fly" :  {
       fps: 16,
@@ -84,6 +86,7 @@ const ENEMY_ANIMATION_DATA = Object.freeze({
 const COLLECTIBLES_ANIMATION_DATA = Object.freeze({
   id: "collectibles_animation_data",
   spriteSheet: document.getElementById("snailbait_sprite_sheet"),
+  alpha: 1,
   takes: {  
     "sapphire_glint" :  {
       fps: 6,

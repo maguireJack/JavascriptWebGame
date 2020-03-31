@@ -50,7 +50,7 @@ class RectangleSpriteArtist extends Artist {
      * @param {Camera2D} activeCamera 
      * @memberof RectangleSpriteArtist
      */
-    Update(gameTime, parent, camera) {
+    Update(gameTime, parent) {
 
     }
 

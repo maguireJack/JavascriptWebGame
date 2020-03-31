@@ -36,7 +36,7 @@ class TextSpriteArtist extends Artist{
         this.maxWidth = maxWidth;
     }
 
-     Update(gameTime, parent, camera){
+     Update(gameTime, parent){
         //does it cycle between fonts?
         //does its align change over time?
     }
@@ -52,10 +52,9 @@ class TextSpriteArtist extends Artist{
 
         //access the transform for the parent that this artist is attached to
         let transform = parent.Transform2D;
-        
-        activeCamera.Context.fillStyle = this.fillStyle;  //ColorParameters?
+        activeCamera.Context.globalAlpha = this.Alpha;  
+        activeCamera.Context.fillStyle = this.fillStyle;  
         this.textParameters.Draw(activeCamera.Context);
-        activeCamera.Context.globalAlpha = this.Alpha; //ColorParameters?
         activeCamera.Context.fillText(this.text, 
             transform.Translation.X - transform.Origin.X, 
             transform.Translation.Y - transform.Origin.Y, 
@@ -77,7 +76,7 @@ class TextSpriteArtist extends Artist{
 
         //access the transform for the parent that this artist is attached to
         let transform = parent.Transform2D;
-        
+        activeCamera.Context.globalAlpha = this.Alpha;        
         activeCamera.Context.fillStyle = this.fillStyle;  //ColorParameters?
         this.textParameters.Draw(activeCamera.Context);
         activeCamera.Context.globalAlpha = this.Alpha; //ColorParameters?

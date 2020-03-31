@@ -1,7 +1,8 @@
 class MyUIManager {
 
-    constructor(id, notificationCenter, keyboardManager) {
+    constructor(id, uiID, notificationCenter, keyboardManager) {
         this.id = id;
+        this.uiID = uiID;
         this.notificationCenter = notificationCenter;
         this.keyboardManager = keyboardManager;
         
