@@ -1,7 +1,19 @@
-.parent,
+#ui-demo.ui-component{
+  position: relative;
+  top: 0px;
+  left: 0px;
+  width: 140px;     /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
+  height: 20px;    /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
+  border: 1px solid black;
+  color:rgb(0, 0, 0);
+  text-align: center;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.301);
+}
+
+.canvas-container,
 .game-canvas
  {
-  position: fixed;
+  position: absolute;
   top: 10px;
   left: 50%;
   width: 640px;     /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
@@ -17,9 +29,9 @@
 }
 
 #ui-score.ui-component{
-  position: relative;
-  top: 10px;
-  left: 10px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
   width: 140px;     /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
   height: 20px;    /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
   border: 1px solid black;
@@ -29,9 +41,9 @@
 }
 
 #ui-timer.ui-component{
-  position: relative;
-  top: 30px;
-  left: 10px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
   width: 140px;     /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
   height: 20px;    /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
   border: 1px solid black;
@@ -43,12 +55,10 @@
 
 @keyframes slide {
   0% {
-    transform: scale(2);
-    transform: rotate(-15deg);
+    transform: scale(-2) rotate(-15deg);
   }
 
   100% {
-    transform: scale(4);
-    transform: rotate(15deg);
+    transform: scale(2) rotate(15deg);
   }
 }

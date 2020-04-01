@@ -7,7 +7,12 @@ function RunDemos(){
 }
 
 function Demo1(){
-    //to do....
+    let cvs = document.querySelector("#canvas-top.game-canvas");
+    let ctx = cvs.getContext("2d");
+
+    ctx.beginPath();
+    ctx.fillStyle = "red";
+    ctx.fillRect(50, 50, 200, 200);
 }
 
 function Demo2(){
