@@ -309,7 +309,8 @@ class Game {
 
   LoadDebug() {
     this.debugDrawer = new DebugDrawer("shows debug info", StatusType.IsDrawn,
-      this.objectManager, this.cameraManager, this.notificationCenter);
+      this.objectManager, this.cameraManager, 
+      this.notificationCenter, DebugDrawType.ShowSpriteBoundingBoxes);
   }
   //#endregion
 

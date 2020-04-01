@@ -5,25 +5,39 @@
  * @class DebugDrawer
  */
 
+ //allows us to turn certain debug information off (e.g. turn text in TLH of the window off)
+ const DebugDrawType = Object.freeze({
+  //notice that the values are all powers of 2 values. why? so that we can Bitwise-OR them together
+  Off:                      0,
+  ShowDebugText:            1,
+  ShowSpriteBoundingBoxes:  2,
+  ShowCameraBoundingBox:    4
+});
+
 class DebugDrawer {
-  //#region Fields
-  id = "";
+  //#region Statics
   static SPRITE_BOUNDING_BOX_COLOR = "red";
   static CAMERA_BOUNDING_BOX_COLOR = "yellow";
   static DEBUG_TEXT_FONT = "10px Arial";
   static DEBUG_TEXT_MAXWIDTH = 200;
+  //#endregion
 
+  //#region Fields
+  id = "";
   //#endregion
 
   //#region Properties
   //#endregion
 
-  constructor(id, statusType, objectManager, cameraManager, notificationCenter) {
+  constructor(id, statusType, objectManager, 
+    cameraManager, notificationCenter, 
+          debugDrawType = DebugDrawType.ShowSpriteBoundingBoxes | DebugDrawType.ShowCameraBoundingBox | DebugDrawType.ShowDebugText) {
     this.id = id;
     this.statusType = statusType;
     this.objectManager = objectManager;
     this.cameraManager = cameraManager;
     this.notificationCenter = notificationCenter;
+    this.debugDrawType = debugDrawType;
   }
 
   //#region Notification Handling
@@ -57,14 +71,18 @@ class DebugDrawer {
   Draw(gameTime) {
     if ((this.statusType & StatusType.IsDrawn) != 0) {
 
-      //draw the bounfing boxes for the in-view (i.e. inside the bounding box of the active camera) sprites
-      this.DrawCollidableSpriteBoundingBoxes(DebugDrawer.SPRITE_BOUNDING_BOX_COLOR);
+      //draw the bounding boxes for the in-view (i.e. inside the bounding box of the active camera) sprites
+      if((this.debugDrawType & DebugDrawType.ShowSpriteBoundingBoxes) != 0)
+        this.DrawCollidableSpriteBoundingBoxes(DebugDrawer.SPRITE_BOUNDING_BOX_COLOR);
+
       for (let i = 0; i < this.cameraManager.Cameras.length; i++) {
         //draws the collision surface (i.e. Transform2D.BoundingBox) around the active camera
-        this.DrawActiveCameraBoundingBoxes(DebugDrawer.CAMERA_BOUNDING_BOX_COLOR, this.cameraManager.Cameras[i]);
+        if((this.debugDrawType & DebugDrawType.ShowCameraBoundingBox) != 0)
+          this.DrawActiveCameraBoundingBoxes(DebugDrawer.CAMERA_BOUNDING_BOX_COLOR, this.cameraManager.Cameras[i]);
 
         //draws any additional information to screen
-        this.DrawDebugText(gameTime, this.cameraManager.Cameras[i]);
+        if((this.debugDrawType & DebugDrawType.ShowDebugText) != 0)
+          this.DrawDebugText(gameTime, this.cameraManager.Cameras[i]);
       }
     }
   }
