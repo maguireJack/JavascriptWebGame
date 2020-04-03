@@ -7,6 +7,8 @@ Notes:
 
 Exercises: 
 - Add PICKUP_DECORATOR_ANIMATION_DATA and add animation
+- Discuss coin pickup animations
+- Discuss SamPlayerBehavior, UIManager, ThirdPersonCameraBehavior
 
 To Do (Split Screen Sam):
 - Add CD/CR against architecture
