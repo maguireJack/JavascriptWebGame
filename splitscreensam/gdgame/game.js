@@ -359,7 +359,7 @@ class Game {
     this.menuManagerBottom = new MyMenuManager("menu-bottom", this.notificationCenter, this.keyboardManager, 
                             this.screenBottom.parentDivID, this.screenBottom.id);
 
-    //audio - step 2 - instanciate the sound manager with the array of cues
+    //audio - step 3 - instanciate the sound manager with the array of cues
     this.soundManager = new SoundManager(
       audioCueArray, 
       this.notificationCenter);
@@ -387,14 +387,16 @@ class Game {
     this.LoadMultipleSpritesFrom2DArray(LEVEL_PICKUPS_DATA);
 
     //load players
-    this.LoadAnimatedSprite(PICKUP_COIN_ANIMATION_DATA, "spin");
+    this.LoadAnimatedSprite(PICKUP_COIN_ANIMATION_DATA);
 
     //load players
     this.LoadAnimatedPlayerSprite(PLAYER_ONE_DATA);
 
     //load players
     this.LoadAnimatedPlayerSprite(PLAYER_TWO_DATA);
-  
+
+    //PICKUP_COIN_DECORATOR_ANIMATION_DATA
+    this.LoadAnimatedSprite(PICKUP_COIN_DECORATOR_ANIMATION_DATA);
   }
 
   LoadAnimatedPlayerSprite(playerObject){
@@ -436,16 +438,16 @@ class Game {
 
   }
 
-  LoadAnimatedSprite(animatedObject, defaultTakeName){
+  LoadAnimatedSprite(animatedObject){
 
     let artist = new AnimatedSpriteArtist(animatedObject);
-    artist.SetTake(defaultTakeName);
+    artist.SetTake(animatedObject.defaultTakeName);
 
     let transform = new Transform2D(animatedObject.translation, 
         animatedObject.rotation,
           animatedObject.scale,
             animatedObject.origin,
-              artist.GetBoundingBoxDimensionsByTakeName(defaultTakeName),
+              artist.GetBoundingBoxDimensionsByTakeName(animatedObject.defaultTakeName),
                 animatedObject.explodeBoundingBoxInPixels);
 
     let sprite = new Sprite(animatedObject.id, 

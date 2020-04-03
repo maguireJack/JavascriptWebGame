@@ -431,6 +431,7 @@ const PLAYER_TWO_DATA = Object.freeze({
 const PICKUP_COIN_ANIMATION_DATA = Object.freeze({
   id: "animated coin",
   spriteSheet: document.getElementById("spinning_coin_pickup"),
+  defaultTakeName: "spin",
   translation: new Vector2(510, 126),
   rotation: 0,
   scale: new Vector2(0.15, 0.15),
@@ -466,7 +467,58 @@ const PICKUP_COIN_ANIMATION_DATA = Object.freeze({
 //#endregion
 
 //#region SPRITE DATA - ANIMATION DECORATORS (fire, pickup)
+//pickup_collision_animation
 // PICKUP_DECORATOR_ANIMATION_DATA;
+
+const PICKUP_COIN_DECORATOR_ANIMATION_DATA = Object.freeze({
+  id: "pickup_collision_animation",
+  spriteSheet: document.getElementById("pickup_collision_animation"),
+  defaultTakeName: "explode",
+  translation: new Vector2(200, 200),
+  rotation: 0,
+  scale: new Vector2(0.5, 0.3),
+  origin: new Vector2(0, 0),
+  actorType: ActorType.DecoratorAnimated,
+  collisionType: CollisionType.NotCollidable,
+  statusType: StatusType.IsDrawn | StatusType.IsUpdated,
+  scrollSpeedMultiplier: 1,
+  layerDepth: 0,
+  alpha: 1,
+  /**********************/
+  explodeBoundingBoxInPixels: 0,
+  lookDirection: Vector2.Zero, //straight-down according to source image
+  moveKeys: null,
+  moveSpeed: 0,
+  rotateSpeed: 0,
+  gravityType: GravityType.Off, //top-down so no gravity
+  frictionType: FrictionType.Off, 
+  maximumSpeed: 0,
+  takes: {  
+    "explode" :  {
+      fps: 40,
+      leadInDelayMs: 0,
+      leadOutDelayMs: 0,
+      maxLoopCount:   1, //-1 = always, 0 = run once, N = run N times
+      startCellIndex: 0,
+      endCellIndex: 8,
+      boundingBoxDimensions: new Vector2(157, 157), 
+      cellData: [
+        new Rect(0, 0, 157, 157),
+        new Rect(157, 0, 157, 157),
+        new Rect(314, 0, 157, 157),
+        new Rect(471, 0, 157, 157),
+        new Rect(628, 0, 157, 157),
+        new Rect(785, 0, 157, 157),
+        new Rect(942, 0, 157, 157),
+        new Rect(1099, 0, 157, 157),
+        new Rect(1256, 0, 157, 157)
+      ]
+    }
+  }
+});
+
+
+
 //complete object to load the animation for pickup of coins...
 //#endregion
 

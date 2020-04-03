@@ -61,7 +61,7 @@ class SamPlayerBehavior {
     CheckCollisions(parent) {
 
       //bug - temporarily remove because of changes being made to bounding boxes
-      //this.HandleArchitectureCollision(parent);
+     // this.HandleArchitectureCollision(parent);
 
       this.HandleEnemyCollision(parent);
       this.HandlePickupCollision(parent);
