@@ -60,8 +60,7 @@ class SamPlayerBehavior {
         let sprite = sprites[i];
   
         //we can use simple collision check here (i.e. Intersects) because dont need to think was it top, bottom, left, or right
-        if (parent.Transform2D.BoundingBox.Intersects(sprite.Transform2D.BoundingBox)
-        ) {
+        if (parent.Transform2D.BoundingBox.Intersects(sprite.Transform2D.BoundingBox)) {
           //your code - play sound, remove enemy, add health e.g. you could write code like this...
           // NotificationCenter.Notify(
           //   new Notification(
