@@ -219,7 +219,7 @@ const LEVEL_PICKUPS_DATA = Object.freeze({
       rotation: 0,
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
-      actorType: ActorType.Architecture,
+      actorType: ActorType.Pickup,
       collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
@@ -234,7 +234,7 @@ const LEVEL_PICKUPS_DATA = Object.freeze({
       rotation: 0,
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
-      actorType: ActorType.Architecture,
+      actorType: ActorType.Pickup,
       collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
@@ -249,7 +249,7 @@ const LEVEL_PICKUPS_DATA = Object.freeze({
       rotation: 0,
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
-      actorType: ActorType.Architecture,
+      actorType: ActorType.Pickup,
       collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
@@ -264,7 +264,7 @@ const LEVEL_PICKUPS_DATA = Object.freeze({
       rotation: 0,
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
-      actorType: ActorType.Architecture,
+      actorType: ActorType.Pickup,
       collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
@@ -314,24 +314,27 @@ const LEVEL_PICKUPS_DATA = Object.freeze({
 });
 
 
-const PLAYER_ONE_ANIMATION_DATA = Object.freeze({
+const PLAYER_ONE_DATA = Object.freeze({
   id: "player 1",
   spriteSheet: document.getElementById("player_one_animations"),
+  defaultTakeName: "walk",
   translation: new Vector2(420, 85),
-  rotation: 0,
+  rotation: 45,
   scale: new Vector2(0.5, 0.5),
   origin: new Vector2(0, 0),
   actorType: ActorType.Player,
   collisionType: CollisionType.Collidable,
   statusType: StatusType.IsDrawn | StatusType.IsUpdated,
   scrollSpeedMultiplier: 1,
-  layerDepth: 0,
+  layerDepth: 1,
   explodeBoundingBoxInPixels: 0,
   alpha: 1,
   lookDirection: new Vector2(0, 1), //straight-down according to source image
-  moveKeyS: [Keys.W, Keys.S, Keys.A, Keys.D],
+  moveKeys: [Keys.W, Keys.S, Keys.A, Keys.D],
   moveSpeed: 0.15,
   rotateSpeed: 0.004,
+  frictionType: FrictionType.Off, //top-down so no gravity
+  maximumSpeed: 5,
   takes: {  
     "walk" :  {
       fps: 6,
@@ -348,7 +351,7 @@ const PLAYER_ONE_ANIMATION_DATA = Object.freeze({
       ]
     },
     "idle" :  {
-      fps: 10,
+      fps: 1,
       leadInDelayMs: 0,
       leadOutDelayMs: 0,
       maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
@@ -362,9 +365,10 @@ const PLAYER_ONE_ANIMATION_DATA = Object.freeze({
   }
 });
 
-const PLAYER_TWO_ANIMATION_DATA = Object.freeze({
+const PLAYER_TWO_DATA = Object.freeze({
   id: "player 2",
   spriteSheet: document.getElementById("player_two_animations"),
+  defaultTakeName: "walk",
   translation: new Vector2(334, 1175),
   rotation: 0,
   scale: new Vector2(0.5, 0.5),
@@ -377,9 +381,11 @@ const PLAYER_TWO_ANIMATION_DATA = Object.freeze({
   explodeBoundingBoxInPixels: 0,
   alpha: 1,
   lookDirection: new Vector2(0, 1), //straight-down according to source image
-  moveKeyS: [Keys.W, Keys.S, Keys.A, Keys.D],
+  moveKeys: [Keys.I, Keys.K, Keys.J, Keys.L],
   moveSpeed: 0.15,
   rotateSpeed: 0.004,
+  frictionType: FrictionType.Off, //top-down so no gravity
+  maximumSpeed: 5,
   takes: {  
     "walk" :  {
       fps: 6,

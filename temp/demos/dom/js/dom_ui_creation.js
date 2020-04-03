@@ -1,4 +1,4 @@
-RunDemos();
+//RunDemos();
 
 function RunDemos(){
     Demo1();
@@ -13,6 +13,9 @@ function Demo1(){
     ctx.beginPath();
     ctx.fillStyle = "red";
     ctx.fillRect(50, 50, 200, 200);
+
+    let timerDiv = document.querySelector("#ui-timer.ui-component");
+    timerDiv.innerText = "32";
 }
 
 function Demo2(){

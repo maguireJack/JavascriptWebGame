@@ -1,5 +1,9 @@
 /**
  * Represents a drawn player character or non-player character within a game with position information (e.g. player, enemy)
+ * and, most importantly, a physics Body instance which can be used to apply gravity and friction.
+ * Use this class when you create a PC or Non-PC that needs to include these forces.
+ * See PlayerBehavior classes in each game for sample code showing how the body is used.
+ * 
  * @author
  * @version 1.0
  * @class PlayerSprite

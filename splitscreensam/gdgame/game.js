@@ -330,34 +330,49 @@ class Game {
     this.LoadAnimatedSprite(PICKUP_COIN_ANIMATION_DATA, "spin");
 
     //load players
-    this.LoadAnimatedPlayerSprite(PLAYER_ONE_ANIMATION_DATA, "walk");
+    this.LoadAnimatedPlayerSprite(PLAYER_ONE_DATA);
 
     //load players
-    this.LoadAnimatedPlayerSprite(PLAYER_TWO_ANIMATION_DATA, "walk");
+    this.LoadAnimatedPlayerSprite(PLAYER_TWO_DATA);
+  
   }
 
-  LoadAnimatedPlayerSprite(animatedObject, defaultTakeName){
+  LoadAnimatedPlayerSprite(playerObject){
 
-    let artist = new AnimatedSpriteArtist(animatedObject);
-    artist.SetTake(defaultTakeName);
+    let artist = new AnimatedSpriteArtist(playerObject);
+    artist.SetTake(playerObject.defaultTakeName);
 
-    let transform = new Transform2D(animatedObject.translation, 
-        animatedObject.rotation,
-          animatedObject.scale,
-            animatedObject.origin,
-              artist.GetBoundingBoxDimensionsByTakeName(defaultTakeName),
-                animatedObject.explodeBoundingBoxInPixels);
+    let transform = new Transform2D(playerObject.translation, 
+        playerObject.rotation,
+          playerObject.scale,
+            playerObject.origin,
+              artist.GetBoundingBoxDimensionsByTakeName(playerObject.defaultTakeName),
+                playerObject.explodeBoundingBoxInPixels);
 
-    let sprite = new Sprite(animatedObject.id, 
-              animatedObject.actorType, 
-                animatedObject.collisionType, 
+    let playerSprite = new MoveableSprite(playerObject.id, 
+              playerObject.actorType, 
+                playerObject.collisionType, 
                 transform, artist, 
-                  animatedObject.statusType, 
-                    animatedObject.scrollSpeedMultiplier, 
-                      animatedObject.layerDepth);
+                  playerObject.statusType, 
+                    playerObject.scrollSpeedMultiplier, 
+                      playerObject.layerDepth);
 
-  /**************** NEED TO ADD A BEHAVIOR TO MAKE THIS A CONTROLLABLE CHARACTER ***********/
-  this.objectManager.Add(sprite); //add animated sprite                  
+    /**************** NEED TO FRICTION TO MAKE THIS CHARACTER MOVE IN A MORE BELIEVEABLE MANNER ***********/
+    playerSprite.Body.MaximumSpeed = playerObject.maximumSpeed;
+    playerSprite.Body.Friction = playerObject.frictionType;
+    playerSprite.Body.Gravity = GravityType.Off;   //top-down, so no gravity in +Y direction
+
+    /**************** NEED TO ADD A BEHAVIOR TO MAKE THIS A CONTROLLABLE CHARACTER ***********/
+    playerSprite.AttachBehavior(
+      new SamPlayerBehavior(
+        this.keyboardManager,
+        this.objectManager,
+        playerObject.moveKeys,
+        playerObject.lookDirection,
+        playerObject.moveSpeed,
+        playerObject.rotateSpeed));
+
+  this.objectManager.Add(playerSprite); //add animated player sprite                  
 
   }
 

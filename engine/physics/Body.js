@@ -10,6 +10,7 @@ const FrictionType = Object.freeze({
     High: 0.5
 });
 const GravityType = Object.freeze({
+    Off: 0,
     Weak: 0.2,
     Normal: 0.4,
     Strong: 0.7
@@ -53,6 +54,14 @@ class Body {
         this.velocityX *= this.friction;
     }
 
+    ApplyFrictionX() {
+        this.velocityX *= this.friction;
+    }
+
+    ApplyFrictionY() {
+        this.velocityY *= this.friction;
+    }
+
     SetVelocityX(velocityX) {
         if (velocityX <= this.maximumSpeed)
             this.velocityX = velocityX;
@@ -70,10 +79,6 @@ class Body {
     AddVelocityY(deltaVelocityY) {
         this.velocityY += deltaVelocityY;
     }
-
-
-
-
 
     //#region Common Methods - Equals, ToString, Clone
     Equals(other) {

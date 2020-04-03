@@ -1,7 +1,7 @@
 #ui-demo.ui-component{
-  position: relative;
-  top: 0px;
-  left: 0px;
+  position: static; 
+  top: 200px;
+  left: 50px;
   width: 140px;     /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
   height: 20px;    /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
   border: 1px solid black;
@@ -30,8 +30,8 @@
 
 #ui-score.ui-component{
   position: absolute;
-  top: 0px;
-  left: 0px;
+  bottom: 0px;
+  right: 0px;
   width: 140px;     /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
   height: 20px;    /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
   border: 1px solid black;
