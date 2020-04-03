@@ -38,17 +38,31 @@ class SamPlayerBehavior {
   
     HandleMove(gameTime, parent) {
       //if left or right key pressed and player is on the ground then add/remove move velocity
+      
+      //up/down
       if (this.keyboardManager.IsKeyDown(this.moveKeys[0])) {
-        parent.Body.AddVelocityX(-this.moveSpeed * gameTime.ElapsedTimeInMs);
+        parent.Body.AddVelocityY(-this.moveSpeed * gameTime.ElapsedTimeInMs);
         parent.Artist.SetTake("walk");
       } else if (this.keyboardManager.IsKeyDown(this.moveKeys[1])) {
-        parent.Body.AddVelocityX(this.moveSpeed * gameTime.ElapsedTimeInMs);
+        parent.Body.AddVelocityY(this.moveSpeed * gameTime.ElapsedTimeInMs);
         parent.Artist.SetTake("walk");
+      }
+
+      //left/right
+      if (this.keyboardManager.IsKeyDown(this.moveKeys[2])) {
+        parent.Body.AddVelocityX(-this.moveSpeed * gameTime.ElapsedTimeInMs);
+        parent.Artist.SetTake("idle");
+      } else if (this.keyboardManager.IsKeyDown(this.moveKeys[3])) {
+        parent.Body.AddVelocityX(this.moveSpeed * gameTime.ElapsedTimeInMs);
+        parent.Artist.SetTake("idle");
       }
     }
   
     CheckCollisions(parent) {
-   //   this.HandleArchitectureCollision(parent);
+
+      //bug - temporarily remove because of changes being made to bounding boxes
+      //this.HandleArchitectureCollision(parent);
+
       this.HandleEnemyCollision(parent);
       this.HandlePickupCollision(parent);
     }
@@ -61,15 +75,8 @@ class SamPlayerBehavior {
   
         //we can use simple collision check here (i.e. Intersects) because dont need to think was it top, bottom, left, or right
         if (parent.Transform2D.BoundingBox.Intersects(sprite.Transform2D.BoundingBox)) {
+
           //your code - play sound, remove enemy, add health e.g. you could write code like this...
-          // NotificationCenter.Notify(
-          //   new Notification(
-          //     NotificationType.GameState,
-          //     NotificationAction.Pickup,
-          //     [5, "mega", "key"]
-          //   )
-          // );
-  
           //remove coin
           NotificationCenter.Notify(
             new Notification(

@@ -1,5 +1,57 @@
 //#region Development Diary
 /*
+Week 11
+------
+Notes:
+- None
+
+Exercises: 
+- Add PICKUP_DECORATOR_ANIMATION_DATA and add animation
+
+To Do (Split Screen Sam):
+- Add CD/CR against architecture
+- Add animation on coin pickup
+- Add HUD and show changes to health, ammo, coins
+- Add ThirdPersonCameraBehavior to move with target player
+- Add UIManager
+- Rotate BB
+- Update children position apart from passing reference to parent translation?
+- Add toggleMenuKey functionality to MyMenuManager
+- Rotate, NON-AABB, BSP, Camera, Dynamic canvas, draw across canvas, multi-player menu
+
+To Do (Snailbait):
+- Wrap MyConstants.js and Constants.js in a class to set scope and no longer pollute global project space.
+- Add booleans to DebugDrawer to enable/disable drawing of BBs for objects and camera, and drawing of debug text.
+- Improve SoundManager to block load until all sound resources have loaded.
+- Add pause/unpause to SoundManager when we lose/gain window focus.
+- Add code to calculate TextSpriteArtist bounding box size based on text used.
+- Fix background UpdateHorizontalScrolling().
+- Add countdown toast when we gain window focus.
+- Add check for "P" key in MyMenuManager::Update() to show/hide menu
+- Improve KeyboardManager to add IsFirstKeyPress() method.
+- Complete menu demo.
+- Continue adding documentation to all classes and methods.
+
+Done:
+- Replaced get/set with direct access in high frequency draw code
+- Package canvas data
+
+Bugs (Split Screen Sam):
+- BB on players is not correctly set
+- Player 2 is not responding to J/L keys
+- Skew on gun rotation
+- Camera culling has been disabled
+- Camera bounding boxes are incorrect
+- DebugDrawer text in bottom window (ctx.translate()) is not in the correct location
+
+Bugs (Snailbait):
+- Camera bounding box is not updating on camera scale, rotate.
+- When we scroll too far L/R then scrolling stops - see ScrollingSpriteArtist.
+- When we use background scroll <- and -> then collisions are not tested and responded to
+- When player and platform above are separated by only player height?
+*/
+
+/*
 Week 10
 ------
 Notes:
@@ -366,7 +418,7 @@ class Game {
     /**************** NEED TO FRICTION TO MAKE THIS CHARACTER MOVE IN A MORE BELIEVEABLE MANNER ***********/
     playerSprite.Body.MaximumSpeed = playerObject.maximumSpeed;
     playerSprite.Body.Friction = playerObject.frictionType;
-    playerSprite.Body.Gravity = GravityType.Off;   //top-down, so no gravity in +Y direction
+    playerSprite.Body.Gravity = playerObject.gravityType;   //top-down, so no gravity in +Y direction
 
     /**************** NEED TO ADD A BEHAVIOR TO MAKE THIS A CONTROLLABLE CHARACTER ***********/
     playerSprite.AttachBehavior(

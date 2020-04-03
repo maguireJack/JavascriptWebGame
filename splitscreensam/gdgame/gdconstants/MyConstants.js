@@ -1,4 +1,14 @@
-//#region LEVEL LAYOUT FROM ARRAY
+//#region AUDIO DATA
+//audio - step 2 - create an array with all cues
+//note the name we use below MUST be identical to id used in HTML when loading the sound asset
+const audioCueArray = [
+  new AudioCue("coin_pickup", AudioType.Pickup, 1, 1, false, 0)
+  //add more cues here but make sure you load in the HTML!
+];
+//See Game::LoadAllOtherManagers() for SoundManager instanciation
+//#endregion
+
+//#region SPRITE DATA - LEVEL LAYOUT
 
 /*
 spriteSheet:                handle to the sprite sheet resource from id specfied in HTML file
@@ -310,13 +320,13 @@ const LEVEL_PICKUPS_DATA = Object.freeze({
 });
 //#endregion
 
-//#region PLAYER DATA
+//#region SPRITE DATA - PLAYER
 const PLAYER_ONE_DATA = Object.freeze({
   id: "player 1",
   spriteSheet: document.getElementById("player_one_animations"),
   defaultTakeName: "walk",
   translation: new Vector2(420, 85),
-  rotation: 45,
+  rotation: 0,
   scale: new Vector2(0.5, 0.5),
   origin: new Vector2(0, 0),
   actorType: ActorType.Player,
@@ -330,7 +340,8 @@ const PLAYER_ONE_DATA = Object.freeze({
   moveKeys: [Keys.W, Keys.S, Keys.A, Keys.D],
   moveSpeed: 0.15,
   rotateSpeed: 0.004,
-  frictionType: FrictionType.Off, //top-down so no gravity
+  gravityType: GravityType.Off, //top-down so no gravity
+  frictionType: FrictionType.Normal, 
   maximumSpeed: 5,
   takes: {  
     "walk" :  {
@@ -381,8 +392,9 @@ const PLAYER_TWO_DATA = Object.freeze({
   moveKeys: [Keys.I, Keys.K, Keys.J, Keys.L],
   moveSpeed: 0.15,
   rotateSpeed: 0.004,
-  frictionType: FrictionType.Off, //top-down so no gravity
-  maximumSpeed: 5,
+  gravityType: GravityType.Off, //top-down so no gravity
+  frictionType: FrictionType.Normal, 
+  maximumSpeed: 2,
   takes: {  
     "walk" :  {
       fps: 6,
@@ -414,7 +426,7 @@ const PLAYER_TWO_DATA = Object.freeze({
 });
 //#endregion
 
-//#region PICKUP DATA
+//#region SPRITE DATA - PICKUP
 
 const PICKUP_COIN_ANIMATION_DATA = Object.freeze({
   id: "animated coin",
@@ -453,18 +465,9 @@ const PICKUP_COIN_ANIMATION_DATA = Object.freeze({
 
 //#endregion
 
-//#region DECORATOR ANIMATION DATA (fire, pickup)
+//#region SPRITE DATA - ANIMATION DECORATORS (fire, pickup)
 // PICKUP_DECORATOR_ANIMATION_DATA;
 //complete object to load the animation for pickup of coins...
 //#endregion
 
-//#region AUDIO DATA
-//audio - step 2 - create an array with all cues
-//note the name we use below MUST be identical to id used in HTML when loading the sound asset
-const audioCueArray = [
-  new AudioCue("coin_pickup", AudioType.Pickup, 1, 1, false, 0)
-  //add more cues here but make sure you load in the HTML!
-];
-//See Game::LoadAllOtherManagers() for SoundManager instanciation
-//#endregion
 
