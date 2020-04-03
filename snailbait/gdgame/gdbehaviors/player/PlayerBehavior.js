@@ -142,11 +142,6 @@ class PlayerBehavior {
             [sprite]
           )
         );
-        NotificationCenter.Notify(
-          new Notification(NotificationType.Sound, NotificationAction.Play, [
-            "background"
-          ])
-        );
       }
     }
   }

@@ -304,6 +304,12 @@ class Game {
 
     this.menuManagerBottom = new MyMenuManager("menu-bottom", this.notificationCenter, this.keyboardManager, 
                             this.screenBottom.parentDivID, this.screenBottom.id);
+
+    //audio - step 2 - instanciate the sound manager with the array of cues
+    this.soundManager = new SoundManager(
+      audioCueArray, 
+      this.notificationCenter);
+
   }
 
 

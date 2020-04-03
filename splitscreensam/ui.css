@@ -49,20 +49,40 @@ body {
 
 .ui-player
 {
+  position: fixed;
+  top: 10px;
+  left: 200px;
   z-index: 2;
   display: block;
 }
 
+#player-ui-top,
+#player-ui-bottom{
+  background-image: url("assets/images/hud/hud_empty.png");
+  z-index: 2;
+  display: block;
+  background-color: #146d19;
+   /* Used if the image is unavailable */
+   height: 164px;
+  /* Used if the image is unavailable */
+  height: 69px;
+  /* CANVAS SPECIFIC SIZE - You must set a specified height */
+  background-position: center;
+  /* Center the image */
+  background-repeat: no-repeat;
+  /* Do not repeat the image */
+  background-size: cover;
+  /* Resize the background image to cover the entire container */
+}
+
 #parent-top,
-#canvas-top,
-#player-ui-top.ui-player
+#canvas-top
 {
   top: 10px;
 }
 
 #parent-bottom,
-#canvas-bottom,
-#player-ui-bottom.ui-player
+#canvas-bottom
 {
   top: 366px;
   /* CANVAS SPECIFIC SIZE - SEE <CANVAS> TAG IN HTML */

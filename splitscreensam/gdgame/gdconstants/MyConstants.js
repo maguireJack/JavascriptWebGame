@@ -1,8 +1,4 @@
-//#region Audio data
-//array of cues with same unique IDs as were loaded in HTML file
-//#endregion
-
-//#region LEVEL SPRITES
+//#region LEVEL LAYOUT FROM ARRAY
 
 /*
 spriteSheet:                handle to the sprite sheet resource from id specfied in HTML file
@@ -312,8 +308,9 @@ const LEVEL_PICKUPS_DATA = Object.freeze({
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
   ]
 });
+//#endregion
 
-
+//#region PLAYER DATA
 const PLAYER_ONE_DATA = Object.freeze({
   id: "player 1",
   spriteSheet: document.getElementById("player_one_animations"),
@@ -415,7 +412,9 @@ const PLAYER_TWO_DATA = Object.freeze({
     }
   }
 });
+//#endregion
 
+//#region PICKUP DATA
 
 const PICKUP_COIN_ANIMATION_DATA = Object.freeze({
   id: "animated coin",
@@ -454,4 +453,18 @@ const PICKUP_COIN_ANIMATION_DATA = Object.freeze({
 
 //#endregion
 
+//#region DECORATOR ANIMATION DATA (fire, pickup)
+// PICKUP_DECORATOR_ANIMATION_DATA;
+//complete object to load the animation for pickup of coins...
+//#endregion
+
+//#region AUDIO DATA
+//audio - step 2 - create an array with all cues
+//note the name we use below MUST be identical to id used in HTML when loading the sound asset
+const audioCueArray = [
+  new AudioCue("coin_pickup", AudioType.Pickup, 1, 1, false, 0)
+  //add more cues here but make sure you load in the HTML!
+];
+//See Game::LoadAllOtherManagers() for SoundManager instanciation
+//#endregion
 

@@ -79,7 +79,7 @@ class SamPlayerBehavior {
 
           NotificationCenter.Notify(
             new Notification(NotificationType.Sound, NotificationAction.Play, [
-              "background"]));
+              "coin_pickup"]));
 
           NotificationCenter.Notify(
             new Notification(
@@ -99,11 +99,9 @@ class SamPlayerBehavior {
         //if player != me then test
         if(sprite != this){
           if (parent.Transform2D.BoundingBox.Intersects(sprite.Transform2D.BoundingBox)) {  
-            //your code - play sound, remove enemy, add health e.g. you could write code like this... 
-            NotificationCenter.Notify(
-              new Notification(NotificationType.Sound, NotificationAction.Play, [
-                "background"]));
-  
+            //your code - play sound
+            
+            //remove health
             NotificationCenter.Notify(
               new Notification(
                 NotificationType.GameState,
