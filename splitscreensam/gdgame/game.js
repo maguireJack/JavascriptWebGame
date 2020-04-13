@@ -381,22 +381,22 @@ class Game {
 
   LoadSprites() {
     //load the level walls etc
-    this.LoadMultipleSpritesFrom2DArray(LEVEL_ARCHITECTURE_DATA);
+    // this.LoadMultipleSpritesFrom2DArray(LEVEL_ARCHITECTURE_DATA);
+    this.LoadBackground();
+    // //load all the pickups
+    // this.LoadMultipleSpritesFrom2DArray(LEVEL_PICKUPS_DATA);
 
-    //load all the pickups
-    this.LoadMultipleSpritesFrom2DArray(LEVEL_PICKUPS_DATA);
+    // //load players
+    // this.LoadAnimatedSprite(PICKUP_COIN_ANIMATION_DATA);
 
-    //load players
-    this.LoadAnimatedSprite(PICKUP_COIN_ANIMATION_DATA);
+    // //load players
+    // this.LoadAnimatedPlayerSprite(PLAYER_ONE_DATA);
 
-    //load players
-    this.LoadAnimatedPlayerSprite(PLAYER_ONE_DATA);
+    // //load players
+    // this.LoadAnimatedPlayerSprite(PLAYER_TWO_DATA);
 
-    //load players
-    this.LoadAnimatedPlayerSprite(PLAYER_TWO_DATA);
-
-    //PICKUP_COIN_DECORATOR_ANIMATION_DATA
-    this.LoadAnimatedSprite(PICKUP_COIN_DECORATOR_ANIMATION_DATA);
+    // //PICKUP_COIN_DECORATOR_ANIMATION_DATA
+    // this.LoadAnimatedSprite(PICKUP_COIN_DECORATOR_ANIMATION_DATA);
   }
 
   LoadAnimatedPlayerSprite(playerObject){
@@ -461,6 +461,40 @@ class Game {
   this.objectManager.Add(sprite); //add animated sprite                  
 
   }
+
+  LoadBackground() {
+
+    for(let i = 0; i < BACKGROUND_DATA.length; i++)
+    {
+      let spriteArtist = new ScrollingSpriteArtist(
+        this.screenTop.ctx,
+        BACKGROUND_DATA[i].spriteSheet,
+        BACKGROUND_DATA[i].sourcePosition,
+        BACKGROUND_DATA[i].sourceDimensions,
+        this.screenTop.width,
+        this.screenTop.height
+      );
+      let transform = new Transform2D(
+        BACKGROUND_DATA[i].translation,
+        BACKGROUND_DATA[i].rotation,
+        BACKGROUND_DATA[i].scale,
+        BACKGROUND_DATA[i].origin,
+        new Vector2(this.screenTop.width, this.screenTop.width)
+      );
+      this.objectManager.Add(
+        new Sprite(
+          BACKGROUND_DATA[i].id,
+          BACKGROUND_DATA[i].actorType,
+          transform,
+          spriteArtist,
+          StatusType.IsUpdated | StatusType.IsDrawn,
+          BACKGROUND_DATA[i].scrollSpeedMultiplier,
+          BACKGROUND_DATA[i].layerDepth,
+        )
+      );
+    }
+  }
+
 
   LoadMultipleSpritesFrom2DArray(levelObject){
     let maxRows = levelObject.levelLayoutArray.length;

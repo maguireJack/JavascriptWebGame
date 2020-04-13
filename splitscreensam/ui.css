@@ -13,8 +13,7 @@ body {
 /***************************************** Canvases and Parent Div Positioning *****************************************/
 
 #parent-top,
-#parent-bottom,
-.game-canvas
+#parent-bottom
  {
   /*See https://thoughtbot.com/blog/positioning for a discussion on centering with absolute positioning*/
   position: fixed;
@@ -34,17 +33,25 @@ body {
 
 #parent-top,
 #parent-bottom,
-.game-canvas
 .menu {
-  width: 840;
+  width: 400;
   /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
-  height: 346px;
+  height: 600;
   /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
 }
 
+#parent-top,
 .game-canvas
 {
   z-index: 1;
+  left: 75%;
+}
+
+#parent-bottom,
+.game-canvas
+{
+  z-index: 1;
+  
 }
 
 .ui-player
@@ -84,7 +91,7 @@ body {
 #parent-bottom,
 #canvas-bottom
 {
-  top: 366px;
+  top: 10px;
   /* CANVAS SPECIFIC SIZE - SEE <CANVAS> TAG IN HTML */
   /*10 above top canvas + 10 space between canvases + 346 for top canvas height*/
 }
@@ -92,7 +99,7 @@ body {
 .game-canvas {
   display: none;
   border: 1px solid rgb(255, 255, 255);
-  background-color: #cacb63;
+  
 }
 
 /***************************************** Menu *****************************************/
