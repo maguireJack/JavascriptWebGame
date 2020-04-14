@@ -9,6 +9,7 @@ class GameStateManager{
 
     id = "";
     context;
+    health = 100;
     debugEnabled = false;
     
     constructor(id){
@@ -19,6 +20,16 @@ class GameStateManager{
   
     Update(gameTime){
 
+    }
+
+    setHealth(newHealth)
+    {
+        this.health = newHealth;
+    }
+
+    Damage(Damage)
+    {
+        this.health -= Damage;
     }
 
 }

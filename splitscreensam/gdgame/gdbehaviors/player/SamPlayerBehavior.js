@@ -51,10 +51,10 @@ class SamPlayerBehavior {
       //left/right
       if (this.keyboardManager.IsKeyDown(this.moveKeys[2])) {
         parent.Body.AddVelocityX(-this.moveSpeed * gameTime.ElapsedTimeInMs);
-        parent.Artist.SetTake("idle");
+        parent.Artist.SetTake("walk");
       } else if (this.keyboardManager.IsKeyDown(this.moveKeys[3])) {
         parent.Body.AddVelocityX(this.moveSpeed * gameTime.ElapsedTimeInMs);
-        parent.Artist.SetTake("idle");
+        parent.Artist.SetTake("walk");
       }
     }
   
@@ -64,11 +64,11 @@ class SamPlayerBehavior {
      // this.HandleArchitectureCollision(parent);
 
       this.HandleEnemyCollision(parent);
-      this.HandlePickupCollision(parent);
+      // this.HandlePickupCollision(parent);
     }
   
     HandlePickupCollision(parent) {
-      let sprites = this.objectManager.Get(ActorType.Pickup);
+      let sprites = this.objectManager.Get(ActorType.Background);
   
       for (let i = 0; i < sprites.length; i++) {
         let sprite = sprites[i];

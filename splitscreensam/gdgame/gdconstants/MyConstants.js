@@ -42,22 +42,6 @@ alpha:                      opacity of the drawn sprite (0=transparent, 1=opaque
 //   alpha: 1
 // });
 
-const BACKGROUND_DATA = [
-  {
-    id: "background_1",
-    spriteSheet: document.getElementById("start01"),
-    sourcePosition: new Vector2(0,0),
-    sourceDimensions: new Vector2(480, 360),
-    translation: new Vector2(0,0),
-    rotation: 0,
-    scale: new Vector2(1,1),
-    origin: new Vector2(0,0),
-    actorType: ActorType.Background,
-    layerDepth: 0,
-    scrollSpeedMultiplier: 0.2
-  }
-];
-
 
 const LEVEL_ARCHITECTURE_DATA = Object.freeze({
   //an array of all the sprite objects (i.e. sheet, sourceposition etc) that are used to make the level
@@ -262,6 +246,163 @@ layerDepth:                 defines the draw order for all sprites of the same A
 explodeBoundingBoxInPixels: integer amount which allows us to shrink (-ve) or grow (+ve) the bounding box around the sprite
 alpha:                      opacity of the drawn sprite (0=transparent, 1=opaque)
 */
+
+
+
+
+const FLOOR_DATA = Object.freeze({
+  id: "floorType1",
+  levelSprites: {
+    1: { //Cracked Floor
+      spriteSheet: document.getElementById("floor"),
+      sourcePosition: new Vector2(0, 0),
+      sourceDimensions: new Vector2(16, 16),
+      rotation: 0,
+      scale: new Vector2(1, 1),
+      origin: new Vector2(0, 0),
+      actorType: ActorType.Background,
+      collisionType: CollisionType.NotCollidable,
+      statusType: StatusType.IsDrawn,
+      scrollSpeedMultiplier: 1,
+      layerDepth: 0,
+      explodeBoundingBoxInPixels: -14,
+      alpha: 1
+    }
+  },
+  maxBlockWidth: 16,
+  maxBlockHeight: 16, 
+  levelLayoutArray: [
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0]
+    
+  ]
+
+});
+
+
+const WALL_DATA = Object.freeze({
+  id: "wall data",
+  levelSprites: {
+    1: { //Mid Wall
+      spriteSheet: document.getElementById("midWall"),
+      sourcePosition: new Vector2(0, 0),
+      sourceDimensions: new Vector2(16, 16),
+      rotation: 0,
+      scale: new Vector2(1, 1),
+      origin: new Vector2(0, 0),
+      actorType: ActorType.Background,
+      collisionType: CollisionType.Collidable,
+      statusType: StatusType.IsDrawn,
+      scrollSpeedMultiplier: 1,
+      layerDepth: 0,
+      explodeBoundingBoxInPixels: 2,
+      alpha: 1
+    },
+    2:{ //Mid Wall Topper
+      spriteSheet: document.getElementById("midWallTop"),
+      sourcePosition: new Vector2(0, 0),
+      sourceDimensions: new Vector2(16, 16),
+      rotation: 0,
+      scale: new Vector2(1, 1),
+      origin: new Vector2(0, 0),
+      actorType: ActorType.Background,
+      collisionType: CollisionType.NotCollidable,
+      statusType: StatusType.IsDrawn,
+      scrollSpeedMultiplier: 1,
+      layerDepth: 0,
+      explodeBoundingBoxInPixels: 2,
+      alpha: 1
+    },
+    3:{ //Left Wall Corner
+      spriteSheet: document.getElementById("leftTopCorner"),
+      sourcePosition: new Vector2(0, 0),
+      sourceDimensions: new Vector2(16, 16),
+      rotation: 0,
+      scale: new Vector2(1, 1),
+      origin: new Vector2(0, 0),
+      actorType: ActorType.Background,
+      collisionType: CollisionType.NotCollidable,
+      statusType: StatusType.IsDrawn,
+      scrollSpeedMultiplier: 1,
+      layerDepth: 0,
+      explodeBoundingBoxInPixels: 2,
+      alpha: 1
+    },
+    4:{ //Left Side Border Wall
+      spriteSheet: document.getElementById("leftSideBorderWall"),
+      sourcePosition: new Vector2(0, 0),
+      sourceDimensions: new Vector2(16, 16),
+      rotation: 0,
+      scale: new Vector2(1, 1),
+      origin: new Vector2(0, 0),
+      actorType: ActorType.Background,
+      collisionType: CollisionType.NotCollidable,
+      statusType: StatusType.IsDrawn,
+      scrollSpeedMultiplier: 1,
+      layerDepth: 0,
+      explodeBoundingBoxInPixels: 2,
+      alpha: 1
+    },
+    5:{ //Left Side Border Wall
+      spriteSheet: document.getElementById("rightTopCorner"),
+      sourcePosition: new Vector2(0, 0),
+      sourceDimensions: new Vector2(16, 16),
+      rotation: 0,
+      scale: new Vector2(1, 1),
+      origin: new Vector2(0, 0),
+      actorType: ActorType.Background,
+      collisionType: CollisionType.NotCollidable,
+      statusType: StatusType.IsDrawn,
+      scrollSpeedMultiplier: 1,
+      layerDepth: 0,
+      explodeBoundingBoxInPixels: 2,
+      alpha: 1
+    },
+    6:{
+      spriteSheet: document.getElementById("rightSideBorderWall"),
+      sourcePosition: new Vector2(0, 0),
+      sourceDimensions: new Vector2(16, 16),
+      rotation: 0,
+      scale: new Vector2(1, 1),
+      origin: new Vector2(0, 0),
+      actorType: ActorType.Background,
+      collisionType: CollisionType.NotCollidable,
+      statusType: StatusType.IsDrawn,
+      scrollSpeedMultiplier: 1,
+      layerDepth: 0,
+      explodeBoundingBoxInPixels: 2,
+      alpha: 1
+    }
+
+  },
+  maxBlockWidth: 16,
+  maxBlockHeight: 16, 
+  levelLayoutArray: [
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0],
+    [0,0,0,0,3,1,1,1,1,1,1,1,1,1,1,1,1,5,0,0],
+    [0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0],
+    [0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0],
+    [0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    
+  ]
+});
+
+
 const LEVEL_PICKUPS_DATA = Object.freeze({
   //an array of all the sprite objects (i.e. sheet, sourceposition etc) that are used to make the level
   id: "level pickups data",
@@ -373,9 +514,9 @@ const PLAYER_ONE_DATA = Object.freeze({
   id: "player 1",
   spriteSheet: document.getElementById("player_one_animations"),
   defaultTakeName: "walk",
-  translation: new Vector2(420, 85),
+  translation: new Vector2(32, 32),
   rotation: 0,
-  scale: new Vector2(0.5, 0.5),
+  scale: new Vector2(1, 1),
   origin: new Vector2(0, 0),
   actorType: ActorType.Player,
   collisionType: CollisionType.Collidable,
@@ -386,7 +527,7 @@ const PLAYER_ONE_DATA = Object.freeze({
   alpha: 1,
   lookDirection: new Vector2(0, 1), //straight-down according to source image
   moveKeys: [Keys.W, Keys.S, Keys.A, Keys.D],
-  moveSpeed: 0.15,
+  moveSpeed: 0.04,
   rotateSpeed: 0.004,
   gravityType: GravityType.Off, //top-down so no gravity
   frictionType: FrictionType.Normal, 
@@ -399,11 +540,11 @@ const PLAYER_ONE_DATA = Object.freeze({
       maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
       startCellIndex: 0,
       endCellIndex: 2,
-      boundingBoxDimensions: new Vector2(100, 100), 
+      boundingBoxDimensions: new Vector2(16, 16), 
       cellData: [
-        new Rect(0, 0, 98, 98),
-        new Rect(98, 0, 98, 98),
-        new Rect(196, 0, 98, 98),
+        new Rect(128, 80, 16, 16),
+        new Rect(144, 80, 16, 16),
+        new Rect(160, 80, 16, 16)
       ]
     },
     "idle" :  {
@@ -415,7 +556,7 @@ const PLAYER_ONE_DATA = Object.freeze({
       endCellIndex: 0,
       boundingBoxDimensions: new Vector2(100, 100), 
       cellData: [
-        new Rect(0, 0, 98, 98) //play frame where player stands repeatedly
+        new Rect(112, 32, 16, 16) //play frame where player stands repeatedly
       ]
     }
   }

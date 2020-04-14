@@ -274,9 +274,9 @@ class Game {
   LoadCanvases() {
     //get a handle to our context
     this.screenTop = GDGraphics.GetScreenObject("parent-top", "canvas-top", "player-ui-top",
-                            new Vector2(0,0), Color.LightGreen);
+      new Vector2(0, 0), new Vector2(840, 346), "#1a1a1a");
     this.screenBottom = GDGraphics.GetScreenObject("parent-bottom", "canvas-bottom", "player-ui-bottom",
-                            new Vector2(0, 1040), Color.LightGreen);
+      new Vector2(0, 0), new Vector2(840, 346), "#1a1a1a");
   }
 
   LoadCameras() {
@@ -284,7 +284,7 @@ class Game {
     let transform = new Transform2D(
       new Vector2(0, 0),
       0,
-      new Vector2(1, 1),
+      new Vector2(1.25, 1.25),
       new Vector2(this.screenTop.width/2, this.screenTop.height/2),
       new Vector2(this.screenTop.width, this.screenTop.height),
       0
@@ -305,7 +305,7 @@ class Game {
     transform = new Transform2D(
       new Vector2(0, 0),
       0,
-      new Vector2(1, 1),
+      new Vector2(1.25, 1.25),
       new Vector2(0,0),
       new Vector2(this.screenBottom.width, this.screenBottom.height),
       0
@@ -382,15 +382,18 @@ class Game {
   LoadSprites() {
     //load the level walls etc
     // this.LoadMultipleSpritesFrom2DArray(LEVEL_ARCHITECTURE_DATA);
-    this.LoadBackground();
+    // this.LoadBackground();
     // //load all the pickups
     // this.LoadMultipleSpritesFrom2DArray(LEVEL_PICKUPS_DATA);
+
+    this.LoadMultipleSpritesFrom2DArray(FLOOR_DATA);
+    this.LoadMultipleSpritesFrom2DArray(WALL_DATA);
 
     // //load players
     // this.LoadAnimatedSprite(PICKUP_COIN_ANIMATION_DATA);
 
     // //load players
-    // this.LoadAnimatedPlayerSprite(PLAYER_ONE_DATA);
+    this.LoadAnimatedPlayerSprite(PLAYER_ONE_DATA);
 
     // //load players
     // this.LoadAnimatedPlayerSprite(PLAYER_TWO_DATA);
@@ -462,38 +465,38 @@ class Game {
 
   }
 
-  LoadBackground() {
+  // LoadBackground() {
 
-    for(let i = 0; i < BACKGROUND_DATA.length; i++)
-    {
-      let spriteArtist = new ScrollingSpriteArtist(
-        this.screenTop.ctx,
-        BACKGROUND_DATA[i].spriteSheet,
-        BACKGROUND_DATA[i].sourcePosition,
-        BACKGROUND_DATA[i].sourceDimensions,
-        this.screenTop.width,
-        this.screenTop.height
-      );
-      let transform = new Transform2D(
-        BACKGROUND_DATA[i].translation,
-        BACKGROUND_DATA[i].rotation,
-        BACKGROUND_DATA[i].scale,
-        BACKGROUND_DATA[i].origin,
-        new Vector2(this.screenTop.width, this.screenTop.width)
-      );
-      this.objectManager.Add(
-        new Sprite(
-          BACKGROUND_DATA[i].id,
-          BACKGROUND_DATA[i].actorType,
-          transform,
-          spriteArtist,
-          StatusType.IsUpdated | StatusType.IsDrawn,
-          BACKGROUND_DATA[i].scrollSpeedMultiplier,
-          BACKGROUND_DATA[i].layerDepth,
-        )
-      );
-    }
-  }
+  //   for(let i = 0; i < BACKGROUND_DATA.length; i++)
+  //   {
+  //     let spriteArtist = new ScrollingSpriteArtist(
+  //       this.screenTop.ctx,
+  //       BACKGROUND_DATA[i].spriteSheet,
+  //       BACKGROUND_DATA[i].sourcePosition,
+  //       BACKGROUND_DATA[i].sourceDimensions,
+  //       this.screenTop.width,
+  //       this.screenTop.height
+  //     );
+  //     let transform = new Transform2D(
+  //       BACKGROUND_DATA[i].translation,
+  //       BACKGROUND_DATA[i].rotation,
+  //       BACKGROUND_DATA[i].scale,
+  //       BACKGROUND_DATA[i].origin,
+  //       new Vector2(this.screenTop.width, this.screenTop.width)
+  //     );
+  //     this.objectManager.Add(
+  //       new Sprite(
+  //         BACKGROUND_DATA[i].id,
+  //         BACKGROUND_DATA[i].actorType,
+  //         transform,
+  //         spriteArtist,
+  //         StatusType.IsUpdated | StatusType.IsDrawn,
+  //         BACKGROUND_DATA[i].scrollSpeedMultiplier,
+  //         BACKGROUND_DATA[i].layerDepth,
+  //       )
+  //     );
+  //   }
+  // }
 
 
   LoadMultipleSpritesFrom2DArray(levelObject){
