@@ -335,7 +335,7 @@ class Game {
     this.cameraManager = new CameraManager("stores and manages cameras");
   }
 
-  LoadAllOtherManagers() {
+  LoadAllOtherManagers(gameTime) {
     //update objects
     this.objectManager = new ObjectManager(
       "game sprites",
@@ -364,6 +364,11 @@ class Game {
       audioCueArray, 
       this.notificationCenter);
 
+    this.gameStateManager = new GameStateManager(
+        "Main State Manager",
+        this.notificationCenter
+        );
+
   }
 
 
@@ -388,18 +393,57 @@ class Game {
 
     this.LoadMultipleSpritesFrom2DArray(FLOOR_DATA);
     this.LoadMultipleSpritesFrom2DArray(WALL_DATA);
+    this.LoadAnimatedEnemySprite(ENEMY_TYPE_ONE_DATA);
 
     // //load players
     // this.LoadAnimatedSprite(PICKUP_COIN_ANIMATION_DATA);
 
     // //load players
     this.LoadAnimatedPlayerSprite(PLAYER_ONE_DATA);
+    
 
     // //load players
     // this.LoadAnimatedPlayerSprite(PLAYER_TWO_DATA);
 
     // //PICKUP_COIN_DECORATOR_ANIMATION_DATA
     // this.LoadAnimatedSprite(PICKUP_COIN_DECORATOR_ANIMATION_DATA);
+  }
+
+  LoadAnimatedEnemySprite(enemyObject)
+  {
+    let artist = new AnimatedSpriteArtist(enemyObject);
+    artist.SetTake(enemyObject.defaultTakeName);
+
+    let transform = new Transform2D(enemyObject.translation, 
+      enemyObject.rotation,
+      enemyObject.scale,
+      enemyObject.origin,
+              artist.GetBoundingBoxDimensionsByTakeName(enemyObject.defaultTakeName),
+              enemyObject.explodeBoundingBoxInPixels);
+
+    let enemySprite = new MoveableSprite(enemyObject.id, 
+      enemyObject.actorType, 
+      enemyObject.collisionType, 
+                transform, artist, 
+                enemyObject.statusType, 
+                enemyObject.scrollSpeedMultiplier, 
+                enemyObject.layerDepth);
+
+    /**************** NEED TO FRICTION TO MAKE THIS CHARACTER MOVE IN A MORE BELIEVEABLE MANNER ***********/
+    enemySprite.Body.MaximumSpeed = enemyObject.maximumSpeed;
+    enemySprite.Body.Friction = enemyObject.frictionType;
+    enemySprite.Body.Gravity = enemyObject.gravityType;   //top-down, so no gravity in +Y direction
+
+    /**************** NEED TO ADD A BEHAVIOR TO MAKE THIS A CONTROLLABLE CHARACTER ***********/
+    enemySprite.AttachBehavior(
+      new Killable( 
+        this.objectManager,
+        enemyObject.lookDirection,
+        enemyObject.moveSpeed,
+        enemyObject.rotateSpeed));
+
+  this.objectManager.Add(enemySprite);             
+
   }
 
   LoadAnimatedPlayerSprite(playerObject){
@@ -465,40 +509,7 @@ class Game {
 
   }
 
-  // LoadBackground() {
-
-  //   for(let i = 0; i < BACKGROUND_DATA.length; i++)
-  //   {
-  //     let spriteArtist = new ScrollingSpriteArtist(
-  //       this.screenTop.ctx,
-  //       BACKGROUND_DATA[i].spriteSheet,
-  //       BACKGROUND_DATA[i].sourcePosition,
-  //       BACKGROUND_DATA[i].sourceDimensions,
-  //       this.screenTop.width,
-  //       this.screenTop.height
-  //     );
-  //     let transform = new Transform2D(
-  //       BACKGROUND_DATA[i].translation,
-  //       BACKGROUND_DATA[i].rotation,
-  //       BACKGROUND_DATA[i].scale,
-  //       BACKGROUND_DATA[i].origin,
-  //       new Vector2(this.screenTop.width, this.screenTop.width)
-  //     );
-  //     this.objectManager.Add(
-  //       new Sprite(
-  //         BACKGROUND_DATA[i].id,
-  //         BACKGROUND_DATA[i].actorType,
-  //         transform,
-  //         spriteArtist,
-  //         StatusType.IsUpdated | StatusType.IsDrawn,
-  //         BACKGROUND_DATA[i].scrollSpeedMultiplier,
-  //         BACKGROUND_DATA[i].layerDepth,
-  //       )
-  //     );
-  //   }
-  // }
-
-
+  
   LoadMultipleSpritesFrom2DArray(levelObject){
     let maxRows = levelObject.levelLayoutArray.length;
     let maxCols = levelObject.levelLayoutArray[0].length;

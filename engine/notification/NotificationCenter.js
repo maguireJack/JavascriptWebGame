@@ -39,6 +39,7 @@ const NotificationAction = Object.freeze({
   RemoveAllByType: Symbol("RemoveAllByType"),
 
   Pickup: Symbol("Pickup"),
+  Damage: Symbol("Damage"),
 
   ShowMenuChanged: Symbol("ShowMenuChanged"),
   SetVolume: Symbol("SetVolume"),

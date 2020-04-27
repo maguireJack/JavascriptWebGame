@@ -299,7 +299,7 @@ const WALL_DATA = Object.freeze({
       rotation: 0,
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
-      actorType: ActorType.Background,
+      actorType: ActorType.Architecture,
       collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
@@ -329,8 +329,8 @@ const WALL_DATA = Object.freeze({
       rotation: 0,
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
-      actorType: ActorType.Background,
-      collisionType: CollisionType.NotCollidable,
+      actorType: ActorType.Architecture,
+      collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
       layerDepth: 0,
@@ -344,8 +344,8 @@ const WALL_DATA = Object.freeze({
       rotation: 0,
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
-      actorType: ActorType.Background,
-      collisionType: CollisionType.NotCollidable,
+      actorType: ActorType.Architecture,
+      collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
       layerDepth: 0,
@@ -359,8 +359,8 @@ const WALL_DATA = Object.freeze({
       rotation: 0,
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
-      actorType: ActorType.Background,
-      collisionType: CollisionType.NotCollidable,
+      actorType: ActorType.Architecture,
+      collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
       layerDepth: 0,
@@ -374,8 +374,8 @@ const WALL_DATA = Object.freeze({
       rotation: 0,
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
-      actorType: ActorType.Background,
-      collisionType: CollisionType.NotCollidable,
+      actorType: ActorType.Architecture,
+      collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
       layerDepth: 0,
@@ -509,6 +509,50 @@ const LEVEL_PICKUPS_DATA = Object.freeze({
 });
 //#endregion
 
+
+const ENEMY_TYPE_ONE_DATA = Object.freeze({
+  id: "enemy 1",
+  spriteSheet: document.getElementById("player_one_animations"),
+  defaultTakeName: "walk",
+  translation: new Vector2(64, 32),
+  rotation: 0,
+  scale: new Vector2(1, 1),
+  origin: new Vector2(0, 0),
+  actorType: ActorType.Enemy,
+  collisionType: CollisionType.Collidable,
+  statusType: StatusType.IsDrawn | StatusType.IsUpdated,
+  scrollSpeedMultiplier: 1,
+  layerDepth: 1,
+  explodeBoundingBoxInPixels: 0,
+  alpha: 1,
+  lookDirection: new Vector2(0, 1), //straight-down according to source image
+  moveKeys: [Keys.W, Keys.S, Keys.A, Keys.D],
+  moveSpeed: 0.005,
+  attackPower: 5,
+  rotateSpeed: 0.004,
+  gravityType: GravityType.Off, //top-down so no gravity
+  frictionType: FrictionType.Normal, 
+  maximumSpeed: 5,
+  takes: {  
+    "walk" :  {
+      fps: 6,
+      leadInDelayMs: 0,
+      leadOutDelayMs: 0,
+      maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
+      startCellIndex: 0,
+      endCellIndex: 2,
+      boundingBoxDimensions: new Vector2(11, 17), 
+      cellData: [
+        new Rect(371, 207, 11, 17),
+        new Rect(387, 207, 11, 17),
+        new Rect(403, 207, 11, 17)
+      ]
+    }
+  }
+});
+
+
+
 //#region SPRITE DATA - PLAYER
 const PLAYER_ONE_DATA = Object.freeze({
   id: "player 1",
@@ -540,11 +584,11 @@ const PLAYER_ONE_DATA = Object.freeze({
       maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
       startCellIndex: 0,
       endCellIndex: 2,
-      boundingBoxDimensions: new Vector2(16, 16), 
+      boundingBoxDimensions: new Vector2(16, 21), 
       cellData: [
-        new Rect(128, 80, 16, 16),
-        new Rect(144, 80, 16, 16),
-        new Rect(160, 80, 16, 16)
+        new Rect(128, 75, 16, 21),
+        new Rect(144, 75, 16, 21),
+        new Rect(160, 75, 16, 21)
       ]
     },
     "idle" :  {

@@ -24,8 +24,9 @@ class SamPlayerBehavior {
     ) {
       this.keyboardManager = keyboardManager;
       this.objectManager = objectManager;
-  
+      this.timer = new Stopwatch();
       this.moveKeys = moveKeys;
+      this.hit = false;
       this.lookDirection = lookDirection;
       this.moveSpeed = moveSpeed;
       this.rotateSpeed = rotateSpeed;
@@ -60,30 +61,30 @@ class SamPlayerBehavior {
   
     CheckCollisions(parent) {
 
-      //bug - temporarily remove because of changes being made to bounding boxes
-     // this.HandleArchitectureCollision(parent);
-
+      //Currently Handles Enemies
+        this.HandlePickupCollision(parent);
+        
+    
+      
       this.HandleEnemyCollision(parent);
-      // this.HandlePickupCollision(parent);
+      this.HandleArchitectureCollision(parent);
+      
     }
   
     HandlePickupCollision(parent) {
-      let sprites = this.objectManager.Get(ActorType.Background);
+      let enemySprites = this.objectManager.Get(ActorType.Enemy);
+      
   
-      for (let i = 0; i < sprites.length; i++) {
-        let sprite = sprites[i];
+      for (let i = 0; i < enemySprites.length; i++) {
+        let enemySprite = enemySprites[i];
   
         //we can use simple collision check here (i.e. Intersects) because dont need to think was it top, bottom, left, or right
-        if (parent.Transform2D.BoundingBox.Intersects(sprite.Transform2D.BoundingBox)) {
+        if (enemySprite.Transform2D.BoundingBox.Intersects(parent.Transform2D.BoundingBox)) {
 
           //your code - play sound, remove enemy, add health e.g. you could write code like this...
           //remove coin
-          NotificationCenter.Notify(
-            new Notification(
-              NotificationType.Sprite,
-              NotificationAction.RemoveFirst,
-              [sprite]));
-
+          if(this.hit == false){
+            this.timer.Start();
           NotificationCenter.Notify(
             new Notification(NotificationType.Sound, NotificationAction.Play, [
               "coin_pickup"]));
@@ -91,8 +92,21 @@ class SamPlayerBehavior {
           NotificationCenter.Notify(
             new Notification(
               NotificationType.GameState,
-              NotificationAction.Health,
-              [5]));
+              NotificationAction.Damage,
+              [5, parent]));
+              this.hit = true;
+
+            }
+            else{
+              if(this.timer.GetElapsedTime() >= 2000)
+              {
+                this.hit = false;
+                this.timer.Reset();
+              }
+              else{
+                
+              }
+            }  
         }
       }
     }
@@ -112,8 +126,9 @@ class SamPlayerBehavior {
             NotificationCenter.Notify(
               new Notification(
                 NotificationType.GameState,
-                NotificationAction.Health,
-                [-10]));
+                NotificationAction.Damage,
+                [-10, sprite.id]));
+                
           }
         }
       }
