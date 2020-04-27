@@ -250,6 +250,7 @@ class Game {
     this.LoadCameras(); //make at the end as 1+ behaviors in camera may depend on sprite
     this.LoadAllOtherManagers();
     this.LoadSprites();
+    
 
     //DEBUG - REMOVE LATER
     if (this.debugModeOn)
@@ -400,6 +401,7 @@ class Game {
 
     // //load players
     this.LoadAnimatedPlayerSprite(PLAYER_ONE_DATA);
+    this.LoadWeapon(WEAPON_SWORD, PLAYER_ONE_DATA);
     
 
     // //load players
@@ -407,6 +409,46 @@ class Game {
 
     // //PICKUP_COIN_DECORATOR_ANIMATION_DATA
     // this.LoadAnimatedSprite(PICKUP_COIN_DECORATOR_ANIMATION_DATA);
+  }
+
+  LoadWeapon(weapon, attachedPlayer)
+  {
+    let artist = new AnimatedSpriteArtist(weapon);
+    artist.SetTake(weapon.defaultTakeName);
+    let players = this.objectManager.Get(ActorType.Player);
+    let player = players[0];
+    let pos = new Vector2(player.Transform2D.BoundingBox.X, player.Transform2D.BoundingBox.Y);
+      
+
+    let transform = new Transform2D(pos,
+      weapon.rotation,
+      weapon.scale,
+      weapon.origin,
+      artist.GetBoundingBoxDimensionsByTakeName(weapon.defaultTakeName),
+      weapon.explodeBoundingBoxInPixels);
+
+    let weaponSprite = new MoveableSprite(weapon.id,
+      weapon.actorType,
+      weapon.collisionType,
+      transform, artist,
+      weapon.statusType,
+      weapon.scrollSpeedMultiplier,
+      weapon.layerDepth);
+
+      weaponSprite.Body.MaximumSpeed = weapon.maximumSpeed;
+      weaponSprite.Body.Friction = weapon.frictionType;
+      weaponSprite.Body.Gravity = weapon.gravityType;
+
+      weaponSprite.AttachBehavior(
+        new Weapon(
+          this.keyboardManager,
+          this.objectManager,
+          weapon.attackKey,
+          new Vector2(1,0),
+          weapon.swingSpeed,
+          PLAYER_ONE_DATA));
+
+      this.objectManager.Add(weaponSprite);
   }
 
   LoadAnimatedEnemySprite(enemyObject)
