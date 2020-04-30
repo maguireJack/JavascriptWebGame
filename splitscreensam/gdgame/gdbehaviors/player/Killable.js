@@ -101,14 +101,14 @@ class Killable {
     
   
     HandlePlayerCollision(parent) {
-      let sprites = this.objectManager.Get(ActorType.Player);
+      let players = this.objectManager.Get(ActorType.Player);
   
-      for (let i = 0; i < sprites.length; i++) {
-        let sprite = sprites[i];
+      for (let i = 0; i < players.length; i++) {
+        let player = players[i];
   
         //if player != me then test
-        if(sprite != this){
-          if (parent.Transform2D.BoundingBox.Intersects(sprite.Transform2D.BoundingBox)) {  
+        if(player != this){
+          if (parent.Transform2D.BoundingBox.Intersects(player.Transform2D.BoundingBox)) {  
             //your code - play sound
             
             //remove health
@@ -116,7 +116,7 @@ class Killable {
               new Notification(
                 NotificationType.GameState,
                 NotificationAction.Damage,
-                [-10, sprite.id]));
+                [-10, player.id]));
           }
         }
       }

@@ -272,17 +272,18 @@ const FLOOR_DATA = Object.freeze({
   maxBlockWidth: 16,
   maxBlockHeight: 16, 
   levelLayoutArray: [
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
-    [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
-    [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
-    [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
-    [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
-    [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0]
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
     
   ]
 
@@ -381,24 +382,94 @@ const WALL_DATA = Object.freeze({
       layerDepth: 0,
       explodeBoundingBoxInPixels: 2,
       alpha: 1
+    },
+    7:{
+      spriteSheet: document.getElementById("wallCornerFrontLeft"),
+      sourcePosition: new Vector2(0, 0),
+      sourceDimensions: new Vector2(16, 16),
+      rotation: 0,
+      scale: new Vector2(1, 1),
+      origin: new Vector2(0, 0),
+      actorType: ActorType.Architecture,
+      collisionType: CollisionType.Collidable,
+      statusType: StatusType.IsDrawn,
+      scrollSpeedMultiplier: 1,
+      layerDepth: 0,
+      explodeBoundingBoxInPixels: 2,
+      alpha: 1
+    },
+    8:{
+      spriteSheet: document.getElementById("wallCornerFrontRight"),
+      sourcePosition: new Vector2(0, 0),
+      sourceDimensions: new Vector2(16, 16),
+      rotation: 0,
+      scale: new Vector2(1, 1),
+      origin: new Vector2(0, 0),
+      actorType: ActorType.Architecture,
+      collisionType: CollisionType.Collidable,
+      statusType: StatusType.IsDrawn,
+      scrollSpeedMultiplier: 1,
+      layerDepth: 0,
+      explodeBoundingBoxInPixels: 2,
+      alpha: 1
+    },
+    9:{
+      spriteSheet: document.getElementById("wallCornerBottomLeft"),
+      sourcePosition: new Vector2(0, 0),
+      sourceDimensions: new Vector2(16, 16),
+      rotation: 0,
+      scale: new Vector2(1, 1),
+      origin: new Vector2(0, 0),
+      actorType: ActorType.Architecture,
+      collisionType: CollisionType.Collidable,
+      statusType: StatusType.IsDrawn,
+      scrollSpeedMultiplier: 1,
+      layerDepth: 0,
+      explodeBoundingBoxInPixels: 2,
+      alpha: 1
+    },
+    10:{
+      spriteSheet: document.getElementById("wallCornerBottomRight"),
+      sourcePosition: new Vector2(0, 0),
+      sourceDimensions: new Vector2(16, 16),
+      rotation: 0,
+      scale: new Vector2(1, 1),
+      origin: new Vector2(0, 0),
+      actorType: ActorType.Architecture,
+      collisionType: CollisionType.Collidable,
+      statusType: StatusType.IsDrawn,
+      scrollSpeedMultiplier: 1,
+      layerDepth: 0,
+      explodeBoundingBoxInPixels: 2,
+      alpha: 1
     }
 
   },
   maxBlockWidth: 16,
   maxBlockHeight: 16, 
   levelLayoutArray: [
+    [0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,6,1,1,1,1,1,1,5,0,0],
+    [0,0,0,0,2,2,2,2,2,2,10,0,0,0,0,0,0,6,0,0],
+    [0,0,0,6,1,1,1,1,1,1,1,0,0,0,0,0,0,6,0,0],
+    [0,2,2,10,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0],
+    [3,1,1,1,0,0,0,0,2,2,0,0,0,0,0,0,0,6,0,0],
+    [4,0,0,0,0,0,0,6,1,1,9,2,2,0,0,2,2,10,0,0],
+    [9,2,2,2,0,0,0,6,0,0,7,1,1,0,0,1,1,1,0,0],
+    [7,1,1,1,0,0,0,6,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,6,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,2,2,0,2,2,6,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,1,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0],
-    [0,0,0,0,3,1,1,1,1,1,1,1,1,1,1,1,1,5,0,0],
-    [0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0],
-    [0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0],
-    [0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-    
   ]
 });
 
@@ -509,6 +580,58 @@ const LEVEL_PICKUPS_DATA = Object.freeze({
 });
 //#endregion
 
+
+const HEALTH_BAR = Object.freeze({
+  id: "health bar",
+  heartSprites: {
+    1: {
+      spriteSheet: document.getElementById("player_one_animations"),
+      sourcePosition: new Vector2(289,258),
+      sourceDimensions: new Vector2(13, 13),
+      rotation: 0,
+      scale: new Vector2(1, 1),
+      origin: new Vector2(0, 0),
+      actorType: ActorType.HUD,
+      collisionType: CollisionType.Collidable,
+      statusType: StatusType.IsDrawn,
+      scrollSpeedMultiplier: 1,
+      layerDepth: 0,
+      explodeBoundingBoxInPixels: -14,
+      alpha: 1
+  },
+  2: {
+    spriteSheet: document.getElementById("player_one_animations"),
+    sourcePosition: new Vector2(294,258),
+    sourceDimensions: new Vector2(13, 13),
+    rotation: 0,
+    scale: new Vector2(1, 1),
+    origin: new Vector2(0, 0),
+    actorType: ActorType.HUD,
+    collisionType: CollisionType.Collidable,
+    statusType: StatusType.IsDrawn,
+    scrollSpeedMultiplier: 1,
+    layerDepth: 0,
+    explodeBoundingBoxInPixels: -14,
+    alpha: 1
+  },
+  3: {
+    spriteSheet: document.getElementById("player_one_animations"),
+    sourcePosition: new Vector2(299,258),
+    sourceDimensions: new Vector2(13, 13),
+    rotation: 0,
+    scale: new Vector2(1, 1),
+    origin: new Vector2(0, 0),
+    actorType: ActorType.HUD,
+    collisionType: CollisionType.Collidable,
+    statusType: StatusType.IsDrawn,
+    scrollSpeedMultiplier: 1,
+    layerDepth: 0,
+    explodeBoundingBoxInPixels: -14,
+    alpha: 1
+  }
+  }
+});
+
 const WEAPON_SWORD = Object.freeze({
   id: "sword 1",
   spriteSheet: document.getElementById("player_one_animations"),
@@ -516,11 +639,11 @@ const WEAPON_SWORD = Object.freeze({
   defaultTakeName: "idle",
   rotation: 0,
   scale: new Vector2(1,1),
-  origin: new Vector2(0,0),
+  origin: new Vector2(0,22),
   actorType: ActorType.Weapon,
-  collisionType: CollisionType.NotCollidable,
+  collisionType: CollisionType.Collidable,
   statusType: StatusType.IsDrawn | StatusType.IsUpdated,
-  explodeBoundingBoxInPixels: 0,
+  explodeBoundingBoxInPixels: 2,
   alpha: 1,
   lookDirection: new Vector2(0, 1),
   attackKey: [Keys.Space],
@@ -548,7 +671,7 @@ const ENEMY_TYPE_ONE_DATA = Object.freeze({
   id: "enemy 1",
   spriteSheet: document.getElementById("player_one_animations"),
   defaultTakeName: "walk",
-  translation: new Vector2(64, 32),
+  translation: new Vector2(64, 400),
   rotation: 0,
   scale: new Vector2(1, 1),
   origin: new Vector2(0, 0),
@@ -563,6 +686,7 @@ const ENEMY_TYPE_ONE_DATA = Object.freeze({
   moveKeys: [Keys.W, Keys.S, Keys.A, Keys.D],
   moveSpeed: 0.005,
   attackPower: 5,
+  health: 15,
   rotateSpeed: 0.004,
   gravityType: GravityType.Off, //top-down so no gravity
   frictionType: FrictionType.Normal, 
@@ -592,7 +716,7 @@ const PLAYER_ONE_DATA = Object.freeze({
   id: "player 1",
   spriteSheet: document.getElementById("player_one_animations"),
   defaultTakeName: "walk",
-  translation: new Vector2(32, 32),
+  translation: new Vector2(32, 400),
   rotation: 0,
   scale: new Vector2(1, 1),
   origin: new Vector2(0, 0),
@@ -606,6 +730,7 @@ const PLAYER_ONE_DATA = Object.freeze({
   lookDirection: new Vector2(0, 1), //straight-down according to source image
   moveKeys: [Keys.W, Keys.S, Keys.A, Keys.D],
   moveSpeed: 0.04,
+  health: 100,
   rotateSpeed: 0.004,
   gravityType: GravityType.Off, //top-down so no gravity
   frictionType: FrictionType.Normal, 
@@ -618,7 +743,7 @@ const PLAYER_ONE_DATA = Object.freeze({
       maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
       startCellIndex: 0,
       endCellIndex: 2,
-      boundingBoxDimensions: new Vector2(16, 21), 
+      boundingBoxDimensions: new Vector2(16, 16), 
       cellData: [
         new Rect(128, 75, 16, 21),
         new Rect(144, 75, 16, 21),
@@ -658,6 +783,7 @@ const PLAYER_TWO_DATA = Object.freeze({
   lookDirection: new Vector2(0, 1), //straight-down according to source image
   moveKeys: [Keys.I, Keys.K, Keys.J, Keys.L],
   moveSpeed: 0.15,
+  health: 100,
   rotateSpeed: 0.004,
   gravityType: GravityType.Off, //top-down so no gravity
   frictionType: FrictionType.Normal, 

@@ -29,7 +29,11 @@ class SamPlayerBehavior {
       this.hit = false;
       this.lookDirection = lookDirection;
       this.moveSpeed = moveSpeed;
-      this.rotateSpeed = rotateSpeed;
+      this.rotateSpeed = rotateSpeed; 
+      this.totalBehaviorTime = 500;
+      this.isRunning = false;
+      this.currentTime = 0;
+      this.timeToUpdate = 0;
     }
   
     //#region Your Game Specific Methods - add code for more CD/CR or input handling
@@ -66,7 +70,7 @@ class SamPlayerBehavior {
         
     
       
-      this.HandleEnemyCollision(parent);
+      // this.HandleEnemyCollision(parent);
       this.HandleArchitectureCollision(parent);
       
     }
@@ -85,7 +89,9 @@ class SamPlayerBehavior {
           //remove coin
           if(this.hit == false){
             this.timer.Start();
-          NotificationCenter.Notify(
+            
+            // this.flashHealth(parent);
+            NotificationCenter.Notify(
             new Notification(NotificationType.Sound, NotificationAction.Play, [
               "coin_pickup"]));
 
@@ -95,18 +101,44 @@ class SamPlayerBehavior {
               NotificationAction.Damage,
               [5, parent]));
               this.hit = true;
-
+            
             }
             else{
               if(this.timer.GetElapsedTime() >= 2000)
               {
                 this.hit = false;
                 this.timer.Reset();
-              }
-              else{
+
                 
               }
             }  
+        }
+      }
+    }
+
+    flashHealth(parent, gameTime)
+    {
+      if(this.hit){
+      this.timeToUpdate += gameTime.ElapsedTimeInMs;
+      this.currentTime += gameTime.ElapsedTimeInMs;
+       if(this.currentTime <= 2000)
+       {
+        if(this.timeToUpdate % 10 == 0 && this.timeToUpdate % 4 == 0)
+        {
+          parent.Artist.alpha = 1;
+        }
+        else(this.timeToUpdate % 10 == 0 && this.timeToUpdate % 2 == 0)
+        {
+          parent.Artist.alpha = .25;
+        }
+       }
+        else{
+            //reset
+            this.statusType = StatusType.Off;
+            this.isRunning = false;
+            this.currentTime = 0;
+            parent.Artist.alpha = 1;
+            this.hit = false;
         }
       }
     }
@@ -142,7 +174,10 @@ class SamPlayerBehavior {
       this.ApplyForces(parent);
       this.CheckCollisions(parent);
       this.ApplyInput(parent);
+      this.flashHealth(parent, gameTime);
     }
+
+    
    
     ApplyForces(parent) {
       //notice we need to slow body in X and Y and we dont ApplyGravity() in a top-down game

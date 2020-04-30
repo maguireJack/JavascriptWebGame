@@ -275,9 +275,9 @@ class Game {
   LoadCanvases() {
     //get a handle to our context
     this.screenTop = GDGraphics.GetScreenObject("parent-top", "canvas-top", "player-ui-top",
-      new Vector2(0, 0), new Vector2(840, 346), "#1a1a1a");
+      new Vector2(0, 0), new Vector2(840, 346), "#401b1b");
     this.screenBottom = GDGraphics.GetScreenObject("parent-bottom", "canvas-bottom", "player-ui-bottom",
-      new Vector2(0, 0), new Vector2(840, 346), "#1a1a1a");
+      new Vector2(0, 0), new Vector2(840, 346), "#401b1b");
   }
 
   LoadCameras() {

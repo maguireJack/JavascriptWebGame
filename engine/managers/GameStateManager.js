@@ -9,8 +9,8 @@ class GameStateManager{
 
     id = "";
     context;
-    playerOneHealth = 100;
-    playerTwoHealth = 100;
+    // playerOneHealth = 100;
+    // playerTwoHealth = 100;
     debugEnabled = false;
     isDamagable = true;
     
@@ -51,6 +51,17 @@ class GameStateManager{
   
     Update(gameTime)
     {
+      
+
+
+      // if(this.playerOneHealth <= 0)
+      // {
+        
+      // }
+      // else if(this.playerTwoHealth <= 0)
+      // {
+      //   //lose condition
+      // }
 
     }
 
@@ -61,13 +72,12 @@ class GameStateManager{
 
     Damage(damage, target)
     {
-        if(target.id == "player 1")
-        {
+      
+        
           console.log("Damaging " + target.id + " for " + damage);
-        }else if(target == "player 2")
-        {
-
-        }
+          // target.health-=damage;
+          
+      
     }
 
 }
