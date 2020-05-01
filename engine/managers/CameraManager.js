@@ -95,10 +95,12 @@ class CameraManager {
   }
 */
 
-  Update(gameTime) {
-    //should we be updating?
-    if ((this.ActiveCamera.StatusType & StatusType.IsUpdated) != 0) {
-      this.ActiveCamera.Update(gameTime);
+Update(gameTime) {
+
+  for (let i = 0; i < this.cameras.length; i++) {
+    if ((this.cameras[i].StatusType & StatusType.IsUpdated) != 0) {
+      this.cameras[i].Update(gameTime);
     }
   }
+}
 }

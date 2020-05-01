@@ -128,7 +128,7 @@ class Killable {
     Execute(gameTime, parent) {
       this.HandleInput(gameTime, parent);
       this.ApplyForces(parent);
-      this.CheckCollisions(parent);
+      // this.CheckCollisions(parent);
       this.ApplyInput(parent);
     }
    
@@ -140,19 +140,29 @@ class Killable {
   
     HandleArchitectureCollision(parent) {
       let sprites = this.objectManager.Get(ActorType.Architecture);
-  
-      for (let i = 0; i < sprites.length; i++) {
-        let sprite = sprites[i];
-        let collisionLocationType = Collision.GetCollisionLocationType(parent,sprite);
-  
-        if (collisionLocationType === CollisionLocationType.Left ||
-          collisionLocationType === CollisionLocationType.Right) {
+
+    for (let i = 0; i < sprites.length; i++) {
+      let sprite = sprites[i];
+      let collisionLocationType = Collision.GetIntersectsLocation(parent, sprite);
+
+      //the code below fixes a bug which caused sprites to stick inside an object
+      if (collisionLocationType === CollisionLocationType.Left) {
+        if (parent.Body.velocityX <= 0)
           parent.Body.SetVelocityX(0);
-        } else if (collisionLocationType === CollisionLocationType.Bottom || 
-          collisionLocationType === CollisionLocationType.Top) {
-          parent.Body.SetVelocityY(0);
-        }
+      } else if (collisionLocationType === CollisionLocationType.Right) {
+        if (parent.Body.velocityX >= 0)
+          parent.Body.SetVelocityX(0);
       }
+      //the code below fixes a bug which caused sprites to stick inside an object
+      if (collisionLocationType === CollisionLocationType.Top) {
+        if (parent.Body.velocityY <= 0)
+          parent.Body.SetVelocityY(0);
+      } else if (collisionLocationType === CollisionLocationType.Bottom) {
+        if (parent.Body.velocityY >= 0)
+          parent.Body.SetVelocityY(0);
+      }
+
+    }
     }
   
     ApplyInput(parent) {

@@ -1,13 +1,15 @@
 class MyMenuManager {
 
-    constructor(id, notificationCenter, keyboardManager, menuID, canvasID, toggleMenuKey) {
+    constructor(id, notificationCenter, keyboardManager, screenObject, sentinelObject = null) {
         this.id = id;
         this.notificationCenter = notificationCenter;
         this.keyboardManager = keyboardManager;
-        this.menuID = menuID;
-        this.canvasID = canvasID;
-        this.toggleMenuKey = toggleMenuKey;
-
+        this.menuID = screenObject.parentDivID;
+        this.canvasID = screenObject.canvasID;
+        //#region DOM related Intro & Loader functionality
+        this.introID = screenObject.introID;
+        this.sentinelObject = sentinelObject;
+        //#endregion
         this.RegisterForNotifications();
         this.Initialize();
     }

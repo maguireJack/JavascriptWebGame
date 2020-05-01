@@ -68,25 +68,25 @@ class GDGraphics{
      * @returns                         Object of canvas related data.
      * @memberof GDGraphics
      */
-    static GetScreenObject(parentDivID, canvasID, uiID, topLeft, clearScreenColor){
+    static GetScreenObject(playerID, cameraID, parentDivID, canvasID, introID, uiID, topLeft, dimensions, clearScreenColor){
         //get handles
         let cvs_ref = document.getElementById(canvasID);
         let ctx_ref = cvs_ref.getContext("2d");
 
-        //move the context because the top-left of the canvas is not always (0,0) (e.g. a second screen located to the right of the first screen with topLeft of (640, 0))
-        ctx_ref.translate(-topLeft.x, -topLeft.y);
-    
         return {
-          id:            canvasID,
-          //attrib name: variable name (dont confuse the two, or change attribute name to something like "parent")
-          parentDivID:   parentDivID,
-          uiID:          uiID,
-          cvs:           cvs_ref,
-          ctx:           ctx_ref,
-          width:         cvs_ref.clientWidth,
-          height:        cvs_ref.clientHeight,
-          topLeft:       topLeft,
-          clearScreenColor: clearScreenColor
+            //attrib name: variable name (dont confuse the two, or change attribute name to something like "parent")
+            playerID: playerID, //e.g. "player1" (unique ID specified when we create player Sprite)
+            cameraID: cameraID, //e.g. the ID used when creating the camera for this screen
+            parentDivID: parentDivID, //e.g. parent-top (see HTML file for the values of these IDs)
+            canvasID: canvasID, //e.g. canvas-top
+            introID: introID,
+            uiID: uiID, //e.g. player-ui-top
+            cvs: cvs_ref,
+            ctx: ctx_ref,
+            topLeft: topLeft,
+            dimensions: dimensions,
+            origin: Vector2.Zero,
+            clearScreenColor: clearScreenColor
         };
       }
 }

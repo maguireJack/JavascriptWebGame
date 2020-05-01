@@ -34,9 +34,9 @@ body {
 #parent-top,
 #parent-bottom,
 .menu {
-  width: 400;
+  width: 800;
   /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
-  height: 600;
+  height: 200;
   /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
 }
 
@@ -44,13 +44,13 @@ body {
 .game-canvas
 {
   z-index: 1;
-  left: 75%;
 }
 
 #parent-bottom,
 .game-canvas
 {
   z-index: 1;
+  top: 45%;
   
 }
 
@@ -85,7 +85,7 @@ body {
 #parent-top,
 #canvas-top
 {
-  top: 10px;
+  top: 400px;
 }
 
 #parent-bottom,

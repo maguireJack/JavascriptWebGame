@@ -155,6 +155,7 @@ class Game {
   soundManager;
   gameStateManager;
   cameraManager;
+  playerSprites = new Array();
 
   //multi-player count and ready test
   readyPlayers = 0;
@@ -274,12 +275,20 @@ class Game {
 
   LoadCanvases() {
     //get a handle to our context
-    this.screenTop = GDGraphics.GetScreenObject("parent-top", "canvas-top", "player-ui-top",
-      new Vector2(0, 0), new Vector2(840, 346), "#401b1b");
-    this.screenBottom = GDGraphics.GetScreenObject("parent-bottom", "canvas-bottom", "player-ui-bottom",
-      new Vector2(0, 0), new Vector2(840, 346), "#401b1b");
-  }
+    this.screenTop = GDGraphics.GetScreenObject("player 1", "camera top", "parent-top", 
+    "canvas-top", "player-intro-top", "player-ui-top",
+      new Vector2(0, 0), new Vector2(840, 346), Color.LightGreen);
 
+    this.screenBottom = GDGraphics.GetScreenObject("player 2", "camera bottom", "parent-bottom", 
+    "canvas-bottom", "player-intro-bottom", "player-ui-bottom",
+      new Vector2(0, 0), new Vector2(840, 346), Color.LightGreen);
+  }
+  GetTargetPlayer(playerIndex) {
+    if (playerIndex >= 0 && playerIndex < this.playerSprites.length)
+      return this.playerSprites[playerIndex];
+    else
+      throw "Error: A behavior (e.g. TrackTargetTranslationBehavior) is looking for a player index that does not exist. Are there sufficient sprites in the playerSprites array?";
+  }
   LoadCameras() {
 //#region Camera 1    
     let transform = new Transform2D(
@@ -299,28 +308,29 @@ class Game {
       this.screenTop.ctx
     );
 
+    cameraTop.AttachBehavior(new TrackTargetTranslationBehavior(this, 0, new Vector2(0, -100)));
     this.cameraManager.Add(cameraTop);
 //#endregion
 
 //#region Camera 2
-    transform = new Transform2D(
-      new Vector2(0, 0),
-      0,
-      new Vector2(1.25, 1.25),
-      new Vector2(0,0),
-      new Vector2(this.screenBottom.width, this.screenBottom.height),
-      0
-    );
+transform = new Transform2D(
+  new Vector2(0, 0),
+  0,
+  new Vector2(1.25, 1.25),
+  new Vector2(this.screenBottom.width/2, this.screenBottom.dimensions.height/2),
+  new Vector2(this.screenBottom.width, this.screenBottom.dimensions.height));
 
-    let cameraBottom = new Camera2D(
-      "camera bottom",
-      ActorType.Camera,
-      transform,
-      StatusType.IsUpdated,
-      this.screenBottom.ctx
-    );
+let cameraBottom = new Camera2D(
+  "camera bottom",
+  ActorType.Camera,
+  transform,
+  StatusType.IsUpdated,
+  this.screenBottom.ctx
+);
 
-    this.cameraManager.Add(cameraBottom);
+
+cameraBottom.AttachBehavior(new TrackTargetTranslationBehavior(this, 1, new Vector2(0, -100)));
+this.cameraManager.Add(cameraBottom);
 //#endregion
 
   }
@@ -355,10 +365,10 @@ class Game {
 
     //load a menu managers for each screen since they need to function independently
     this.menuManagerTop = new MyMenuManager("menu-top", this.notificationCenter, this.keyboardManager, 
-                            this.screenTop.parentDivID, this.screenTop.id);
+                            this.screenTop, this.startGameSentinel);
 
     this.menuManagerBottom = new MyMenuManager("menu-bottom", this.notificationCenter, this.keyboardManager, 
-                            this.screenBottom.parentDivID, this.screenBottom.id);
+                            this.screenBottom, this.startGameSentinel);
 
     //audio - step 3 - instanciate the sound manager with the array of cues
     this.soundManager = new SoundManager(
@@ -400,7 +410,14 @@ class Game {
     // this.LoadAnimatedSprite(PICKUP_COIN_ANIMATION_DATA);
 
     // //load players
-    this.LoadAnimatedPlayerSprite(PLAYER_ONE_DATA);
+    let sprite = this.LoadAnimatedPlayerSprite(PLAYER_ONE_DATA);
+    this.objectManager.Add(sprite);
+    this.playerSprites[0] = sprite;
+
+    sprite = this.LoadAnimatedPlayerSprite(PLAYER_TWO_DATA);
+    this.objectManager.Add(sprite);
+    this.playerSprites[1] = sprite;
+
     this.LoadWeapon(WEAPON_SWORD, PLAYER_ONE_DATA);
     
 
@@ -523,7 +540,7 @@ class Game {
         playerObject.moveSpeed,
         playerObject.rotateSpeed));
 
-  this.objectManager.Add(playerSprite); //add animated player sprite                  
+  return playerSprite; //add animated player sprite                  
 
   }
 

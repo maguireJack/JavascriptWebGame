@@ -272,18 +272,24 @@ const FLOOR_DATA = Object.freeze({
   maxBlockWidth: 16,
   maxBlockHeight: 16, 
   levelLayoutArray: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
     
   ]
 
@@ -767,27 +773,27 @@ const PLAYER_ONE_DATA = Object.freeze({
 
 const PLAYER_TWO_DATA = Object.freeze({
   id: "player 2",
-  spriteSheet: document.getElementById("player_two_animations"),
+  spriteSheet: document.getElementById("player_one_animations"),
   defaultTakeName: "walk",
-  translation: new Vector2(334, 1175),
+  translation: new Vector2(40, 400),
   rotation: 0,
-  scale: new Vector2(0.5, 0.5),
+  scale: new Vector2(1, 1),
   origin: new Vector2(0, 0),
   actorType: ActorType.Player,
   collisionType: CollisionType.Collidable,
   statusType: StatusType.IsDrawn | StatusType.IsUpdated,
   scrollSpeedMultiplier: 1,
-  layerDepth: 0,
+  layerDepth: 1,
   explodeBoundingBoxInPixels: 0,
   alpha: 1,
   lookDirection: new Vector2(0, 1), //straight-down according to source image
   moveKeys: [Keys.I, Keys.K, Keys.J, Keys.L],
-  moveSpeed: 0.15,
+  moveSpeed: 0.04,
   health: 100,
   rotateSpeed: 0.004,
   gravityType: GravityType.Off, //top-down so no gravity
   frictionType: FrictionType.Normal, 
-  maximumSpeed: 2,
+  maximumSpeed: 5,
   takes: {  
     "walk" :  {
       fps: 6,
@@ -796,15 +802,15 @@ const PLAYER_TWO_DATA = Object.freeze({
       maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
       startCellIndex: 0,
       endCellIndex: 2,
-      boundingBoxDimensions: new Vector2(100, 100), 
+      boundingBoxDimensions: new Vector2(16, 16), 
       cellData: [
-        new Rect(0, 0, 98, 98),
-        new Rect(98, 0, 98, 98),
-        new Rect(196, 0, 98, 98),
+        new Rect(128, 75, 16, 21),
+        new Rect(144, 75, 16, 21),
+        new Rect(160, 75, 16, 21)
       ]
     },
     "idle" :  {
-      fps: 10,
+      fps: 1,
       leadInDelayMs: 0,
       leadOutDelayMs: 0,
       maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
@@ -812,7 +818,7 @@ const PLAYER_TWO_DATA = Object.freeze({
       endCellIndex: 0,
       boundingBoxDimensions: new Vector2(100, 100), 
       cellData: [
-        new Rect(0, 0, 98, 98) //play frame where player stands repeatedly
+        new Rect(112, 32, 16, 16) //play frame where player stands repeatedly
       ]
     }
   }

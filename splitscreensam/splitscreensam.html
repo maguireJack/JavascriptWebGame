@@ -49,7 +49,7 @@
                 </ul>
             </div>
         </div> 
-        <canvas id='canvas-top' class="game-canvas" width='400' height='600' style="display: none;"></canvas>
+        <canvas id='canvas-top' class="game-canvas" width='800' height='350' style="display: none;"></canvas>
         <div id="player-ui-top" class="ui-player"></div>
     </div>
 
@@ -90,7 +90,7 @@
                 </ul>
             </div>
         </div> 
-        <canvas id='canvas-bottom' class="game-canvas" width='400' height='600' style="display: none;"></canvas>
+        <canvas id='canvas-bottom' class="game-canvas" width='800' height='350' style="display: none;"></canvas>
         <div id="player-ui-bottom" class="ui-player"></div> 
     </div>
 
@@ -111,6 +111,7 @@
     <script src="../engine/types/Transform2D.js"></script>
     <script src="../engine/types/Rect.js"></script>
     <script src="../engine/types/Matrix.js"></script>
+    <script src="../engine/types/Circle.js"></script>
 
     <script src="../engine/physics/Body.js"></script>
     <script src="../engine/physics/Collision.js"></script>
@@ -192,6 +193,8 @@
     <script src="gdgame/gdbehaviors/camera/ThirdPersonCameraBehavior.js"></script>
 
     <script src="gdgame/gdbehaviors/player/SamPlayerBehavior.js"></script>
+
+    <script src="gdgame/gdbehaviors/target/TrackTargetTranslationBehavior.js"></script>
 
     <script src="gdgame/gdbehaviors/player/Killable.js"></script>
 
