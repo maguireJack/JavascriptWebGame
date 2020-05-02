@@ -1,44 +1,363 @@
 /**
- * Provides functions relating to CD/CR
- * @author
+ * Parent class for the two types of collision primitive (circle or box) used by a Sprite for CD/CR.
+ * @author niall mcguinness
  * @version 1.0
- * @class 
-class Collision
+ * @class CollisionPrimitive
+ */
+class CollisionPrimitive {
+
+    //#region Fields
+    transform2D;
+    isDirty = true;
+    //#endregion
+
+    //#region Properties
+    get Transform2D() {
+        return this.transform2D;
+    }
+    set Transform2D(transform2D) {
+        this.transform2D = transform2D;
+    }
+    get IsDirty() {
+        return this.isDirty;
+    }
+    set IsDirty(isDirty) {
+        this.isDirty = isDirty;
+    }
+    //#endregion
+
+    constructor(transform2D) {
+        this.transform2D = transform2D;
+    }
+
+    GetBoundingPrimitive() {
+        throw "Error: Base class is never directly instanciated - Create RectCollisionPrimitive or CircleCollisionPrimitive for your Sprite";
+    }
+
+    /**
+     * Called by the DebugDrawer to draw the collision surface to the canvas. In normal gameplay this method is never called
+     * because the DebugDrawer is disabled.
+     *
+     * @param {Context} context
+     * @param {number} alpha
+     * @param {number} lineWidth
+     * @param {string} strokeStyle
+     * @memberof CircleCollisionPrimitive
+     */
+    DebugDraw(context, alpha, lineWidth, strokeStyle) {
+        context.globalAlpha = alpha;
+        context.lineWidth = lineWidth;
+        context.strokeStyle = strokeStyle;
+    }
+
+    ToString() {
+        throw "Error: Base class is never directly instanciated - Create RectCollisionPrimitive or CircleCollisionPrimitive for your Sprite";
+    }
+}
+
+/**
+ * Creates a collision primitive based on a rectangle used by a Sprite for CD/CR.
+ * This class provides the Intersect() method to test for collisions.
+ * @author niall mcguinness
+ * @version 1.0
+ * @class RectCollisionPrimitive
+ */
+class RectCollisionPrimitive extends CollisionPrimitive {
+
+    //#region Fields
+    rectDimensions;
+    explodeRectBy;
+    boundingRectangle; //rectangle
+    //#endregion
+
+    //#region Properties
+    //#endregion
+
+    constructor(transform2D, explodeRectBy) {
+        super(transform2D);
+
+        if (explodeRectBy % 2 == 0)
+            this.explodeRectBy = explodeRectBy;
+        else if (explodeRectBy % 2 == 1)
+            throw "Error: explodeBy value must be an even integer value since we ue it to expand/collapse the rectangle primitive!";
+
+        //call once to set the first time in
+        this.GetBoundingPrimitive();
+    }
+
+    Move(x, y) {
+        this.boundingRectangle.Move(x, y);
+    }
+
+    /**
+     * Returns the appropriate bounding primitive (e.g. rect or circle) for the class type.
+     * This method is optimized to ONLY calculate a new Rect IF the associated transform changes OR if the explodeBy value changes
+     *
+     * @returns Rect describing the bounding surface
+     * @memberof RectCollisionPrimitive
+     */
+    GetBoundingPrimitive() {
+
+        //check associated Transform2D dirty flag and check local flag which indicates changes to explodeRectBy 
+        if (this.transform2D.isDirty || this.isDirty) {
+            let w = this.transform2D.scale.x * this.transform2D.dimensions.x;
+            let h = this.transform2D.scale.y * this.transform2D.dimensions.y;
+            let x = this.transform2D.translation.x - this.transform2D.origin.x * this.transform2D.scale.x;
+            let y = this.transform2D.translation.y - this.transform2D.origin.y * this.transform2D.scale.y;
+
+            //expand/collapse if necessary
+            if (this.explodeRectBy != 0) {
+                let explodeByHalf = this.explodeRectBy / 2;
+                //make wider and taller and move (x,y) up and left based on +ve explodeBy value
+                x -= explodeByHalf;
+                y -= explodeByHalf;
+                w += this.explodeRectBy;
+                h += this.explodeRectBy;
+            }
+            //set the new bounding box
+            this.boundingRectangle = new Rect(x, y, w, h);
+            //set associated Transform2D dirty flag to false until translation, rotation, scale, or origin change again
+            this.transform2D.IsDirty = false;
+            //set local dirty flag to false
+            this.isDirty = false;
+        }
+        return this.boundingRectangle;
+    }
+
+    /**
+     * Called by the DebugDrawer to draw the collision surface to the canvas. In normal gameplay this method is never called
+     * because the DebugDrawer is disabled.
+     *
+     * @param {Context} context
+     * @param {number} alpha
+     * @param {number} lineWidth
+     * @param {string} strokeStyle
+     * @memberof CircleCollisionPrimitive
+     */
+    DebugDraw(context, alpha, lineWidth, strokeStyle) {
+        super.DebugDraw(context, alpha, lineWidth, strokeStyle);
+        context.strokeRect(this.boundingRectangle.x, this.boundingRectangle.y,
+            this.boundingRectangle.width, this.boundingRectangle.height);
+    }
+
+    ToString() {
+        return this.boundingRectangle.ToString();
+    }
+}
+
+/**
+ * Creates a collision primitive based on a circle used by a Sprite for CD/CR.
+ * This class provides the Intersect() method to test for collisions.
+ * @author niall mcguinness
+ * @version 1.0
+ * @class RectCollisionPrimitive
+ */
+class CircleCollisionPrimitive extends CollisionPrimitive {
+
+    //#region Fields
+    radius;
+    boundingCircle; //circle
+    //#endregion
+
+    //#region Properties
+    //#endregion
+
+    constructor(transform2D, radius) {
+        super(transform2D);
+        this.radius = radius;
+
+        //call once to set the first time in
+        this.GetBoundingPrimitive();
+    }
+
+    Move(x, y) {
+        this.boundingCircle.Move(x, y);
+    }
+
+    /**
+     * Returns the appropriate bounding primitive (e.g. rect or circle) for the class type.
+     * This method is optimized to ONLY calculate a new Rect IF the associated transform changes OR if the radius value changes
+     *
+     * @returns Circle describing the bounding surface
+     * @memberof CircleCollisionPrimitive
+     */
+    GetBoundingPrimitive() {
+        //check associated Transform2D dirty flag and check local flag which indicates changes to radius 
+        if (this.transform2D.isDirty || this.isDirty) {
+          
+            //set the new bounding circle
+            this.boundingCircle = new Circle(this.transform2D.translation, this.radius);
+            //set associated Transform2D dirty flag to false until translation, rotation, scale, or origin change again
+            this.transform2D.isDirty = false;
+            //set local dirty flag to false
+            this.isDirty = false;
+        }
+        return this.boundingCircle;
+    }
+
+    /**
+     * Called by the DebugDrawer to draw the collision surface to the canvas. In normal gameplay this method is never called
+     * because the DebugDrawer is disabled.
+     *
+     * @param {Context} context
+     * @param {number} alpha
+     * @param {number} lineWidth
+     * @param {string} strokeStyle
+     * @memberof CircleCollisionPrimitive
+     */
+    DebugDraw(context, alpha, lineWidth, strokeStyle) {
+        context.beginPath();
+        super.DebugDraw(context, alpha, lineWidth, strokeStyle);
+        context.arc(this.boundingCircle.center.x, this.boundingCircle.center.y, this.radius, 0, 2 * Math.PI);
+        context.stroke();
+    }
+
+    ToString() {
+        return this.boundingCircle.ToString();
+    }
+}
+
+ /**
+ * Represents the 4 possible directions that a collision can take place between two actors. We retun this type from the
+ * GetIntersectsLocation method which is normally called when testing for collisions between an actor and architecture.
+ * Why? Because when we collide with architecture we need to see in what direction the collision has taken place so that
+ * we can set the velocity in that direction to 0.
+ * 
+ * @see SamPlayerBehavior::HandleArchitectureCollision()
+ * @see Collision::GetIntersectsLocation()
+ * @class Collision
  */
 const CollisionLocationType = Object.freeze({
-    Top: 0,
-    Right: 1,
-    Bottom: 2,
-    Left: 3
+    Top: 1,         //0001
+    Right: 2,       //0010
+    Bottom: 4,      //0100
+    Left: 8         //1000
 });
 
+ /**
+ * Represents the 3 possible options for a collision primitive for an actor (i.e. non-collidable with None, and collidable with a Rectangle or Circle collision surface).
+ * 
+ * @see MyConstants and collisionProperties found in a number of objects in this file
+ * @class Collision
+ */
+const CollisionPrimitiveType = Object.freeze({
+    None: 1,
+    Rectangle: 2,
+    Circle: 4,
+    /*
+    //possible future types...
+    Capsule : 8,
+    Line: 16
+    */
+});
+
+ /**
+ * Provides Intersects and GetIntersectsLocation methods used by Sprites to determine if a collision has occured.
+ * @author niall mcguinness
+ * @version 1.0
+ * @class Collision
+ */
 class Collision {
 
-    //ùsed to determine on what side we collides with spriteB - normally only used for platforms
-    static GetCollisionLocationType(spriteA, spriteB) {
+    /**
+     * Test for intersection between two actors. If one or more of the actors have a body then this method will predict if the actors WILL collide. 
+     * This predictive collision detection prevents the actors from colliding and then being locked together (because the collision response blocks any further movement)
+     *
+     * @static
+     * @param {Actor2D} actorA A collider representing an actor testing for collision against a collidee (e.g. a player (collider) against a wall (collidee))
+     * @param {Actor2D} actorB A collidee representing the actor being testing for collision against
+     * @returns True if intersection, otherwise false
+     * @memberof Collision
+     */
+    static Intersects(actorA, actorB) {
 
-        let boundingBoxA = new Rect(spriteA.Transform2D.BoundingBox.X + spriteA.Body.velocityX,
-                                            spriteA.Transform2D.BoundingBox.Y + spriteA.Body.velocityY,
-                                            spriteA.Transform2D.BoundingBox.Width, spriteA.Transform2D.BoundingBox.Height); 
-        let boundingBoxB = spriteB.Transform2D.BoundingBox;        
+        //if same (e.g. player testing against themself then return false)
+        if (actorA === actorB)
+            return false;
 
-        // get the vectors to check against
-        let vX = boundingBoxA.Center.X - boundingBoxB.Center.X, 
-                vY = boundingBoxA.Center.Y - boundingBoxB.Center.Y;
+        //get bounding primitives for the two actors
+        let boundingPrimitiveA = actorA.collisionPrimitive.GetBoundingPrimitive();
+        let boundingPrimitiveB = actorB.collisionPrimitive.GetBoundingPrimitive();
 
-        // add the half widths and half heights of the objects
-        let hWidths = (boundingBoxA.Width + boundingBoxB.Width)/2,  
-                hHeights = (boundingBoxA.Height + boundingBoxB.Height)/2;
+        //if A has a body (i.e. it moves) then project the bounding primitive to where it WOULD be if the move was applied
+        if (actorA.body != null) {
+            boundingPrimitiveA = actorA.collisionPrimitive.GetBoundingPrimitive().Clone();
+            boundingPrimitiveA.Move(actorA.body.velocityX, actorA.body.velocityY); //predictive collision
+        }
 
+        //if B has a body (i.e. it moves) then project the bounding primitive to where it WOULD be if the move was applied
+        if (actorB.body != null) {
+            boundingPrimitiveB = actorB.collisionPrimitive.GetBoundingPrimitive().Clone();
+            boundingPrimitiveB.Move(actorB.body.velocityX, actorB.body.velocityY);
+        }
+
+        if (actorA.CollisionPrimitive instanceof CircleCollisionPrimitive &&
+            actorB.CollisionPrimitive instanceof RectCollisionPrimitive) {
+            return Collision.IntersectsCircleRect(boundingPrimitiveA, boundingPrimitiveB);
+        } 
+        else if (actorA.CollisionPrimitive instanceof RectCollisionPrimitive &&
+            actorB.CollisionPrimitive instanceof CircleCollisionPrimitive) {
+            return Collision.IntersectsCircleRect(boundingPrimitiveB, boundingPrimitiveA);
+        } 
+        else {
+            return boundingPrimitiveA.Intersects(boundingPrimitiveB);
+        }
+    }
+
+     /**
+     * Test for intersection between two actors. If one or more of the actors have a body then this method will predict if the actors WILL collide. 
+     * This predictive collision detection prevents the actors from colliding and then being locked together (because the collision response blocks any further movement)
+     * 
+     * 
+     * @static
+     * @param {Actor2D} actorA A collider representing an actor testing for collision against a collidee (e.g. a player (collider) against a wall (collidee))
+     * @param {Actor2D} actorB A collidee representing the actor being testing for collision against
+     * @returns CollisionLocationType indicating the direction of the intersection, otherwise null
+     * @memberof Collision
+     */
+    static GetIntersectsLocation(actorA, actorB) {
         let collisionLocationType = null;
-    
+
         // if the x and y vector are less than the half width or half height, they we must be inside the object, causing a collision
-        if (Math.abs(vX) < hWidths && Math.abs(vY) < hHeights) {
-            
+        if (Collision.Intersects(actorA, actorB)) {
+
+            let boundingBoxA = actorA.collisionPrimitive.GetBoundingPrimitive();
+            let boundingBoxB = actorB.collisionPrimitive.GetBoundingPrimitive();
+
+            if (actorA.body != null) {
+                boundingBoxA = actorA.collisionPrimitive.GetBoundingPrimitive().Clone();
+                boundingBoxA.Move(actorA.body.velocityX, actorA.body.velocityY);
+            }
+
+            //if B has a body (i.e. it moves) then project the bounding primitive to where it WOULD be if the move was applied
+            if (actorB.body != null) {
+                boundingBoxB = actorB.collisionPrimitive.GetBoundingPrimitive().Clone();
+                boundingBoxB.Move(actorB.body.velocityX, actorB.body.velocityY);
+            }
+
+            let hWidths = 0, hHeights = 0;
+
+            if (boundingBoxA instanceof Rect && boundingBoxB instanceof Rect) {
+                hWidths = (boundingBoxA.width + boundingBoxB.width) / 2;
+                hHeights = (boundingBoxA.height + boundingBoxB.height) / 2;
+            } else if (boundingBoxA instanceof Rect && boundingBoxB instanceof Circle) {
+                hWidths = (boundingBoxA.width + boundingBoxB.radius) / 2;
+                hHeights = (boundingBoxA.height + boundingBoxB.radius) / 2;
+            } else if (boundingBoxA instanceof Circle && boundingBoxB instanceof Rect) {
+                hWidths = (boundingBoxA.radius + boundingBoxB.width) / 2;
+                hHeights = (boundingBoxA.radius + boundingBoxB.height) / 2;
+            } else {
+                hWidths = (boundingBoxA.radius + boundingBoxB.radius) / 2;
+                hHeights = (boundingBoxA.radius + boundingBoxB.radius) / 2;
+            }
+
+            let vX = boundingBoxA.Center.x - boundingBoxB.Center.x;
+            let vY = boundingBoxA.Center.y - boundingBoxB.Center.y;
+
             // figures out on which side we are colliding (top, bottom, left, or right)
             let oX = Math.ceil(hWidths - Math.abs(vX));
             let oY = Math.ceil(hHeights - Math.abs(vY));
-                    
+
             if (oX >= oY) {
                 if (vY > 0) {
                     collisionLocationType = CollisionLocationType.Top;
@@ -56,4 +375,21 @@ class Collision {
         return collisionLocationType;
     }
 
+    /**
+     * Test for intersection between two actor collision primitives where the collider is a circle and the collidee is a rect.
+     * 
+     * @static
+     * @param {CollisionPrimitive} circle CollisionPrimitive representing a circular collision surface
+     * @param {CollisionPrimitive} rect CollisionPrimitive representing a rectangular collision surface
+     * @returns True if intersection, otherwise false
+     * @see Collision::Intersects(actorA, actorB) 
+     * @tutorial https://stackoverflow.com/questions/401847/circle-rectangle-collision-detection-intersection
+     * @author https://yal.cc/rectangle-circle-intersection-test/
+     * @memberof Collision
+     */
+    static IntersectsCircleRect(circle, rect) {
+        let deltaX = circle.center.x - Math.max(rect.x, Math.min(circle.center.x, rect.x + rect.width));
+        let deltaY = circle.center.y - Math.max(rect.y, Math.min(circle.center.y, rect.y + rect.height));
+        return (deltaX * deltaX + deltaY * deltaY) < (circle.radius * circle.radius);
+    }
 }

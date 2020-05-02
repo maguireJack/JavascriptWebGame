@@ -57,6 +57,118 @@ class MyMenuManager {
         this.InitializeEventListeners();
     }
 
+
+    StartLoader() {
+
+        //hide the <div> with class="menu" for the correct parent (i.e. each menu has a parent id)
+        this.Hide("#" + this.menuID + " .menu");
+
+        //increment the sentinel to say one more menu will start showing the loader
+        this.sentinelObject.Increment();
+
+        //if the target value for the sentinel has not been reached then it means we need to show the loader
+        if (this.sentinelObject.Value) {
+  
+            //get a handle to the div that we use for adding UI elements for this particular canvas (e.g. player-ui-top)
+            let container = document.querySelector("#" + this.introID);
+
+            //#region Loader
+            let div_loader = document.createElement("div");
+            div_loader.setAttribute("class", "loader");
+            let loaderSpinDurationInSecs = 2;
+            let loaderHighlightColor = "#006739";
+            //notice how we can set the custom properties (e.g. --loader-spin-duration) using JS which will set the CSS style in the CSS file
+            div_loader.setAttribute("style", "margin-top: -50px; margin-left: -50px; --loader-width: 60px; --loader-height: 60px; --loader-spin-duration: " + loaderSpinDurationInSecs + "s; --loader-color: " + loaderHighlightColor + ";");
+            //#endregion
+
+            //#region Loader Background
+            let div_loader_background = document.createElement("div");
+            div_loader_background.setAttribute("class", "loader-background");
+            //#endregion
+
+            //#region Loader Waiting Text
+            let div_loader_text = document.createElement("div");
+            div_loader_text.setAttribute("class", "loader-text");
+            //get the half width of the text when drawn with the font size and family specificed in the CSS style (i.e. ui-info-toast-countdown) so that we can center using margin-left
+            div_loader_text.innerText = "Waiting for player...";
+            div_loader_text.style.font = "16pt Orbitron, Impact, Charcoal, sans-serif";
+            let halfWidth = GDDOM.GetTextDimensions(div_loader_text, div_loader_text.style.font).width / 2;
+            div_loader_text.setAttribute("style", "margin-left: " + -1 * halfWidth + "px;");
+            //#endregion
+
+            //show the elements inside the container for the time specified
+            let toast = GDDOM.ShowElementsWhile(container, [div_loader_background, div_loader, div_loader_text], this.sentinelObject, 0, 200, -1);
+            //then when time elapses and the Promise is resolved call the next function (i.e. ShowStartToast)
+            toast.then(resolve => {
+                this.ShowCountdown();
+            });
+        } else {
+            this.ShowCountdown();
+        }
+    }
+
+    ShowCountdown() {
+
+        //get a handle to the div that we use for adding UI elements for this particular canvas (e.g. player-ui-top)
+        let container = document.querySelector("#" + this.introID);
+
+        //#region Loader Background
+        let div_loader_background = document.createElement("div");
+        div_loader_background.setAttribute("class", "loader-background");
+        //#endregion
+
+        //create the first element in the sequence (i.e. 3)
+        let div_get_ready = document.createElement("div");
+        div_get_ready.setAttribute("class", "ui-info-toast-countdown");
+        div_get_ready.innerText = "3";
+
+        //show the elements inside the container for the time specified
+        GDDOM.ShowElementsFor(container, [div_loader_background, div_get_ready], 0, 1000).then(resolve => {
+
+            //create the next element in the sequence (i.e. 2)
+            let div_get_ready = document.createElement("div");
+            div_get_ready.setAttribute("class", "ui-info-toast-countdown");
+            div_get_ready.innerText = "2";
+
+            //show the elements inside the container for the time specified
+            GDDOM.ShowElementsFor(container, [div_loader_background, div_get_ready], 0, 1000).then(resolve => {
+
+                //create the next element in the sequence (i.e. 1)
+                let div_get_ready = document.createElement("div");
+                div_get_ready.setAttribute("class", "ui-info-toast-countdown");
+                div_get_ready.innerText = "1";
+
+                //show the elements inside the container for the time specified
+                GDDOM.ShowElementsFor(container, [div_loader_background, div_get_ready], 0, 1000).then(resolve => {
+
+                    //create the next element in the sequence (i.e. Go!)
+                    let div_get_ready = document.createElement("div");
+                    div_get_ready.setAttribute("class", "ui-info-toast-countdown");
+                    div_get_ready.innerText = "Go!";
+                    div_get_ready.style.font = "18pt Orbitron, Impact, Charcoal, sans-serif;";
+                    //get the dimensions of the text "Go!" when drawn with the font size and family specificed in the CSS style (i.e. ui-info-toast-countdown)
+                    let halfWidth = GDDOM.GetTextDimensions(div_get_ready,  div_get_ready.style.font).width/2;
+                    div_get_ready.setAttribute("style", "margin-left: " + -1 * halfWidth + ";");
+
+                     //show the elements inside the container for the time specified
+                    GDDOM.ShowElementsFor(container, [div_loader_background, div_get_ready], 0, 1000).then(resolve => {
+
+                        //finally start the game!
+                        this.StartGame();
+                        NotificationCenter.Notify(
+                            new Notification(
+                                NotificationType.Menu,
+                                NotificationAction.ShowMenuChanged,
+                                [StatusType.IsDrawn | StatusType.IsUpdated, this.id]
+                            )
+                        );
+                    });
+                });
+            });
+        });
+    }
+
+
     StartGame() {
         //hide the <div> with class="menu" for the correct parent (i.e. each menu has a parent id)
         this.Hide("#" + this.menuID + " .menu");
@@ -87,16 +199,9 @@ class MyMenuManager {
 
     InitializeEventListeners() {
         document.querySelector("#" + this.menuID + " #play_btn.button").addEventListener("click", event => {
-            this.StartGame();
-
-            //wakes up object and render manager
-            NotificationCenter.Notify(
-                new Notification(
-                  NotificationType.Menu,
-                  NotificationAction.ShowMenuChanged,
-                  [StatusType.IsDrawn | StatusType.IsUpdated, this.id]
-                  )
-                );
+            //#region DOM related Intro & Loader functionality
+            this.StartLoader();
+            //#endregion
         });
 
         document.querySelector("#" + this.menuID + " #customization_btn.button").addEventListener("click", event => {

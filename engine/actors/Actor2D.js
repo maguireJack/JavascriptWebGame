@@ -1,12 +1,16 @@
 /**
  * Represents any entity within a game with position information (e.g. camera, sprite, menu element)
- * @author
- * @version 1.0
+ * This class contains a collisionPrimitive object which stores either a rect or circle collision primitive type.
+ * This means that we can choose which primitive best suits the shape or CD/CR requirements for the actor it will be used with.
+ *
+ * @author niall mcguinness
+ * @version 1.1
  * @class Actor2D
  */
 
 class Actor2D {
   //#region Fields
+  collisionPrimitive;
   //#endregion
 
   //#region  Properties
@@ -25,7 +29,9 @@ class Actor2D {
   get StatusType() {
     return this.statusType;
   }
-
+  get CollisionPrimitive() {
+    return this.collisionPrimitive;
+  }
   set ID(id) {
     this.id = id;
   }
@@ -40,6 +46,9 @@ class Actor2D {
   }
   set StatusType(statusType) {
     this.statusType = statusType;
+  }
+  set CollisionPrimitive(collisionPrimitive) {
+    this.collisionPrimitive = collisionPrimitive;
   }
   //#endregion
 
@@ -67,7 +76,7 @@ class Actor2D {
   /**
    * Use to remove a behavior instance, by id, from the array of behaviors executed for this actor.
    *
-   * @param {String} id
+   * @param {string} id
    * @memberof Actor2D
    */
   DetachBehaviorByID(id) {

@@ -266,7 +266,14 @@ const FLOOR_DATA = Object.freeze({
       scrollSpeedMultiplier: 1,
       layerDepth: 0,
       explodeBoundingBoxInPixels: -14,
-      alpha: 1
+      alpha: 1,
+      collisionProperties: {
+        type: CollisionType.Collidable,
+        primitive: CollisionPrimitiveType.Rectangle,
+        //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+        circleRadius: 0,
+        explodeRectangleBy: 0,
+      }
     }
   },
   maxBlockWidth: 16,
@@ -307,12 +314,18 @@ const WALL_DATA = Object.freeze({
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
       actorType: ActorType.Architecture,
-      collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
       layerDepth: 0,
       explodeBoundingBoxInPixels: 2,
-      alpha: 1
+      alpha: 1,
+      collisionProperties: {
+        type: CollisionType.Collidable,
+        primitive: CollisionPrimitiveType.Rectangle,
+        //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+        circleRadius: 0,
+        explodeRectangleBy: 0,
+      }
     },
     2:{ //Mid Wall Topper
       spriteSheet: document.getElementById("midWallTop"),
@@ -322,12 +335,18 @@ const WALL_DATA = Object.freeze({
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
       actorType: ActorType.Background,
-      collisionType: CollisionType.NotCollidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
       layerDepth: 0,
       explodeBoundingBoxInPixels: 2,
-      alpha: 1
+      alpha: 1,
+      collisionProperties: {
+        type: CollisionType.Collidable,
+        primitive: CollisionPrimitiveType.Rectangle,
+        //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+        circleRadius: 0,
+        explodeRectangleBy: 0,
+      }
     },
     3:{ //Left Wall Corner
       spriteSheet: document.getElementById("leftTopCorner"),
@@ -337,12 +356,18 @@ const WALL_DATA = Object.freeze({
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
       actorType: ActorType.Architecture,
-      collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
       layerDepth: 0,
       explodeBoundingBoxInPixels: 2,
-      alpha: 1
+      alpha: 1,
+      collisionProperties: {
+        type: CollisionType.Collidable,
+        primitive: CollisionPrimitiveType.Rectangle,
+        //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+        circleRadius: 0,
+        explodeRectangleBy: 0,
+      }
     },
     4:{ //Left Side Border Wall
       spriteSheet: document.getElementById("leftSideBorderWall"),
@@ -352,12 +377,18 @@ const WALL_DATA = Object.freeze({
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
       actorType: ActorType.Architecture,
-      collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
       layerDepth: 0,
       explodeBoundingBoxInPixels: 2,
-      alpha: 1
+      alpha: 1,
+      collisionProperties: {
+        type: CollisionType.Collidable,
+        primitive: CollisionPrimitiveType.Rectangle,
+        //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+        circleRadius: 0,
+        explodeRectangleBy: 0,
+      }
     },
     5:{ //Left Side Border Wall
       spriteSheet: document.getElementById("rightTopCorner"),
@@ -367,12 +398,18 @@ const WALL_DATA = Object.freeze({
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
       actorType: ActorType.Architecture,
-      collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
       layerDepth: 0,
       explodeBoundingBoxInPixels: 2,
-      alpha: 1
+      alpha: 1,
+      collisionProperties: {
+        type: CollisionType.Collidable,
+        primitive: CollisionPrimitiveType.Rectangle,
+        //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+        circleRadius: 0,
+        explodeRectangleBy: 0,
+      }
     },
     6:{
       spriteSheet: document.getElementById("rightSideBorderWall"),
@@ -382,12 +419,18 @@ const WALL_DATA = Object.freeze({
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
       actorType: ActorType.Architecture,
-      collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
       layerDepth: 0,
       explodeBoundingBoxInPixels: 2,
-      alpha: 1
+      alpha: 1,
+      collisionProperties: {
+        type: CollisionType.Collidable,
+        primitive: CollisionPrimitiveType.Rectangle,
+        //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+        circleRadius: 0,
+        explodeRectangleBy: 0,
+      }
     },
     7:{
       spriteSheet: document.getElementById("wallCornerFrontLeft"),
@@ -397,12 +440,18 @@ const WALL_DATA = Object.freeze({
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
       actorType: ActorType.Architecture,
-      collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
       layerDepth: 0,
       explodeBoundingBoxInPixels: 2,
-      alpha: 1
+      alpha: 1,
+      collisionProperties: {
+        type: CollisionType.Collidable,
+        primitive: CollisionPrimitiveType.Rectangle,
+        //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+        circleRadius: 0,
+        explodeRectangleBy: 0,
+      }
     },
     8:{
       spriteSheet: document.getElementById("wallCornerFrontRight"),
@@ -412,12 +461,18 @@ const WALL_DATA = Object.freeze({
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
       actorType: ActorType.Architecture,
-      collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
       layerDepth: 0,
       explodeBoundingBoxInPixels: 2,
-      alpha: 1
+      alpha: 1,
+      collisionProperties: {
+        type: CollisionType.Collidable,
+        primitive: CollisionPrimitiveType.Rectangle,
+        //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+        circleRadius: 0,
+        explodeRectangleBy: 0,
+      }
     },
     9:{
       spriteSheet: document.getElementById("wallCornerBottomLeft"),
@@ -427,12 +482,18 @@ const WALL_DATA = Object.freeze({
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
       actorType: ActorType.Architecture,
-      collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
       layerDepth: 0,
       explodeBoundingBoxInPixels: 2,
-      alpha: 1
+      alpha: 1,
+      collisionProperties: {
+        type: CollisionType.Collidable,
+        primitive: CollisionPrimitiveType.Rectangle,
+        //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+        circleRadius: 0,
+        explodeRectangleBy: 2,
+      }
     },
     10:{
       spriteSheet: document.getElementById("wallCornerBottomRight"),
@@ -442,12 +503,18 @@ const WALL_DATA = Object.freeze({
       scale: new Vector2(1, 1),
       origin: new Vector2(0, 0),
       actorType: ActorType.Architecture,
-      collisionType: CollisionType.Collidable,
       statusType: StatusType.IsDrawn,
       scrollSpeedMultiplier: 1,
       layerDepth: 0,
       explodeBoundingBoxInPixels: 2,
-      alpha: 1
+      alpha: 1,
+      collisionProperties: {
+        type: CollisionType.Collidable,
+        primitive: CollisionPrimitiveType.Rectangle,
+        //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+        circleRadius: 0,
+        explodeRectangleBy: 2,
+      }
     }
 
   },
@@ -654,6 +721,13 @@ const WEAPON_SWORD = Object.freeze({
   lookDirection: new Vector2(0, 1),
   attackKey: [Keys.Space],
   swingSpeed: 3,
+  collisionProperties: {
+    type: CollisionType.Collidable,
+    primitive: CollisionPrimitiveType.Rectangle,
+    //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+    circleRadius: 0,
+    explodeRectangleBy: 10,
+  },
   takes: {  
     "idle" :  {
       fps: 6,
@@ -688,6 +762,13 @@ const WEAPON_SWORD_2 = Object.freeze({
   lookDirection: new Vector2(0, 1),
   attackKey: [Keys.Enter],
   swingSpeed: 3,
+  collisionProperties: {
+    type: CollisionType.Collidable,
+    primitive: CollisionPrimitiveType.Rectangle,
+    //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+    circleRadius: 0,
+    explodeRectangleBy: 10,
+  },
   takes: {  
     "idle" :  {
       fps: 6,
@@ -731,6 +812,13 @@ const ENEMY_TYPE_ONE_DATA = Object.freeze({
   gravityType: GravityType.Off, //top-down so no gravity
   frictionType: FrictionType.Normal, 
   maximumSpeed: 5,
+  collisionProperties: {
+    type: CollisionType.Collidable,
+    primitive: CollisionPrimitiveType.Circle,
+    //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+    circleRadius: 10,
+    explodeRectangleBy: 0,
+  },
   takes: {  
     "walk" :  {
       fps: 6,
@@ -775,6 +863,13 @@ const PLAYER_ONE_DATA = Object.freeze({
   gravityType: GravityType.Off, //top-down so no gravity
   frictionType: FrictionType.Normal, 
   maximumSpeed: 5,
+  collisionProperties: {
+    type: CollisionType.Collidable,
+    primitive: CollisionPrimitiveType.Circle,
+    //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+    circleRadius: 10,
+    explodeRectangleBy: 0,
+  },
   takes: {  
     "walk" :  {
       fps: 6,
@@ -828,6 +923,13 @@ const PLAYER_TWO_DATA = Object.freeze({
   gravityType: GravityType.Off, //top-down so no gravity
   frictionType: FrictionType.Normal, 
   maximumSpeed: 5,
+  collisionProperties: {
+    type: CollisionType.Collidable,
+    primitive: CollisionPrimitiveType.Rectangle,
+    //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+    circleRadius: 0,
+    explodeRectangleBy: 10,
+  },
   takes: {  
     "walk" :  {
       fps: 6,

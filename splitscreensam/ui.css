@@ -4,8 +4,25 @@
   box-sizing: content-box;
 }
 
+@font-face {
+  font-family: 'Orbitron';
+  src: url('assets/fonts/orbitron/orbitron-black-webfont.eot');
+  src: url('assets/fonts/orbitron/orbitron-black-webfont.woff') format('woff'),
+    url('assets/fonts/orbitron/orbitron-black-webfont.ttf') format('truetype'),
+    url('assets/fonts/orbitron/orbitron-black-webfont.svg') format('svg');
+}
+
+@font-face {
+  font-family: 'Ostrich';
+  src: url('assets/fonts/ostrich/ostrich-sans-black.eot');
+  src: url('assets/fonts/ostrich/ostrich-sans-black.woff') format('woff'),
+    url('assets/fonts/ostrich/ostrich-sans-black.ttf') format('truetype'),
+    url('assets/fonts/ostrich/ostrich-sans-black.svg') format('svg');
+}
+
 body {
-  font-family: arial, sans-serif;
+  font-family: Orbitron, Impact, Charcoal, sans-serif;
+  letter-spacing: 1px;
   font-size: 18px;
   background-color: rgb(64, 143, 103);
 }
@@ -13,8 +30,8 @@ body {
 /***************************************** Canvases and Parent Div Positioning *****************************************/
 
 #parent-top,
-#parent-bottom
- {
+#parent-bottom,
+.game-canvas {
   /*See https://thoughtbot.com/blog/positioning for a discussion on centering with absolute positioning*/
   position: fixed;
   left: 50%;
@@ -23,83 +40,35 @@ body {
   /*notice this is half the width of the canvas*/
 }
 
-
-.ui-player
- {
-  /*See https://thoughtbot.com/blog/positioning for a discussion on centering with absolute positioning*/
-  position: fixed;
-  left: 10;
-}
-
 #parent-top,
 #parent-bottom,
-.menu {
-  width: 800;
+.game-canvas .menu {
+  width: 840;
   /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
-  height: 200;
+  height: 346px;
   /* CANVAS SPECIFIC SIZE - SET <CANVAS> TAG IN HTML TO SAME SIZE */
 }
 
-#parent-top,
-.game-canvas
-{
+.game-canvas {
   z-index: 1;
 }
 
-#parent-bottom,
-.game-canvas
-{
-  z-index: 1;
-  top: 45%;
-  
-}
-
-.ui-player
-{
-  position: fixed;
-  top: 10px;
-  left: 200px;
-  z-index: 2;
-  display: block;
-}
-
-#player-ui-top,
-#player-ui-bottom{
-  background-image: url("assets/images/hud/hud_empty.png");
-  z-index: 2;
-  display: block;
-  background-color: #146d19;
-   /* Used if the image is unavailable */
-   height: 164px;
-  /* Used if the image is unavailable */
-  height: 69px;
-  /* CANVAS SPECIFIC SIZE - You must set a specified height */
-  background-position: center;
-  /* Center the image */
-  background-repeat: no-repeat;
-  /* Do not repeat the image */
-  background-size: cover;
-  /* Resize the background image to cover the entire container */
-}
-
 #parent-top,
-#canvas-top
-{
-  top: 400px;
+#canvas-top {
+  top: 10px;
 }
 
 #parent-bottom,
-#canvas-bottom
-{
-  top: 10px;
+#canvas-bottom {
+  top: 366px;
   /* CANVAS SPECIFIC SIZE - SEE <CANVAS> TAG IN HTML */
   /*10 above top canvas + 10 space between canvases + 346 for top canvas height*/
 }
 
 .game-canvas {
   display: none;
-  border: 1px solid rgb(255, 255, 255);
-  
+  border: 1px solid white;
+  background-color: #cacb63;
 }
 
 /***************************************** Menu *****************************************/
@@ -109,13 +78,14 @@ body {
 }
 
 .menu {
-  border:  1px solid rgb(255, 255, 255);
+  border: 1px solid white;
   text-align: center;
   z-index: 3;
 }
 
-.menu {
-  background-image: url("assets/images/backgrounds/menu_background.png");
+.menu,
+.loader-background {
+  background-image: url('assets/images/backgrounds/menu_background.png');
   background-color: #1fac26;
   /* Used if the image is unavailable */
   height: 346px;
@@ -130,12 +100,12 @@ body {
 
 .menu h1 {
   color: white;
-  text-shadow: -1px -1px 0 #000;
-  margin-top: 40px;
-  /* CANVAS SPECIFIC MARGIN - SEE <CANVAS> TAG IN HTML */
+  text-shadow: 2px 2px #000000af;
+  margin-top: 60px;
 }
 
 a {
+  font-size: 12pt;
   text-decoration: none;
 }
 
@@ -165,7 +135,7 @@ li {
     rgb(87, 63, 40) 0%,
     rgb(13, 113, 179) 100%
   );
-  border-radius: 10px;
+  border-radius: 5px;
 }
 
 .button:hover {
@@ -177,47 +147,49 @@ li {
   );
 }
 
-/***************************************** UI *****************************************/
-
-.ui_player_name {
-  font-family: arial, sans-serif;
-  font-size: 14px;
-  font-weight: bold;
-  color: #000000;
-  margin: 5px 0px 5px 5px;
-}
-
-
 /***************************************** Loader *****************************************/
-/* to do...add loader screen after main menu */
-/*See https://www.w3schools.com/howto/howto_css_loader.asp*/
-.loader {
-  display: none;
+.loader-background {
+  /*blur*/
+  filter: blur(6px);
+  border: 1px solid white;
+  z-index: 3;
+}
+
+.loader-text {
   position: absolute;
-  margin: auto;
-  border: 16px solid #f3f3f3;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px #000000af;
+  top: 65%;
+  left: 50%;
+  color: white;
+  z-index: 4;
+}
+
+
+.loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 12px solid #f3f3f3;
+  border-top: 12px solid var(--loader-color);
   border-radius: 50%;
-  border-top: 16px solid blue;
-  border-right: 16px solid green;
-  border-bottom: 16px solid red;
-  border-left: 16px solid pink;
-  width: 80px;
-  height: 80px;
-  -webkit-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;
-  z-index: 2;
+  z-index: 4;
+
+  /*https://css-tricks.com/css-attr-function-got-nothin-custom-properties/*/
+  width: var(--loader-width);
+  height: var(--loader-height);
+
+  /*https://css-tricks.com/almanac/properties/a/animation/*/
+  animation-name: spin;
+  animation-duration: var(--loader-spin-duration);
+  animation-timing-function: linear;
+  animation-delay: 0s;
+  animation-direction: normal;
+  animation-iteration-count: infinite;
+
 }
 
-@-webkit-keyframes spin {
-  0% {
-    -webkit-transform: rotate(0deg);
-  }
-
-  100% {
-    -webkit-transform: rotate(360deg);
-  }
-}
-
+/*https://css-tricks.com/almanac/properties/t/transform/*/
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -227,3 +199,110 @@ li {
     transform: rotate(360deg);
   }
 }
+
+/***************************************** UI - Toast - Intro *****************************************/
+
+.ui-info-toast-countdown{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  color: white;
+  text-shadow: 2px 2px black;
+  z-index: 4;
+
+ /*https://css-tricks.com/almanac/properties/a/animation/*/
+ animation-name: expandfade;
+ animation-duration: 1s;
+ animation-timing-function: ease-in-out;          /*https://www.w3schools.com/cssref/css3_pr_animation-timing-function.asp*/
+ animation-delay: 0s;
+ animation-direction: normal;                     /*https://www.w3schools.com/cssref/css3_pr_animation-direction.asp*/
+ animation-iteration-count: 1;
+ animation-fill-mode: forwards;                   /*https://www.w3schools.com/cssref/css3_pr_animation-fill-mode.asp*/
+}
+
+/*https://css-tricks.com/almanac/properties/t/transform/*/
+@keyframes expandfade {
+ 0% {
+   transform: scale(3);  
+   opacity: 1;
+ }
+
+ /*we could add intermediate frames with a rotation*/
+ /*
+ 25% {
+  transform: scale(3) rotate(-2deg);
+}
+
+75% {
+  transform: scale(4) rotate(2deg);
+}
+*/
+
+ 100% {
+   transform: scale(9);
+   opacity: 0;
+ }
+}
+
+/***************************************** UI *****************************************/
+
+.ui-info{
+  position: absolute;
+  color: white;
+  text-shadow: 2px 2px black;
+  font-size: 0.9em;  /*90% of the font size specified for the body tag i.e. 18pt*/
+  z-index: 4;
+
+ /*https://css-tricks.com/almanac/properties/a/animation/*/
+ animation-name: fadein;
+ animation-duration: 1s;
+ animation-timing-function: ease-in-out;          /*https://www.w3schools.com/cssref/css3_pr_animation-timing-function.asp*/
+ animation-delay: 0s;
+ animation-direction: normal;                     /*https://www.w3schools.com/cssref/css3_pr_animation-direction.asp*/
+ animation-iteration-count: 1;
+ animation-fill-mode: forwards;                   /*https://www.w3schools.com/cssref/css3_pr_animation-fill-mode.asp*/
+}
+
+/*https://css-tricks.com/almanac/properties/t/transform/*/
+@keyframes fadein {
+ 0% { 
+   opacity: 0;
+ }
+
+ 100% {
+   opacity: 1;
+ }
+}
+
+
+.ui-info-pickup-value{
+  position: absolute;
+  color: white;
+  text-shadow: 2px 2px black;
+  font-size: 0.9em;  /*90% of the font size specified for the body tag i.e. 18pt*/
+  z-index: 4;
+
+ /*https://css-tricks.com/almanac/properties/a/animation/*/
+ animation-name: fade-out-and-float-up;
+ animation-duration: 1s;
+ animation-timing-function: ease-in-out;          /*https://www.w3schools.com/cssref/css3_pr_animation-timing-function.asp*/
+ animation-delay: 0s;
+ animation-direction: normal;                     /*https://www.w3schools.com/cssref/css3_pr_animation-direction.asp*/
+ animation-iteration-count: 1;
+ animation-fill-mode: forwards;                   /*https://www.w3schools.com/cssref/css3_pr_animation-fill-mode.asp*/
+}
+
+/*https://css-tricks.com/almanac/properties/t/transform/*/
+@keyframes  fade-out-and-float-up {
+ 0% { 
+   opacity: 1;
+   transform: scale(1) translate(0px, 0px);
+ }
+
+ 100% {
+   opacity: 0;
+   transform: scale(0.2) translate(0px, -60px);
+ }
+}
+
+

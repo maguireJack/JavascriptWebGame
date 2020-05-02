@@ -1,7 +1,6 @@
 /**
- * This is the base class for your own games implementation of ObjectManager e.g. MyObjectManager. An ObjectManager
- * is responsible for storing, updating, and drawing all the sprites within the game.
- * @author
+ * This class is responsible for storing and updating all the sprites within the game.
+ * @author niall mcguinness
  * @version 1.0
  * @class ObjectManager
  */
@@ -41,7 +40,7 @@ class ObjectManager {
     this.notificationCenter.Register(
       NotificationType.Sprite,
       this,
-      this.HandleNotification 
+      this.HandleNotification
     );
 
     this.notificationCenter.Register(
@@ -107,8 +106,7 @@ class ObjectManager {
       let index = 0;
       let foundIndices = [];
       for (let i = 0; i < this.sprites[actorType].length; i++) {
-        if (predicate(this.sprites[actorType][i])) 
-        {
+        if (predicate(this.sprites[actorType][i])) {
           foundIndices[index] = i;
           index++;
         }
@@ -120,40 +118,47 @@ class ObjectManager {
 
   Find(actorType, predicate) {
     let index = this.sprites[actorType].findIndex(predicate);
-    if (index != -1) 
+    if (index != -1)
       return this.sprites[actorType][index];
-    else 
+    else
       return -1;
   }
 
   RemoveFirst(sprite) {
-    if (this.sprites[sprite.ActorType])
-    {
+    if (this.sprites[sprite.ActorType]) {
       let index = this.sprites[sprite.ActorType].indexOf(sprite);
-      if(index != -1)
+      if (index != -1)
         this.sprites[sprite.ActorType].splice(index, 1);
-    }
+    } else
+        throw "Error: No sprites of actorType(" + actorType + ") exist in the ObjectManager! Did you add them at startup?";
+
   }
 
   RemoveFirstBy(actorType, predicate) {
     if (this.sprites[actorType])
       this.sprites[actorType].splice(this.FindIndex(actorType, predicate), 1);
+    else
+      throw "Error: No sprites of actorType(" + actorType + ") exist in the ObjectManager! Did you add them at startup?";
   }
 
   RemoveAllBy(actorType, predicate) {
     let indices = this.FindIndices(actorType, predicate);
-    for (let i = indices.length - 1; i >= 0; i--) 
-      this.sprites[actorType].splice(this.sprites[actorType][i], 1); 
+    for (let i = indices.length - 1; i >= 0; i--)
+      this.sprites[actorType].splice(this.sprites[actorType][i], 1);
   }
 
   RemoveAllByType(actorType) {
     if (this.sprites[actorType])
       this.sprites[actorType].splice(0, this.sprites[actorType].length);
+    else
+      throw "Error: No sprites of actorType(" + actorType + ") exist in the ObjectManager! Did you add them at startup?";
   }
 
-  Get(actorType){
+  Get(actorType) {
     if (this.sprites[actorType])
-    return this.sprites[actorType];
+      return this.sprites[actorType];
+    else
+      throw "Error: No sprites of actorType(" + actorType + ") exist in the ObjectManager! Did you add them at startup?";
   }
 
   Sort(actorType, compareFunction) {
@@ -167,9 +172,8 @@ class ObjectManager {
     //see https://www.tutorialspoint.com/in-javascript-how-to-empty-an-array
 
     //remove each of the sprites inside each of the arrays
-    for (let i = 0; i < this.sprites.length; i++) 
-    {
-      if(this.sprites[i] != undefined)      //if we have a valid array at index == i
+    for (let i = 0; i < this.sprites.length; i++) {
+      if (this.sprites[i] != undefined) //if we have a valid array at index == i
         this.sprites[i].splice(0, this.sprites[i].length);
     }
 
@@ -181,14 +185,15 @@ class ObjectManager {
   //#region Update
   Update(gameTime) {
     //if update enabled for the object manager?
-   if ((this.statusType & StatusType.IsUpdated) != 0) {
+    if ((this.statusType & StatusType.IsUpdated) != 0) {
       //for each of the keys in the sprites array (e.g. keys could be...ActorType.Enemy, ActorType.Player)
-      for (let key of Object.keys(this.sprites)) {
+      //for (let key of Object.keys(this.sprites)) {
+        for (let key in this.sprites) {
         //for the sprites inside the array for the current key call update
         for (let sprite of this.sprites[key])
           sprite.Update(gameTime);
       }
-   }
+    }
   }
   //#endregion
 

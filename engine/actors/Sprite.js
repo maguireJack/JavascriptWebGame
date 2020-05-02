@@ -1,13 +1,12 @@
 /**
  * Represents any drawn non-player or non-player character entity within a game with position information (e.g. pickup, obstacle, UI element)
- * @author
+ * @author niall mcguinness
  * @version 1.0
  * @class Sprite
  */
 
 class Sprite extends Actor2D {
   //#region  Fields
-  body = new Body();
   //#endregion
 
   //#region  Properties
@@ -17,23 +16,17 @@ class Sprite extends Actor2D {
   set Artist(artist) {
     this.artist = artist;
   }
-  get Body() {
-    return this.body;
-  }
-  set Body(body) {
-    this.body = body || new Body(); //set default if not defined
-  }
   get ScrollSpeedMultiplier() {
     return this.scrollSpeedMultiplier;
   }
   set ScrollSpeedMultiplier(scrollSpeedMultiplier) {
-    this.scrollSpeedMultiplier = scrollSpeedMultiplier || 1;
+    this.scrollSpeedMultiplier = (scrollSpeedMultiplier > 0 && scrollSpeedMultiplier <= 1) ? scrollSpeedMultiplier : 1;
   }
   get LayerDepth() {
     return this.layerDepth;
   }
   set LayerDepth(layerDepth) {
-    this.layerDepth = layerDepth || 0;
+    this.layerDepth = (layerDepth >= 0 && layerDepth <= 1) ? layerDepth : 1;
   }
   //#endregion
 
@@ -45,8 +38,8 @@ class Sprite extends Actor2D {
     transform2D,
     artist,
     statusType,
-    scrollSpeedMultiplier,
-    layerDepth
+    scrollSpeedMultiplier=1,
+    layerDepth=1
   ) {
     super(id, actorType, collisionType, transform2D, statusType);
     this.artist = artist;
@@ -62,9 +55,11 @@ class Sprite extends Actor2D {
    * @memberof Sprite
    */
   Update(gameTime) {
+
     //if we have an attached artist and we are supposed to update the sprite then update the artist
     if (this.artist != null && (this.statusType & StatusType.IsUpdated) != 0) {
       this.artist.Update(gameTime, this);
+
       //call Actor2D::Update() to update any attached behaviors
       super.Update(gameTime);
     }
@@ -92,6 +87,7 @@ class Sprite extends Actor2D {
    * @memberof Sprite
    */
   SetContext(context) {
+    //Mo -> SRoT -> -Mo
     context.translate(this.transform2D.translation.x, this.transform2D.translation.y);
     context.scale(this.transform2D.scale.x, this.transform2D.scale.y);
     context.rotate(this.transform2D.rotationInRadians);

@@ -65,8 +65,8 @@ class SamPlayerBehavior {
   
     CheckCollisions(parent) {
 
-      //Currently Handles Enemies
-        this.HandlePickupCollision(parent);
+      // //Currently Handles Enemies
+        // this.HandlePickupCollision(parent);
         
     
       
@@ -190,15 +190,25 @@ class SamPlayerBehavior {
   
       for (let i = 0; i < sprites.length; i++) {
         let sprite = sprites[i];
-        let collisionLocationType = Collision.GetCollisionLocationType(parent,sprite);
+        let collisionLocationType = Collision.GetIntersectsLocation(parent, sprite);
   
-        if (collisionLocationType === CollisionLocationType.Left ||
-          collisionLocationType === CollisionLocationType.Right) {
-          parent.Body.SetVelocityX(0);
-        } else if (collisionLocationType === CollisionLocationType.Bottom || 
-          collisionLocationType === CollisionLocationType.Top) {
-          parent.Body.SetVelocityY(0);
+        //the code below fixes a bug which caused sprites to stick inside an object
+        if (collisionLocationType === CollisionLocationType.Left) {
+          if (parent.Body.velocityX <= 0)
+            parent.Body.SetVelocityX(0);
+        } else if (collisionLocationType === CollisionLocationType.Right) {
+          if (parent.Body.velocityX >= 0)
+            parent.Body.SetVelocityX(0);
         }
+        //the code below fixes a bug which caused sprites to stick inside an object
+        if (collisionLocationType === CollisionLocationType.Top) {
+          if (parent.Body.velocityY <= 0)
+            parent.Body.SetVelocityY(0);
+        } else if (collisionLocationType === CollisionLocationType.Bottom) {
+          if (parent.Body.velocityY >= 0)
+            parent.Body.SetVelocityY(0);
+        }
+  
       }
     }
   

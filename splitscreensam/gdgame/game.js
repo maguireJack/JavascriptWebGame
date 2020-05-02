@@ -307,7 +307,8 @@ class Game {
       StatusType.IsUpdated,
       this.screenTop.ctx
     );
-
+    /**************** NEED TO ATTACH A COLLISION PRIMITIVE (e.g. CIRCLE OR RECTANGLE) ****************/
+    cameraTop.CollisionPrimitive = new RectCollisionPrimitive(transform, 0);
     cameraTop.AttachBehavior(new TrackTargetTranslationBehavior(this, 0, new Vector2(0, -100)));
     this.cameraManager.Add(cameraTop);
 //#endregion
@@ -328,7 +329,8 @@ let cameraBottom = new Camera2D(
   this.screenBottom.ctx
 );
 
-
+/**************** NEED TO ATTACH A COLLISION PRIMITIVE (e.g. CIRCLE OR RECTANGLE) ****************/
+cameraBottom.CollisionPrimitive = new RectCollisionPrimitive(transform, 0);
 cameraBottom.AttachBehavior(new TrackTargetTranslationBehavior(this, 1, new Vector2(0, -100)));
 this.cameraManager.Add(cameraBottom);
 //#endregion
@@ -363,6 +365,8 @@ this.cameraManager.Add(cameraBottom);
       this.cameraManager,
       this.notificationCenter);
 
+      this.startGameSentinel = new NumericSentinel(2);
+
     //load a menu managers for each screen since they need to function independently
     this.menuManagerTop = new MyMenuManager("menu-top", this.notificationCenter, this.keyboardManager, 
                             this.screenTop, this.startGameSentinel);
@@ -385,8 +389,9 @@ this.cameraManager.Add(cameraBottom);
 
   LoadDebug() {
     this.debugDrawer = new DebugDrawer("shows debug info", StatusType.IsDrawn,
-      this.objectManager, this.cameraManager, 
-      this.notificationCenter, DebugDrawType.ShowSpriteBoundingBoxes);
+      this.objectManager, this.cameraManager,
+      this.notificationCenter,
+      DebugDrawType.ShowDebugText | DebugDrawType.ShowSpriteCollisionPrimitive);
   }
   //#endregion
 
@@ -396,29 +401,39 @@ this.cameraManager.Add(cameraBottom);
   }
 
   LoadSprites() {
+    let sprite = null;
+    this.objectManager.Clear();
     //load the level walls etc
     // this.LoadMultipleSpritesFrom2DArray(LEVEL_ARCHITECTURE_DATA);
     // this.LoadBackground();
     // //load all the pickups
     // this.LoadMultipleSpritesFrom2DArray(LEVEL_PICKUPS_DATA);
+    // this.objectManager.Clear();
 
     this.LoadMultipleSpritesFrom2DArray(FLOOR_DATA);
     this.LoadMultipleSpritesFrom2DArray(WALL_DATA);
-    this.LoadAnimatedEnemySprite(ENEMY_TYPE_ONE_DATA);
+    
+    
 
     // //load players
     // this.LoadAnimatedSprite(PICKUP_COIN_ANIMATION_DATA);
 
     // //load players
-    let sprite = this.LoadAnimatedPlayerSprite(PLAYER_ONE_DATA);
+    sprite = this.LoadAnimatedPlayerSprite(PLAYER_ONE_DATA);
     this.objectManager.Add(sprite);
     this.playerSprites[0] = sprite;
-    this.LoadWeapon(WEAPON_SWORD, this.playerSprites[0]);
+    // sprite = this.LoadWeapon(WEAPON_SWORD, this.playerSprites[0]);
+    // this.objectManager.Add(sprite);
 
     sprite = this.LoadAnimatedPlayerSprite(PLAYER_TWO_DATA);
     this.objectManager.Add(sprite);
     this.playerSprites[1] = sprite;
-    this.LoadWeapon(WEAPON_SWORD_2, this.playerSprites[1]);
+
+
+    sprite = this.LoadAnimatedEnemySprite(ENEMY_TYPE_ONE_DATA);
+    this.objectManager.Add(sprite);
+ 
+    // this.LoadWeapon(WEAPON_SWORD_2, this.playerSprites[1]);
     
 
     // //load players
@@ -465,43 +480,59 @@ this.cameraManager.Add(cameraBottom);
           weapon.swingSpeed,
           attachedPlayer));
 
-      this.objectManager.Add(weaponSprite);
+          if (weapon.collisionProperties.primitive == CollisionPrimitiveType.Circle) {
+            weapon.CollisionPrimitive = new CircleCollisionPrimitive(transform, weapon.collisionProperties.circleRadius);
+          } else {
+            weapon.CollisionPrimitive = new RectCollisionPrimitive(transform, weapon.collisionProperties.explodeRectangleBy);
+          }
+
+      return weaponSprite;
   }
 
-  LoadAnimatedEnemySprite(enemyObject)
+  LoadAnimatedEnemySprite(playerObject)
   {
-    let artist = new AnimatedSpriteArtist(enemyObject);
-    artist.SetTake(enemyObject.defaultTakeName);
+    let artist = new AnimatedSpriteArtist(playerObject);
+    artist.SetTake(playerObject.defaultTakeName);
 
-    let transform = new Transform2D(enemyObject.translation, 
-      enemyObject.rotation,
-      enemyObject.scale,
-      enemyObject.origin,
-              artist.GetBoundingBoxDimensionsByTakeName(enemyObject.defaultTakeName),
-              enemyObject.explodeBoundingBoxInPixels);
+    let transform = new Transform2D(playerObject.translation, 
+        playerObject.rotation,
+          playerObject.scale,
+            playerObject.origin,
+              artist.GetBoundingBoxDimensionsByTakeName(playerObject.defaultTakeName),
+                playerObject.explodeBoundingBoxInPixels);
 
-    let enemySprite = new MoveableSprite(enemyObject.id, 
-      enemyObject.actorType, 
-      enemyObject.collisionType, 
+    let playerSprite = new MoveableSprite(playerObject.id, 
+              playerObject.actorType, 
+                playerObject.collisionType, 
                 transform, artist, 
-                enemyObject.statusType, 
-                enemyObject.scrollSpeedMultiplier, 
-                enemyObject.layerDepth);
+                  playerObject.statusType, 
+                    playerObject.scrollSpeedMultiplier, 
+                      playerObject.layerDepth);
 
     /**************** NEED TO FRICTION TO MAKE THIS CHARACTER MOVE IN A MORE BELIEVEABLE MANNER ***********/
-    enemySprite.Body.MaximumSpeed = enemyObject.maximumSpeed;
-    enemySprite.Body.Friction = enemyObject.frictionType;
-    enemySprite.Body.Gravity = enemyObject.gravityType;   //top-down, so no gravity in +Y direction
+    playerSprite.Body.MaximumSpeed = playerObject.maximumSpeed;
+    playerSprite.Body.Friction = playerObject.frictionType;
+    playerSprite.Body.Gravity = playerObject.gravityType;   //top-down, so no gravity in +Y direction
+
+
+    //assign a circular collision primitive to better fit the drawn sprite
+    if (playerObject.collisionProperties.primitive == CollisionPrimitiveType.Circle) {
+      playerSprite.CollisionPrimitive = new CircleCollisionPrimitive(transform, playerObject.collisionProperties.circleRadius);
+    } else {
+      playerSprite.CollisionPrimitive = new RectCollisionPrimitive(transform, playerObject.collisionProperties.explodeRectangleBy);
+    }
 
     /**************** NEED TO ADD A BEHAVIOR TO MAKE THIS A CONTROLLABLE CHARACTER ***********/
-    enemySprite.AttachBehavior(
-      new Killable( 
-        this.objectManager,
-        enemyObject.lookDirection,
-        enemyObject.moveSpeed,
-        enemyObject.rotateSpeed));
+    // playerSprite.AttachBehavior(
+    //   new SamPlayerBehavior(
+    //     this.keyboardManager,
+    //     this.objectManager,
+    //     playerObject.moveKeys,
+    //     playerObject.lookDirection,
+    //     playerObject.moveSpeed,
+    //     playerObject.rotateSpeed));
 
-  this.objectManager.Add(enemySprite);             
+  return playerSprite; //add animated player sprite      
 
   }
 
@@ -529,6 +560,14 @@ this.cameraManager.Add(cameraBottom);
     playerSprite.Body.MaximumSpeed = playerObject.maximumSpeed;
     playerSprite.Body.Friction = playerObject.frictionType;
     playerSprite.Body.Gravity = playerObject.gravityType;   //top-down, so no gravity in +Y direction
+
+
+    //assign a circular collision primitive to better fit the drawn sprite
+    if (playerObject.collisionProperties.primitive == CollisionPrimitiveType.Circle) {
+      playerSprite.CollisionPrimitive = new CircleCollisionPrimitive(transform, playerObject.collisionProperties.circleRadius);
+    } else {
+      playerSprite.CollisionPrimitive = new RectCollisionPrimitive(transform, playerObject.collisionProperties.explodeRectangleBy);
+    }
 
     /**************** NEED TO ADD A BEHAVIOR TO MAKE THIS A CONTROLLABLE CHARACTER ***********/
     playerSprite.AttachBehavior(
@@ -592,8 +631,7 @@ this.cameraManager.Add(cameraBottom);
               levelObject.levelSprites[levelSpritesNumber].rotation,
                 levelObject.levelSprites[levelSpritesNumber].scale,
                   levelObject.levelSprites[levelSpritesNumber].origin,
-                    levelObject.levelSprites[levelSpritesNumber].sourceDimensions,
-                      levelObject.levelSprites[levelSpritesNumber].explodeBoundingBoxInPixels);
+                    levelObject.levelSprites[levelSpritesNumber].sourceDimensions);
 
             //remember we can also add an animated artist instead
             artist = new SpriteArtist(levelObject.levelSprites[levelSpritesNumber].spriteSheet,
@@ -603,11 +641,17 @@ this.cameraManager.Add(cameraBottom);
 
             sprite = new Sprite("block[" + row + "," + col + "]", 
                         levelObject.levelSprites[levelSpritesNumber].actorType,
-                          levelObject.levelSprites[levelSpritesNumber].collisionType,
+                          levelObject.levelSprites[levelSpritesNumber].collisionProperties.type,
                           transform, artist, 
                           levelObject.levelSprites[levelSpritesNumber].statusType,
                           levelObject.levelSprites[levelSpritesNumber].scrollSpeedMultiplier,
                           levelObject.levelSprites[levelSpritesNumber].layerDepth);
+
+            if (levelObject.levelSprites[levelSpritesNumber].collisionProperties.primitive == CollisionPrimitiveType.Circle) {
+              sprite.CollisionPrimitive = new CircleCollisionPrimitive(transform, levelObject.levelSprites[levelSpritesNumber].collisionProperties.circleRadius);
+            } else {
+              sprite.CollisionPrimitive = new RectCollisionPrimitive(transform, levelObject.levelSprites[levelSpritesNumber].collisionProperties.explodeRectangleBy);
+            }
 
             //do we want to add behaviors?
 
