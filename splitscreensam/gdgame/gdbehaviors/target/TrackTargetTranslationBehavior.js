@@ -30,7 +30,7 @@ class TrackTargetTranslationBehavior {
         if(this.targetActor == null)
             this.targetActor = this.game.GetTargetPlayer(this.playerSpritesIndex);
         
-        console.log('parent', this.targetActor.id);
+        // console.log('parent', this.targetActor.id);
 
         //set the camera Y-position to the same as the player Y-position
         parent.Transform2D.SetTranslationY(this.initialTranslationOffset.Y + this.targetActor.Transform2D.Translation.Y);

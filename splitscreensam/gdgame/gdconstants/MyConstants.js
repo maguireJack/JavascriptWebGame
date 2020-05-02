@@ -672,6 +672,40 @@ const WEAPON_SWORD = Object.freeze({
   }
 });
 
+const WEAPON_SWORD_2 = Object.freeze({
+  id: "sword 2",
+  spriteSheet: document.getElementById("player_one_animations"),
+  translation: new Vector2(0,0),
+  defaultTakeName: "idle",
+  rotation: 0,
+  scale: new Vector2(1,1),
+  origin: new Vector2(0,22),
+  actorType: ActorType.Weapon,
+  collisionType: CollisionType.Collidable,
+  statusType: StatusType.IsDrawn | StatusType.IsUpdated,
+  explodeBoundingBoxInPixels: 2,
+  alpha: 1,
+  lookDirection: new Vector2(0, 1),
+  attackKey: [Keys.Enter],
+  swingSpeed: 3,
+  takes: {  
+    "idle" :  {
+      fps: 6,
+      leadInDelayMs: 0,
+      leadOutDelayMs: 0,
+      maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
+      startCellIndex: 0,
+      endCellIndex: 2,
+      boundingBoxDimensions: new Vector2(10, 22), 
+      cellData: [
+        new Rect(323, 25, 10, 22),
+        new Rect(323, 25, 10, 22),
+        new Rect(323, 25, 10, 22)
+      ]
+    }
+  }
+});
+
 
 const ENEMY_TYPE_ONE_DATA = Object.freeze({
   id: "enemy 1",

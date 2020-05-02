@@ -28,66 +28,118 @@ class Killable {
     }
   
     HandleMove(gameTime, parent) {
-        let sprites = this.objectManager.Get(ActorType.Player);
-        //   let player2 = sprites[1];
-          let player1 = sprites[0];
+      /**
+       * Gets the nearest player(needs revision), and moves towards them. Checks each axis individually and so
+       * may not accurately track the "closest" player, rather the "lesser xy" player
+       */
+      let sprites = this.objectManager.Get(ActorType.Player);
+      let trackedPlayer = null;
+      //   let player2 = sprites[1];
+        let player1 = sprites[0];
+        let player2 = sprites[1];
 
-          let tempXY = new Vector2(player1.Transform2D.BoundingBox.X, player1.Transform2D.BoundingBox.Y);
+        let tempXY = new Vector2(player1.Transform2D.BoundingBox.X, player1.Transform2D.BoundingBox.Y);
+        let playerXY = new Vector2(player2.Transform2D.BoundingBox.X, player2.Transform2D.BoundingBox.Y);
 
-        //   if(tempXY >= new Vector2(player2.Transform2D.BoundingBox.X, player2.Transform2D.BoundingBox.Y))
-        //   {
-              let currentPos = new Vector2(parent.Transform2D.BoundingBox.X, parent.Transform2D.BoundingBox.Y);
-          
-        // if(Math.abs(currentPos.X - tempXY.X) <= 5 || Math.abs(currentPos.Y - tempXY.Y) <= 5){
+        
 
-            if(currentPos.Y <= tempXY.Y)
+      //   if(tempXY >= new Vector2(player2.Transform2D.BoundingBox.X, player2.Transform2D.BoundingBox.Y))
+      //   {
+            let currentPos = new Vector2(parent.Transform2D.BoundingBox.X, parent.Transform2D.BoundingBox.Y);
+            let distanceToPlayer1 = new Vector2(Math.abs(tempXY.X - currentPos.X), Math.abs(tempXY.Y - currentPos.Y));
+            let distanceToPlayer2 = new Vector2(Math.abs(playerXY.X - currentPos.X), Math.abs(playerXY.Y - currentPos.Y));
+
+
+            if(distanceToPlayer1.Y >= distanceToPlayer2.Y)
             {
-                parent.Body.AddVelocityY(this.moveSpeed * gameTime.ElapsedTimeInMs);
-                parent.Artist.SetTake("walk");
+              trackedPlayer = playerXY;
             }
-            else if(currentPos.Y > tempXY.Y)
+            else if(distanceToPlayer1.Y < distanceToPlayer2.Y)
             {
-                parent.Body.AddVelocityY(-this.moveSpeed * gameTime.ElapsedTimeInMs);
-                parent.Artist.SetTake("walk");
+              trackedPlayer = tempXY;
             }
 
-            if(currentPos.X <= tempXY.X)
+            if(distanceToPlayer1.X >= distanceToPlayer2.X)
             {
-                parent.Body.AddVelocityX(this.moveSpeed * gameTime.ElapsedTimeInMs);
-                parent.Artist.SetTake("walk");
+              trackedPlayer = playerXY;
             }
-            else if(currentPos.X > tempXY.X)
+            else if(distanceToPlayer1.X < distanceToPlayer2.X)
             {
-                parent.Body.AddVelocityX(-this.moveSpeed * gameTime.ElapsedTimeInMs);
-                parent.Artist.SetTake("walk");
+              trackedPlayer = tempXY;
             }
-        // }
+
+            
+
+            
+            // if(playerXY.Y <= tempXY.Y)
+            // {
+            //    trackedPlayer = playerXY;
+            // }
+            // else if(playerXY.Y > tempXY.Y)
+            // {
+            //     trackedPlayer = tempXY;
+            // }
+
            
-        // }
+            // if(playerXY.X <= tempXY.X)
+            // { 
+            //     trackedPlayer = playerXY;
+            // }
+            // else if(playerXY.X > tempXY.X)
+            // {
+            //   trackedPlayer = tempXY;
+            // }
+
+      // if(Math.abs(currentPos.X - tempXY.X) <= 5 || Math.abs(currentPos.Y - tempXY.Y) <= 5){
+
+          if(currentPos.Y <= trackedPlayer.Y)
+          {
+              parent.Body.AddVelocityY(this.moveSpeed * gameTime.ElapsedTimeInMs);
+              parent.Artist.SetTake("walk");
+          }
+          else if(currentPos.Y > trackedPlayer.Y)
+          {
+              parent.Body.AddVelocityY(-this.moveSpeed * gameTime.ElapsedTimeInMs);
+              parent.Artist.SetTake("walk");
+          }
+
+          if(currentPos.X <= trackedPlayer.X)
+          {
+              parent.Body.AddVelocityX(this.moveSpeed * gameTime.ElapsedTimeInMs);
+              parent.Artist.SetTake("walk");
+          }
+          else if(currentPos.X > trackedPlayer.X)
+          {
+              parent.Body.AddVelocityX(-this.moveSpeed * gameTime.ElapsedTimeInMs);
+              parent.Artist.SetTake("walk");
+          }
+      // }
+         
+      // }
 
 
 
 
 
-      
-    //   //up/down
-    //   if (this.keyboardManager.IsKeyDown(this.moveKeys[0])) {
-    //     parent.Body.AddVelocityY(-this.moveSpeed * gameTime.ElapsedTimeInMs);
-    //     parent.Artist.SetTake("walk");
-    //   } else if (this.keyboardManager.IsKeyDown(this.moveKeys[1])) {
-    //     parent.Body.AddVelocityY(this.moveSpeed * gameTime.ElapsedTimeInMs);
-    //     parent.Artist.SetTake("walk");
-    //   }
+    
+  //   //up/down
+  //   if (this.keyboardManager.IsKeyDown(this.moveKeys[0])) {
+  //     parent.Body.AddVelocityY(-this.moveSpeed * gameTime.ElapsedTimeInMs);
+  //     parent.Artist.SetTake("walk");
+  //   } else if (this.keyboardManager.IsKeyDown(this.moveKeys[1])) {
+  //     parent.Body.AddVelocityY(this.moveSpeed * gameTime.ElapsedTimeInMs);
+  //     parent.Artist.SetTake("walk");
+  //   }
 
-    //   //left/right
-    //   if (this.keyboardManager.IsKeyDown(this.moveKeys[2])) {
-    //     parent.Body.AddVelocityX(-this.moveSpeed * gameTime.ElapsedTimeInMs);
-    //     parent.Artist.SetTake("walk");
-    //   } else if (this.keyboardManager.IsKeyDown(this.moveKeys[3])) {
-    //     parent.Body.AddVelocityX(this.moveSpeed * gameTime.ElapsedTimeInMs);
-    //     parent.Artist.SetTake("walk");
-    //   }
-    }
+  //   //left/right
+  //   if (this.keyboardManager.IsKeyDown(this.moveKeys[2])) {
+  //     parent.Body.AddVelocityX(-this.moveSpeed * gameTime.ElapsedTimeInMs);
+  //     parent.Artist.SetTake("walk");
+  //   } else if (this.keyboardManager.IsKeyDown(this.moveKeys[3])) {
+  //     parent.Body.AddVelocityX(this.moveSpeed * gameTime.ElapsedTimeInMs);
+  //     parent.Artist.SetTake("walk");
+  //   }
+  }
   
     CheckCollisions(parent) {
 

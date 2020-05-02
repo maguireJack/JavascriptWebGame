@@ -294,7 +294,7 @@ class Game {
     let transform = new Transform2D(
       new Vector2(0, 0),
       0,
-      new Vector2(1.25, 1.25),
+      new Vector2(2, 2),
       new Vector2(this.screenTop.width/2, this.screenTop.height/2),
       new Vector2(this.screenTop.width, this.screenTop.height),
       0
@@ -316,7 +316,7 @@ class Game {
 transform = new Transform2D(
   new Vector2(0, 0),
   0,
-  new Vector2(1.25, 1.25),
+  new Vector2(2, 2),
   new Vector2(this.screenBottom.width/2, this.screenBottom.dimensions.height/2),
   new Vector2(this.screenBottom.width, this.screenBottom.dimensions.height));
 
@@ -413,12 +413,12 @@ this.cameraManager.Add(cameraBottom);
     let sprite = this.LoadAnimatedPlayerSprite(PLAYER_ONE_DATA);
     this.objectManager.Add(sprite);
     this.playerSprites[0] = sprite;
+    this.LoadWeapon(WEAPON_SWORD, this.playerSprites[0]);
 
     sprite = this.LoadAnimatedPlayerSprite(PLAYER_TWO_DATA);
     this.objectManager.Add(sprite);
     this.playerSprites[1] = sprite;
-
-    this.LoadWeapon(WEAPON_SWORD, PLAYER_ONE_DATA);
+    this.LoadWeapon(WEAPON_SWORD_2, this.playerSprites[1]);
     
 
     // //load players
@@ -432,8 +432,8 @@ this.cameraManager.Add(cameraBottom);
   {
     let artist = new AnimatedSpriteArtist(weapon);
     artist.SetTake(weapon.defaultTakeName);
-    let players = this.objectManager.Get(ActorType.Player);
-    let player = players[0];
+    
+    let player = attachedPlayer;
     let pos = new Vector2(player.Transform2D.BoundingBox.X, player.Transform2D.BoundingBox.Y);
       
 
@@ -463,7 +463,7 @@ this.cameraManager.Add(cameraBottom);
           weapon.attackKey,
           new Vector2(1,0),
           weapon.swingSpeed,
-          PLAYER_ONE_DATA));
+          attachedPlayer));
 
       this.objectManager.Add(weaponSprite);
   }
