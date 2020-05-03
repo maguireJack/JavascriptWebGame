@@ -38,14 +38,15 @@ class Killable {
         let player1 = sprites[0];
         let player2 = sprites[1];
 
-        let tempXY = new Vector2(player1.Transform2D.translation.X, player1.Transform2D.translation.X);
-        let playerXY = new Vector2(player2.Transform2D.translation.X, player2.Transform2D.translation.X);
+        let tempXY = new Vector2(player1.Transform2D.translation.X, player1.Transform2D.translation.Y);
+        let playerXY = new Vector2(player2.Transform2D.translation.X, player2.Transform2D.translation.Y);
 
         
 
       //   if(tempXY >= new Vector2(player2.Transform2D.BoundingBox.X, player2.Transform2D.BoundingBox.Y))
       //   {
-            let currentPos = new Vector2(parent.Transform2D.translation.X, parent.Transform2D.translation.X);
+            let currentPos = new Vector2(parent.Transform2D.translation.X, parent.Transform2D.translation.Y);
+            
             let distanceToPlayer1 = new Vector2(Math.abs(tempXY.X - currentPos.X), Math.abs(tempXY.Y - currentPos.Y));
             let distanceToPlayer2 = new Vector2(Math.abs(playerXY.X - currentPos.X), Math.abs(playerXY.Y - currentPos.Y));
 
@@ -160,7 +161,7 @@ class Killable {
   
         //if player != me then test
         if(player != this){
-          if (parent.Transform2D.BoundingBox.Intersects(player.Transform2D.BoundingBox)) {  
+          if (Collision.Intersects(player, sprite)) {  
             //your code - play sound
             
             //remove health
@@ -180,7 +181,7 @@ class Killable {
     Execute(gameTime, parent) {
       this.HandleInput(gameTime, parent);
       this.ApplyForces(parent);
-      // this.CheckCollisions(parent);
+      this.CheckCollisions(parent);
       this.ApplyInput(parent);
     }
    
@@ -192,29 +193,29 @@ class Killable {
   
     HandleArchitectureCollision(parent) {
       let sprites = this.objectManager.Get(ActorType.Architecture);
-
-    for (let i = 0; i < sprites.length; i++) {
-      let sprite = sprites[i];
-      let collisionLocationType = Collision.GetIntersectsLocation(parent, sprite);
-
-      //the code below fixes a bug which caused sprites to stick inside an object
-      if (collisionLocationType === CollisionLocationType.Left) {
-        if (parent.Body.velocityX <= 0)
-          parent.Body.SetVelocityX(0);
-      } else if (collisionLocationType === CollisionLocationType.Right) {
-        if (parent.Body.velocityX >= 0)
-          parent.Body.SetVelocityX(0);
+  
+      for (let i = 0; i < sprites.length; i++) {
+        let sprite = sprites[i];
+        let collisionLocationType = Collision.GetIntersectsLocation(parent, sprite);
+  
+        //the code below fixes a bug which caused sprites to stick inside an object
+        if (collisionLocationType === CollisionLocationType.Left) {
+          if (parent.Body.velocityX <= 0)
+            parent.Body.SetVelocityX(0);
+        } else if (collisionLocationType === CollisionLocationType.Right) {
+          if (parent.Body.velocityX >= 0)
+            parent.Body.SetVelocityX(0);
+        }
+        //the code below fixes a bug which caused sprites to stick inside an object
+        if (collisionLocationType === CollisionLocationType.Top) {
+          if (parent.Body.velocityY <= 0)
+            parent.Body.SetVelocityY(0);
+        } else if (collisionLocationType === CollisionLocationType.Bottom) {
+          if (parent.Body.velocityY >= 0)
+            parent.Body.SetVelocityY(0);
+        }
+  
       }
-      //the code below fixes a bug which caused sprites to stick inside an object
-      if (collisionLocationType === CollisionLocationType.Top) {
-        if (parent.Body.velocityY <= 0)
-          parent.Body.SetVelocityY(0);
-      } else if (collisionLocationType === CollisionLocationType.Bottom) {
-        if (parent.Body.velocityY >= 0)
-          parent.Body.SetVelocityY(0);
-      }
-
-    }
     }
   
     ApplyInput(parent) {

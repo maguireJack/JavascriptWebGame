@@ -174,6 +174,14 @@ class MyMenuManager {
         this.Hide("#" + this.menuID + " .menu");
         //show canvas where actual game is drawn
         this.Show("#" + this.menuID + " #" + this.canvasID);
+
+        NotificationCenter.Notify(
+            new Notification(
+              NotificationType.Sound,
+              NotificationAction.Play,
+              ["main_music"]
+            )
+          );
     }
 
     ShowMain() {

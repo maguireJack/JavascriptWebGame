@@ -34,6 +34,7 @@ class SamPlayerBehavior {
       this.isRunning = false;
       this.currentTime = 0;
       this.timeToUpdate = 0;
+      this.baseHealth = 100;
     }
   
     //#region Your Game Specific Methods - add code for more CD/CR or input handling
@@ -66,7 +67,7 @@ class SamPlayerBehavior {
     CheckCollisions(parent) {
 
       // //Currently Handles Enemies
-        // this.HandlePickupCollision(parent);
+        this.HandleEnemyCollision(parent);
         
     
       
@@ -75,7 +76,7 @@ class SamPlayerBehavior {
       
     }
   
-    HandlePickupCollision(parent) {
+    HandleEnemyCollision(parent) {
       let enemySprites = this.objectManager.Get(ActorType.Enemy);
       
   
@@ -83,10 +84,12 @@ class SamPlayerBehavior {
         let enemySprite = enemySprites[i];
   
         //we can use simple collision check here (i.e. Intersects) because dont need to think was it top, bottom, left, or right
-        if (enemySprite.Transform2D.BoundingBox.Intersects(parent.Transform2D.BoundingBox)) {
+        if (Collision.Intersects(enemySprite, parent)) {
 
           //your code - play sound, remove enemy, add health e.g. you could write code like this...
           //remove coin
+        
+
           if(this.hit == false){
             this.timer.Start();
             
@@ -143,28 +146,28 @@ class SamPlayerBehavior {
       }
     }
   
-    HandleEnemyCollision(parent) {
-      let sprites = this.objectManager.Get(ActorType.Player);
+    // HandleEnemyCollision(parent) {
+    //   let sprites = this.objectManager.Get(ActorType.Player);
   
-      for (let i = 0; i < sprites.length; i++) {
-        let sprite = sprites[i];
+    //   for (let i = 0; i < sprites.length; i++) {
+    //     let sprite = sprites[i];
   
-        //if player != me then test
-        if(sprite != this){
-          if (parent.Transform2D.BoundingBox.Intersects(sprite.Transform2D.BoundingBox)) {  
-            //your code - play sound
+    //     //if player != me then test
+    //     if(sprite != this){
+    //       if (parent.Transform2D.BoundingBox.Intersects(sprite.Transform2D.BoundingBox)) {  
+    //         //your code - play sound
             
-            //remove health
-            NotificationCenter.Notify(
-              new Notification(
-                NotificationType.GameState,
-                NotificationAction.Damage,
-                [-10, sprite.id]));
+    //         //remove health
+    //         NotificationCenter.Notify(
+    //           new Notification(
+    //             NotificationType.GameState,
+    //             NotificationAction.Damage,
+    //             [-10, sprite.id]));
                 
-          }
-        }
-      }
-    }
+    //       }
+    //     }
+    //   }
+    // }
   
     //#endregion
   

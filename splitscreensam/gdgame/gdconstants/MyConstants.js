@@ -2,7 +2,9 @@
 //audio - step 2 - create an array with all cues
 //note the name we use below MUST be identical to id used in HTML when loading the sound asset
 const audioCueArray = [
-  new AudioCue("coin_pickup", AudioType.Pickup, 1, 1, false, 0)
+  new AudioCue("coin_pickup", AudioType.Pickup, 1, 1, false, 0),
+  new AudioCue("main_music", AudioType.Background, .01, 1, true, 0),
+  new AudioCue("sword", AudioType.Weapon, .01, 1, false, 0)
   //add more cues here but make sure you load in the HTML!
 ];
 //See Game::LoadAllOtherManagers() for SoundManager instanciation
@@ -294,8 +296,6 @@ const FLOOR_DATA = Object.freeze({
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
     
   ]
@@ -521,28 +521,28 @@ const WALL_DATA = Object.freeze({
   maxBlockWidth: 16,
   maxBlockHeight: 16, 
   levelLayoutArray: [
-    [0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,6,1,1,1,1,1,1,5,0,0],
-    [0,0,0,0,2,2,2,2,2,2,10,0,0,0,0,0,0,6,0,0],
-    [0,0,0,6,1,1,1,1,1,1,1,0,0,0,0,0,0,6,0,0],
-    [0,2,2,10,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0],
-    [3,1,1,1,0,0,0,0,2,2,0,0,0,0,0,0,0,6,0,0],
-    [4,0,0,0,0,0,0,6,1,1,9,2,2,0,0,2,2,10,0,0],
-    [9,2,2,2,0,0,0,6,0,0,7,1,1,0,0,1,1,1,0,0],
-    [7,1,1,1,0,0,0,6,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,6,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,2,2,0,2,2,6,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,1,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    [0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,6,1,1,1,1,1,1,5,0,0,0,0,0,0],
+    [0,0,0,0,2,2,2,2,2,2,10,0,0,0,0,0,0,6,2,2,2,2,2,0],
+    [0,0,0,6,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,5],
+    [0,2,2,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6],
+    [3,1,1,1,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,6],
+    [4,0,0,0,0,0,0,6,1,1,9,2,2,2,2,2,2,2,2,2,2,2,2,10],
+    [9,2,0,0,0,0,0,6,0,0,7,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [7,1,4,0,0,0,0,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,4,0,0,0,0,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,9,2,2,2,2,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
   ]
 });
 
@@ -736,7 +736,7 @@ const WEAPON_SWORD = Object.freeze({
       maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
       startCellIndex: 0,
       endCellIndex: 2,
-      boundingBoxDimensions: new Vector2(22, 10), 
+      boundingBoxDimensions: new Vector2(10, 22), 
       cellData: [
         new Rect(323, 25, 10, 22),
         new Rect(323, 25, 10, 22),
@@ -792,7 +792,105 @@ const ENEMY_TYPE_ONE_DATA = Object.freeze({
   id: "enemy 1",
   spriteSheet: document.getElementById("player_one_animations"),
   defaultTakeName: "walk",
-  translation: new Vector2(64, 400),
+  translation: new Vector2(225, 50),
+  rotation: 0,
+  scale: new Vector2(1, 1),
+  origin: new Vector2(0, 0),
+  actorType: ActorType.Enemy,
+  collisionType: CollisionType.Collidable,
+  statusType: StatusType.IsDrawn | StatusType.IsUpdated,
+  scrollSpeedMultiplier: 1,
+  layerDepth: 1,
+  explodeBoundingBoxInPixels: 0,
+  alpha: 1,
+  lookDirection: new Vector2(0, 1), //straight-down according to source image
+  moveKeys: [Keys.W, Keys.S, Keys.A, Keys.D],
+  moveSpeed: 0.005,
+  attackPower: 5,
+  health: 15,
+  rotateSpeed: 0.004,
+  gravityType: GravityType.Off, //top-down so no gravity
+  frictionType: FrictionType.Normal, 
+  maximumSpeed: 5,
+  collisionProperties: {
+    type: CollisionType.Collidable,
+    primitive: CollisionPrimitiveType.Rectangle,
+    //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+    circleRadius: 0,
+    explodeRectangleBy: 0,
+  },
+  takes: {  
+    "walk" :  {
+      fps: 6,
+      leadInDelayMs: 0,
+      leadOutDelayMs: 0,
+      maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
+      startCellIndex: 0,
+      endCellIndex: 2,
+      boundingBoxDimensions: new Vector2(11, 17), 
+      cellData: [
+        new Rect(371, 207, 11, 17),
+        new Rect(387, 207, 11, 17),
+        new Rect(403, 207, 11, 17)
+      ]
+    }
+  }
+});
+
+const ENEMY_TYPE_TWO_DATA = Object.freeze({
+  id: "enemy 2",
+  spriteSheet: document.getElementById("player_one_animations"),
+  defaultTakeName: "walk",
+  translation: new Vector2(40, 150),
+  rotation: 0,
+  scale: new Vector2(1, 1),
+  origin: new Vector2(0, 0),
+  actorType: ActorType.Enemy,
+  collisionType: CollisionType.Collidable,
+  statusType: StatusType.IsDrawn | StatusType.IsUpdated,
+  scrollSpeedMultiplier: 1,
+  layerDepth: 1,
+  explodeBoundingBoxInPixels: 0,
+  alpha: 1,
+  lookDirection: new Vector2(0, 1), //straight-down according to source image
+  moveKeys: [Keys.W, Keys.S, Keys.A, Keys.D],
+  moveSpeed: 0.005,
+  attackPower: 5,
+  health: 15,
+  rotateSpeed: 0.004,
+  gravityType: GravityType.Off, //top-down so no gravity
+  frictionType: FrictionType.Normal, 
+  maximumSpeed: 5,
+  collisionProperties: {
+    type: CollisionType.Collidable,
+    primitive: CollisionPrimitiveType.Rectangle,
+    //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
+    circleRadius: 0,
+    explodeRectangleBy: 0,
+  },
+  takes: {  
+    "walk" :  {
+      fps: 6,
+      leadInDelayMs: 0,
+      leadOutDelayMs: 0,
+      maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
+      startCellIndex: 0,
+      endCellIndex: 2,
+      boundingBoxDimensions: new Vector2(11, 17), 
+      cellData: [
+        new Rect(371, 207, 11, 17),
+        new Rect(387, 207, 11, 17),
+        new Rect(403, 207, 11, 17)
+      ]
+    }
+  }
+});
+
+const ENEMY_TYPE_THREE_DATA = Object.freeze({
+  id: "enemy 3",
+  spriteSheet: document.getElementById("player_one_animations"),
+  defaultTakeName: "walk",
+  translation: new Vector2(255, 60),
   rotation: 0,
   scale: new Vector2(1, 1),
   origin: new Vector2(0, 0),
@@ -844,11 +942,12 @@ const PLAYER_ONE_DATA = Object.freeze({
   id: "player 1",
   spriteSheet: document.getElementById("player_one_animations"),
   defaultTakeName: "walk",
-  translation: new Vector2(32, 400),
+  translation: new Vector2(40, 85),
   rotation: 0,
   scale: new Vector2(1, 1),
   origin: new Vector2(0, 0),
   actorType: ActorType.Player,
+  collisionType: CollisionType.Collidable,
   statusType: StatusType.IsDrawn | StatusType.IsUpdated,
   scrollSpeedMultiplier: 1,
   layerDepth: 1,
@@ -903,7 +1002,7 @@ const PLAYER_TWO_DATA = Object.freeze({
   id: "player 2",
   spriteSheet: document.getElementById("player_one_animations"),
   defaultTakeName: "walk",
-  translation: new Vector2(40, 400),
+  translation: new Vector2(40, 88),
   rotation: 0,
   scale: new Vector2(1, 1),
   origin: new Vector2(0, 0),

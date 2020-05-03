@@ -71,13 +71,10 @@ class GameStateManager{
     }
 
     Damage(damage, target)
-    {
-      
-        
+    {   
           console.log("Damaging " + target.id + " for " + damage);
-          // target.health-=damage;
-          
-      
+          console.log(target.moveSpeed);
+          target.health-=damage;    
     }
 
 }

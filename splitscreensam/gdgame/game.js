@@ -186,6 +186,7 @@ class Game {
         [StatusType.Off, "menu-bottom", "menu-top"]
       )
     );
+    
 
     //start timer - notice that it is called only after we loaded all the game content
     this.Start();
@@ -435,8 +436,13 @@ class Game {
 
     sprite = this.LoadAnimatedEnemySprite(ENEMY_TYPE_ONE_DATA);
     this.objectManager.Add(sprite);
+    sprite = this.LoadAnimatedEnemySprite(ENEMY_TYPE_TWO_DATA);
+    this.objectManager.Add(sprite);
+    sprite = this.LoadAnimatedEnemySprite(ENEMY_TYPE_THREE_DATA);
+    this.objectManager.Add(sprite);
  
-    // this.LoadWeapon(WEAPON_SWORD_2, this.playerSprites[1]);
+    sprite = this.LoadWeapon(WEAPON_SWORD_2, this.playerSprites[1]);
+    this.objectManager.Add(sprite);
     
 
     // //load players
@@ -454,7 +460,7 @@ class Game {
     let pos = new Vector2(attachedPlayer.Transform2D.translation.X, attachedPlayer.Transform2D.translation.Y);
 
     let transform = new Transform2D(
-      Vector2.Add(pos,offset),
+      pos,
       theObject.rotationInRadians,
       theObject.scale,
       theObject.origin,
@@ -756,7 +762,7 @@ class Game {
 
 //instead of "load" we could use "DOMContentLoaded" but this would indicate load complete when the HTML and DOM is loaded and NOT when all styling, scripts and images have been downloaded
 window.addEventListener("load", event => {
-  let bDebugMode = true;
+  let bDebugMode = false;
   let game = new Game(bDebugMode);
   game.LoadGame();
 });

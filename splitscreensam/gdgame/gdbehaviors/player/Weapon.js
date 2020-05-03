@@ -42,14 +42,19 @@ class Weapon
             if(canAttack)
             {
                 if(Collision.Intersects(parent, sprite))
-                {
+                { 
                     NotificationCenter.Notify(
                         new Notification(
-                        NotificationType.GameState,
-                        NotificationAction.Damage,
-                        [5, sprite]));
+                        NotificationType.Sprite,
+                        NotificationAction.RemoveFirst,
+                        [sprite]));
                         
                 }   
+
+                if(this.objectManager.Get(ActorType.Enemy).length <= 0)
+                {
+                    location.reload();
+                }
             }
         }
 
@@ -63,11 +68,12 @@ class Weapon
         
         parent.Transform2D.Translation = pos;
 
-
         if(this.keyboardManager.IsKeyDown(this.attackKey[0]))
-        {
+        {        
             parent.Transform2D.RotateBy(0.3);
-
+            NotificationCenter.Notify(
+                new Notification(NotificationType.Sound, NotificationAction.Play, [
+                  "sword"]));
 
             if(parent.Transform2D.RotationInRadians >= 1.5)
             {
