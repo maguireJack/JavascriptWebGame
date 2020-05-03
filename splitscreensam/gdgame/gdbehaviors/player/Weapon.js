@@ -41,7 +41,7 @@ class Weapon
 
             if(canAttack)
             {
-                if(parent.Transform2D.BoundingBox.Intersects(sprite.Transform2D.BoundingBox))
+                if(Collision.Intersects(parent, sprite))
                 {
                     NotificationCenter.Notify(
                         new Notification(
@@ -59,7 +59,7 @@ class Weapon
     HandleSword(gameTime, parent)
     {     
         let player = this.attachedPlayer;
-        let pos = new Vector2(player.Transform2D.BoundingBox.X + 15, player.Transform2D.BoundingBox.Y + 10);
+        let pos = new Vector2(player.Transform2D.translation.X + 15, player.Transform2D.translation.Y + 10);
         
         parent.Transform2D.Translation = pos;
 
@@ -72,6 +72,7 @@ class Weapon
             if(parent.Transform2D.RotationInRadians >= 1.5)
             {
                 parent.Transform2D.RotationInRadians = 1.5;
+
             }
             
         }

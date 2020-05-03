@@ -736,7 +736,7 @@ const WEAPON_SWORD = Object.freeze({
       maxLoopCount: -1, //-1 = always, 0 = run once, N = run N times
       startCellIndex: 0,
       endCellIndex: 2,
-      boundingBoxDimensions: new Vector2(10, 22), 
+      boundingBoxDimensions: new Vector2(22, 10), 
       cellData: [
         new Rect(323, 25, 10, 22),
         new Rect(323, 25, 10, 22),
@@ -814,9 +814,9 @@ const ENEMY_TYPE_ONE_DATA = Object.freeze({
   maximumSpeed: 5,
   collisionProperties: {
     type: CollisionType.Collidable,
-    primitive: CollisionPrimitiveType.Circle,
+    primitive: CollisionPrimitiveType.Rectangle,
     //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
-    circleRadius: 10,
+    circleRadius: 0,
     explodeRectangleBy: 0,
   },
   takes: {  
@@ -849,7 +849,6 @@ const PLAYER_ONE_DATA = Object.freeze({
   scale: new Vector2(1, 1),
   origin: new Vector2(0, 0),
   actorType: ActorType.Player,
-  collisionType: CollisionType.Collidable,
   statusType: StatusType.IsDrawn | StatusType.IsUpdated,
   scrollSpeedMultiplier: 1,
   layerDepth: 1,
@@ -865,9 +864,9 @@ const PLAYER_ONE_DATA = Object.freeze({
   maximumSpeed: 5,
   collisionProperties: {
     type: CollisionType.Collidable,
-    primitive: CollisionPrimitiveType.Circle,
+    primitive: CollisionPrimitiveType.Rectangle,
     //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
-    circleRadius: 10,
+    circleRadius: 0,
     explodeRectangleBy: 0,
   },
   takes: {  
@@ -928,7 +927,7 @@ const PLAYER_TWO_DATA = Object.freeze({
     primitive: CollisionPrimitiveType.Rectangle,
     //if circle then set circleRadius, if rectangle then set explodeRectangleBy - but NOT both
     circleRadius: 0,
-    explodeRectangleBy: 10,
+    explodeRectangleBy: 0,
   },
   takes: {  
     "walk" :  {

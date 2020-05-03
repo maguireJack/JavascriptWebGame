@@ -1,6 +1,6 @@
 /**
  * Represents the physical properties of a sprite (e.g. mass, velocity, friction)
- * @author
+ * @author niall mcguinness
  * @version 1.0
  * @class Body
  */
@@ -26,12 +26,30 @@ class Body {
     //#endregion 
 
     //#region Properties
-    get MaximumSpeed() {return this.maximumSpeed;}
-    get Gravity() {return this.gravity;}
-    get Friction() {return this.friction;}
-    set MaximumSpeed(maximumSpeed) {this.maximumSpeed = maximumSpeed || Body.MAX_SPEED;}
-    set Gravity(gravity) {this.gravity = gravity || GravityType.Normal;}
-    set Friction(friction) {this.friction = friction || FrictionType.Normal;}
+    get MaximumSpeed() {
+        return this.maximumSpeed;
+    }
+    get Gravity() {
+        return this.gravity;
+    }
+    get Friction() {
+        return this.friction;
+    }
+    get VelocityX() {
+        return this.velocityX;
+    }
+    get VelocityY() {
+        return this.velocityY;
+    }
+    set MaximumSpeed(maximumSpeed) {
+        this.maximumSpeed = maximumSpeed || Body.MAX_SPEED;
+    }
+    set Gravity(gravity) {
+        this.gravity = gravity || GravityType.Normal;
+    }
+    set Friction(friction) {
+        this.friction = friction || FrictionType.Normal;
+    }
     //endregion 
 
     constructor(maximumSpeed, gravity, friction) {
@@ -41,9 +59,21 @@ class Body {
         this.IsJumping = false;
         this.IsOnGround = false;
 
-        this.MaximumSpeed = maximumSpeed;
-        this.Gravity = gravity;
-        this.Friction = friction;
+        this.MaximumSpeed = this.originalMaximumSpeed = maximumSpeed;
+        this.Gravity = this.originalGravity = gravity;
+        this.Friction = this.originalFriction = friction;
+    }
+
+    Reset(){
+        this.velocityX = 0;
+        this.velocityY = 0;
+
+        this.IsJumping = false;
+        this.IsOnGround = false;
+
+        this.MaximumSpeed = this.originalMaximumSpeed;
+        this.Gravity = this.originalGravity;
+        this.Friction = this.originalFriction;
     }
 
     ApplyGravity() {
@@ -62,13 +92,24 @@ class Body {
         this.velocityY *= this.friction;
     }
 
+    SetVelocity(velocity) {
+        this.SetVelocityX(velocity.x);
+        this.SetVelocityY(velocity.y);
+    }
+
     SetVelocityX(velocityX) {
         if (velocityX <= this.maximumSpeed)
             this.velocityX = velocityX;
     }
 
     SetVelocityY(velocityY) {
-        this.velocityY = velocityY;
+        if (velocityY <= this.maximumSpeed)
+            this.velocityY = velocityY;
+    }
+
+    AddVelocity(velocity) {
+        this.AddVelocityX(velocity.x);
+        this.AddVelocityY(velocity.y);
     }
 
     AddVelocityX(deltaVelocityX) {
@@ -77,7 +118,8 @@ class Body {
     }
 
     AddVelocityY(deltaVelocityY) {
-        this.velocityY += deltaVelocityY;
+        if (Math.abs(this.velocityY + deltaVelocityY) <= this.maximumSpeed)
+            this.velocityY += deltaVelocityY;
     }
 
     //#region Common Methods - Equals, ToString, Clone
@@ -86,7 +128,7 @@ class Body {
     }
 
     ToString() {
-        return "[" + this.maximumSpeed + ", " + this.gravity + + ", " + this.friction + ", " + this.velocityX + ", " + this.velocityY + "]";
+        return "[" + this.maximumSpeed + ", " + this.gravity + +", " + this.friction + ", " + this.velocityX + ", " + this.velocityY + "]";
     }
 
 

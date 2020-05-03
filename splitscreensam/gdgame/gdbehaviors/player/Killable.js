@@ -38,14 +38,14 @@ class Killable {
         let player1 = sprites[0];
         let player2 = sprites[1];
 
-        let tempXY = new Vector2(player1.Transform2D.BoundingBox.X, player1.Transform2D.BoundingBox.Y);
-        let playerXY = new Vector2(player2.Transform2D.BoundingBox.X, player2.Transform2D.BoundingBox.Y);
+        let tempXY = new Vector2(player1.Transform2D.translation.X, player1.Transform2D.translation.X);
+        let playerXY = new Vector2(player2.Transform2D.translation.X, player2.Transform2D.translation.X);
 
         
 
       //   if(tempXY >= new Vector2(player2.Transform2D.BoundingBox.X, player2.Transform2D.BoundingBox.Y))
       //   {
-            let currentPos = new Vector2(parent.Transform2D.BoundingBox.X, parent.Transform2D.BoundingBox.Y);
+            let currentPos = new Vector2(parent.Transform2D.translation.X, parent.Transform2D.translation.X);
             let distanceToPlayer1 = new Vector2(Math.abs(tempXY.X - currentPos.X), Math.abs(tempXY.Y - currentPos.Y));
             let distanceToPlayer2 = new Vector2(Math.abs(playerXY.X - currentPos.X), Math.abs(playerXY.Y - currentPos.Y));
 

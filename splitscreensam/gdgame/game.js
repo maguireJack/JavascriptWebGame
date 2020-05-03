@@ -290,52 +290,55 @@ class Game {
       throw "Error: A behavior (e.g. TrackTargetTranslationBehavior) is looking for a player index that does not exist. Are there sufficient sprites in the playerSprites array?";
   }
   LoadCameras() {
-//#region Camera 1    
-    let transform = new Transform2D(
+    //#region Camera 1    
+        let transform = new Transform2D(
+          new Vector2(0, 0),
+          0,
+          new Vector2(2, 2),
+          new Vector2(0, 0),
+          new Vector2(this.screenTop.cvs.width, this.screenTop.cvs.height),
+          0
+        );
+    
+        let cameraTop = new Camera2D(
+          "camera top",
+          ActorType.Camera,
+          transform,
+          StatusType.IsUpdated,
+          this.screenTop.ctx
+        );
+        /**************** NEED TO ATTACH A COLLISION PRIMITIVE (e.g. CIRCLE OR RECTANGLE) ****************/
+        cameraTop.CollisionPrimitive = new RectCollisionPrimitive(transform, 0);
+        cameraTop.AttachBehavior(new TrackTargetTranslationBehavior(this, 0, new Vector2(0, -100)));
+        this.cameraManager.Add(cameraTop);
+    //#endregion
+    
+    //#region Camera 2
+    transform = new Transform2D(
       new Vector2(0, 0),
       0,
       new Vector2(2, 2),
-      new Vector2(this.screenTop.width/2, this.screenTop.height/2),
-      new Vector2(this.screenTop.width, this.screenTop.height),
-      0
-    );
-
-    let cameraTop = new Camera2D(
-      "camera top",
+      new Vector2(0, 0),
+      new Vector2(this.screenBottom.cvs.width, this.screenBottom.cvs.height));
+    
+      console.log(transform);
+      console.log(this.screenBottom);
+    
+    let cameraBottom = new Camera2D(
+      "camera bottom",
       ActorType.Camera,
       transform,
       StatusType.IsUpdated,
-      this.screenTop.ctx
+      this.screenBottom.ctx
     );
+    
     /**************** NEED TO ATTACH A COLLISION PRIMITIVE (e.g. CIRCLE OR RECTANGLE) ****************/
-    cameraTop.CollisionPrimitive = new RectCollisionPrimitive(transform, 0);
-    cameraTop.AttachBehavior(new TrackTargetTranslationBehavior(this, 0, new Vector2(0, -100)));
-    this.cameraManager.Add(cameraTop);
-//#endregion
-
-//#region Camera 2
-transform = new Transform2D(
-  new Vector2(0, 0),
-  0,
-  new Vector2(2, 2),
-  new Vector2(this.screenBottom.width/2, this.screenBottom.dimensions.height/2),
-  new Vector2(this.screenBottom.width, this.screenBottom.dimensions.height));
-
-let cameraBottom = new Camera2D(
-  "camera bottom",
-  ActorType.Camera,
-  transform,
-  StatusType.IsUpdated,
-  this.screenBottom.ctx
-);
-
-/**************** NEED TO ATTACH A COLLISION PRIMITIVE (e.g. CIRCLE OR RECTANGLE) ****************/
-cameraBottom.CollisionPrimitive = new RectCollisionPrimitive(transform, 0);
-cameraBottom.AttachBehavior(new TrackTargetTranslationBehavior(this, 1, new Vector2(0, -100)));
-this.cameraManager.Add(cameraBottom);
-//#endregion
-
-  }
+    cameraBottom.CollisionPrimitive = new RectCollisionPrimitive(transform, 0);
+    cameraBottom.AttachBehavior(new TrackTargetTranslationBehavior(this, 1, new Vector2(0, -100)));
+    this.cameraManager.Add(cameraBottom);
+    //#endregion
+    
+      }
 
   LoadNotificationCenter() {
     this.notificationCenter = new NotificationCenter();
@@ -422,8 +425,8 @@ this.cameraManager.Add(cameraBottom);
     sprite = this.LoadAnimatedPlayerSprite(PLAYER_ONE_DATA);
     this.objectManager.Add(sprite);
     this.playerSprites[0] = sprite;
-    // sprite = this.LoadWeapon(WEAPON_SWORD, this.playerSprites[0]);
-    // this.objectManager.Add(sprite);
+    sprite = this.LoadWeapon(WEAPON_SWORD, this.playerSprites[0], new Vector2(10, 40));
+    this.objectManager.Add(sprite);
 
     sprite = this.LoadAnimatedPlayerSprite(PLAYER_TWO_DATA);
     this.objectManager.Add(sprite);
@@ -443,50 +446,51 @@ this.cameraManager.Add(cameraBottom);
     // this.LoadAnimatedSprite(PICKUP_COIN_DECORATOR_ANIMATION_DATA);
   }
 
-  LoadWeapon(weapon, attachedPlayer)
+  LoadWeapon(theObject, attachedPlayer, offset)
   {
-    let artist = new AnimatedSpriteArtist(weapon);
-    artist.SetTake(weapon.defaultTakeName);
-    
-    let player = attachedPlayer;
-    let pos = new Vector2(player.Transform2D.BoundingBox.X, player.Transform2D.BoundingBox.Y);
-      
+    let artist = new AnimatedSpriteArtist(theObject);
+    artist.SetTake(theObject.defaultTakeName);
 
-    let transform = new Transform2D(pos,
-      weapon.rotation,
-      weapon.scale,
-      weapon.origin,
-      artist.GetBoundingBoxDimensionsByTakeName(weapon.defaultTakeName),
-      weapon.explodeBoundingBoxInPixels);
+    let pos = new Vector2(attachedPlayer.Transform2D.translation.X, attachedPlayer.Transform2D.translation.Y);
 
-    let weaponSprite = new MoveableSprite(weapon.id,
-      weapon.actorType,
-      weapon.collisionType,
+    let transform = new Transform2D(
+      Vector2.Add(pos,offset),
+      theObject.rotationInRadians,
+      theObject.scale,
+      theObject.origin,
+      artist.GetSingleFrameDimensions(theObject.defaultTakeName));
+
+    let sprite = new MoveableSprite(theObject.id,
+      theObject.actorType,
+      theObject.collisionProperties.type,
       transform, artist,
-      weapon.statusType,
-      weapon.scrollSpeedMultiplier,
-      weapon.layerDepth);
+      theObject.statusType,
+      theObject.scrollSpeedMultiplier,
+      theObject.layerDepth);
 
-      weaponSprite.Body.MaximumSpeed = weapon.maximumSpeed;
-      weaponSprite.Body.Friction = weapon.frictionType;
-      weaponSprite.Body.Gravity = weapon.gravityType;
+    /**************** NEED TO FRICTION TO MAKE THIS CHARACTER MOVE IN A MORE BELIEVEABLE MANNER ***********/
+    sprite.Body.MaximumSpeed = theObject.maximumSpeed;
+    sprite.Body.Friction = theObject.frictionType;
+    sprite.Body.Gravity = theObject.gravityType; //top-down, so no gravity in +Y direction
 
-      weaponSprite.AttachBehavior(
-        new Weapon(
-          this.keyboardManager,
-          this.objectManager,
-          weapon.attackKey,
-          new Vector2(1,0),
-          weapon.swingSpeed,
-          attachedPlayer));
+    /**************** NEED TO ATTACH A COLLISION PRIMITIVE (e.g. CIRCLE OR RECTANGLE) ****************/
+    //assign a circular collision primitive to better fit the drawn sprite
+    if (theObject.collisionProperties.primitive == CollisionPrimitiveType.Circle) {
+      sprite.CollisionPrimitive = new CircleCollisionPrimitive(transform, theObject.collisionProperties.circleRadius);
+    } else {
+      sprite.CollisionPrimitive = new RectCollisionPrimitive(transform, theObject.collisionProperties.explodeRectangleBy);
+    }
 
-          if (weapon.collisionProperties.primitive == CollisionPrimitiveType.Circle) {
-            weapon.CollisionPrimitive = new CircleCollisionPrimitive(transform, weapon.collisionProperties.circleRadius);
-          } else {
-            weapon.CollisionPrimitive = new RectCollisionPrimitive(transform, weapon.collisionProperties.explodeRectangleBy);
-          }
+    /**************** NEED TO ADD A BEHAVIOR TO MAKE THIS A CONTROLLABLE ACTOR ***********/
+    sprite.AttachBehavior(new Weapon(this.keyboardManager,
+      this.objectManager,
+      theObject.attackKey,
+      theObject.lookDirection,
+      theObject.swingSpeed,
+      attachedPlayer));
 
-      return weaponSprite;
+    //return the player so that we can add all players to playerSprites array so that any camera targeting a player can get a handle to the player in this array
+    return sprite;
   }
 
   LoadAnimatedEnemySprite(playerObject)
@@ -498,7 +502,7 @@ this.cameraManager.Add(cameraBottom);
         playerObject.rotation,
           playerObject.scale,
             playerObject.origin,
-              artist.GetBoundingBoxDimensionsByTakeName(playerObject.defaultTakeName),
+            artist.GetSingleFrameDimensions(playerObject.defaultTakeName),
                 playerObject.explodeBoundingBoxInPixels);
 
     let playerSprite = new MoveableSprite(playerObject.id, 
@@ -523,14 +527,12 @@ this.cameraManager.Add(cameraBottom);
     }
 
     /**************** NEED TO ADD A BEHAVIOR TO MAKE THIS A CONTROLLABLE CHARACTER ***********/
-    // playerSprite.AttachBehavior(
-    //   new SamPlayerBehavior(
-    //     this.keyboardManager,
-    //     this.objectManager,
-    //     playerObject.moveKeys,
-    //     playerObject.lookDirection,
-    //     playerObject.moveSpeed,
-    //     playerObject.rotateSpeed));
+    playerSprite.AttachBehavior(
+      new Killable( 
+        this.objectManager,
+        playerObject.lookDirection,
+        playerObject.moveSpeed,
+        playerObject.rotateSpeed));
 
   return playerSprite; //add animated player sprite      
 
@@ -545,7 +547,7 @@ this.cameraManager.Add(cameraBottom);
         playerObject.rotation,
           playerObject.scale,
             playerObject.origin,
-              artist.GetBoundingBoxDimensionsByTakeName(playerObject.defaultTakeName),
+            artist.GetSingleFrameDimensions(playerObject.defaultTakeName),
                 playerObject.explodeBoundingBoxInPixels);
 
     let playerSprite = new MoveableSprite(playerObject.id, 
@@ -592,7 +594,7 @@ this.cameraManager.Add(cameraBottom);
         animatedObject.rotation,
           animatedObject.scale,
             animatedObject.origin,
-              artist.GetBoundingBoxDimensionsByTakeName(animatedObject.defaultTakeName),
+            artist.GetSingleFrameDimensions(animatedObject.defaultTakeName),
                 animatedObject.explodeBoundingBoxInPixels);
 
     let sprite = new Sprite(animatedObject.id, 
